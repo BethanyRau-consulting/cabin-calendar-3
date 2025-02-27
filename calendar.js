@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
         
         currentDate.setDate(1);
         const firstDayIndex = currentDate.getDay();
-        const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
+        const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate(); 
         const prevLastDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0).getDate();
         
         monthName.textContent = currentDate.toLocaleDateString("en-US", { month: "long", year: "numeric" });
