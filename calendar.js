@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     let currentDate = new Date();
+    let today = new Date();
 
     function renderCalendar() {
         const monthName = document.getElementById("monthName");
@@ -29,6 +30,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function nextMonth() {
         currentDate.setMonth(currentDate.getMonth() + 1);
+        renderCalendar();
+    }
+
+    function goToCurrentMonth() {
+        currentDate = new Date(today.getFullYear(), today.getMonth(), 1);
         renderCalendar();
     }
     
