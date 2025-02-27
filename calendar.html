@@ -16,17 +16,17 @@
     <a href="photos.html">Pictures</a> |
     </nav>
     <div class="calendar">
-    <div class="header">
-        <button onclick="prevMonth()">&#9665;</button>
-        <h2 id="monthName"></h2>
-        <button onclick="nextMonth()">&#9655;</button>
+        <div class="header">
+            <button id="prevBtn">&#9665;</button>
+            <h2 id="monthName"></h2>
+            <button id="nextBtn">&#9655;</button>
+        </div>
+        <button id="todayBtn">Today</button>
+        <div class="days">
+            <div>Sunday</div><div>Monday</div><div>Tuesday</div><div>Wednesday</div><div>Thursday</div><div>Friday</div><div>Saturday</div>
+        </div>
+        <div class="grid" id="calendarGrid"></div>
     </div>
-    <button onclick="goToCurrentMonth()">Today</button>
-    <div class="days">
-        <div>Sunday</div><div>Monday</div><div>Tuesday</div><div>Wednesday</div><div>Thursday</div><div>Friday</div><div>Saturday</div>
-    </div>
-    <div class="grid" id="calendarGrid"></div>
-</div>
     <script src="calendar.js"></script>
 </body>
 </html>
