@@ -67,7 +67,7 @@ p {
 }
 
 .calendar {
-    width: 300px;
+    width: 500px;
     margin: auto;
 }
 
@@ -86,7 +86,7 @@ p {
 .grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 5px;
+    gap: 10px;
 }
 
 .day {
