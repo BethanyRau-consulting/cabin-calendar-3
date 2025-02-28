@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <p><strong>Date:</strong> ${event.start} - ${event.end || event.start}</p>
             <p><strong>Time:</strong> ${event.startTime || "N/A"} - ${event.endTime || "N/A"}</p>
             <p><strong>Details:</strong> ${event.details || "No details provided."}</p>
-            <p><strong>Type:</strong> ${event.color || "N/A"}</p>
+            <p><strong>Type:</strong> ${event.color || "N/A"}</p> 
         `;
         eventList.appendChild(eventItem);
     }
