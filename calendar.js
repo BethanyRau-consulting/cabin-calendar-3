@@ -27,16 +27,13 @@ document.addEventListener("DOMContentLoaded", () => {
     let today = new Date();
     let selectedEventId = null;
 
-    function renderCalendar() {
-        const monthName = document.getElementById("monthName");
-        const calendarGrid = document.getElementById("calendarGrid");
-
-        currentDate.setDate(1);
-        const firstDayIndex = currentDate.getDay();
-        const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
-
-        monthName.textContent = currentDate.toLocaleDateString("en-US", { month: "long", year: "numeric" });
-        calendarGrid.innerHTML = "";
+ function renderCalendar() {
+    const monthName = document.getElementById("monthName");
+    const calendarGrid = document.getElementById("calendarGrid");
+    currentDate.setDate(1);
+    monthName.textContent = currentDate.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+    calendarGrid.innerHTML = "";
+}
 
         for (let i = 1; i <= lastDay; i++) {
             let day = document.createElement("div");
@@ -169,6 +166,21 @@ document.addEventListener("DOMContentLoaded", () => {
         currentDate = new Date(today.getFullYear(), today.getMonth(), 1);
         renderCalendar();
     });
+
+document.getElementById("saveEvent").addEventListener("click", () => {
+    let title = document.getElementById("eventTitle").value;
+    let start = new Date(document.getElementById("eventStart").value);
+    let end = new Date(document.getElementById("eventEnd").value);
+    let color = document.getElementById("eventColor").value;
+
+    for (let d = start; d <= end; d.setDate(d.getDate() + 1)) {
+        let dateStr = d.toISOString().split("T")[0];
+        document.querySelectorAll(`.day[data-date="${dateStr}"]`).forEach(dayElement => {
+            dayElement.style.backgroundColor = color;
+            dayElement.innerHTML += `<div class='event-title'>${title}</div>`;
+        });
+    }
+});
 
     document.getElementById("saveEvent").addEventListener("click", saveEvent);
     document.getElementById("cancelEvent").addEventListener("click", closeEventModal);
