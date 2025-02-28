@@ -78,29 +78,34 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
     
-        let batch = db.batch();  
-        let startDate = new Date(start);
-        let endDate = new Date(end);
-    
-        for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
-            let dateStr = d.toISOString().split("T")[0];
-            let eventRef = db.collection("events").doc(); 
-            batch.set(eventRef, { title, start: dateStr, startTime, endTime, details, color });
+        if (selectedEventId) {
+            db.collection("events").doc(selectedEventId).update({
+                title, start, end, startTime, endTime, details, color
+            }).then(() => {
+                console.log("✅ Event updated successfully!");
+                renderCalendar();  
+                closeEventModal();
+            }).catch(error => {
+                console.error("❌ Error updating event:", error);
+            });
+        } else {
+            db.collection("events").add({
+                title, start, end, startTime, endTime, details, color
+            }).then(() => {
+                console.log("✅ Event saved successfully!");
+                renderCalendar();  
+                closeEventModal();
+            }).catch(error => {
+                console.error("❌ Error adding event:", error);
+            });
         }
-    
-        batch.commit().then(() => {
-            console.log("✅ Event saved successfully!");
-            renderCalendar();  
-            closeEventModal();
-        }).catch(error => {
-            console.error("❌ Error adding event:", error);
-        });
     }
 
     function deleteEvent() {
         if (selectedEventId) {
             db.collection("events").doc(selectedEventId).delete().then(() => {
                 console.log("✅ Event deleted successfully!");
+                selectedEventId = null;
                 renderCalendar();
                 closeEventModal();
             }).catch(error => {
