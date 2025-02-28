@@ -1,4 +1,11 @@
-// Initialize Firestore
+// Ensure Firebase is initialized before using Firestore
+if (typeof firebase === "undefined") {
+    console.error("Firebase SDK not loaded. Ensure Firebase scripts are included in your HTML.");
+} else {
+    console.log("✅ Firebase SDK loaded successfully.");
+}
+
+// Initialize Firebase Firestore
 const db = firebase.firestore();
 
 document.addEventListener("DOMContentLoaded", () => {
