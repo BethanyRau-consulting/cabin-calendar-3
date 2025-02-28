@@ -125,12 +125,17 @@ function saveEvent() {
         });
     }
 }
-
-
-
-            function deleteEvent() {
-                closeEventModal();
-            }
+  
+function deleteEvent() {
+    if (selectedEventId) {
+        db.collection("events").doc(selectedEventId).delete().then(() => {
+            renderCalendar();
+            closeEventModal();
+        }).catch(error => {
+            console.error("Error deleting event: ", error);
+        });
+    }
+}
 
             document.getElementById("prevBtn").addEventListener("click", () => {
                 currentDate.setMonth(currentDate.getMonth() - 1);
