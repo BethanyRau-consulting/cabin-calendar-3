@@ -3,39 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cabin Calendar</title>
+    <title>Events List</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Events</h1>
+    <h1>Events List</h1>
     <nav>
-    <a href="index.html">Home</a> |
-    <a href="calendar.html">Calendar</a> |
-    <a href="events.html">Events</a> |
-    <a href="journal.html">Journal</a> |
-    <a href="photos.html">Pictures</a> |
+        <a href="index.html">Home</a> |
+        <a href="calendar.html">Calendar</a> |
+        <a href="events.html">Events</a> |
+        <a href="journal.html">Journal</a> |
+        <a href="photos.html">Pictures</a>
     </nav>
-        <div class="filters">
-        <label for="filterDate">Filter by Date:</label>
-        <input type="date" id="filterDate">
-        
-        <label for="filterType">Filter by Type:</label>
-        <select id="filterType">
-            <option value="all">All</option>
-            <option value="Family Time">Family Time</option>
-            <option value="Golf Weekend">Golf Weekend</option>
-            <option value="Hunting">Hunting</option>
-            <option value="Work Weekend">Work Weekend</option>
-            <option value="Trout Weekend">Trout Weekend</option>
-        </select>
-        
-        <button id="applyFilters">Apply Filters</button>
-    </div>
-    
+
+    <h2 id="monthName"></h2>
+    <button id="prevMonth">Previous Month</button>
+    <button id="nextMonth">Next Month</button>
+
     <div class="event-list" id="eventList"></div>
 
+    <!-- 🔥 Load Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+
+    <!-- 🔥 Initialize Firebase -->
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyB9rOOglOPQ0pzOwuFq-P_Puo9lroDPU7A",
+        authDomain: "cabincalendar3.firebaseapp.com",
+        projectId: "cabincalendar3",
+        storageBucket: "cabincalendar3.appspot.com",
+        messagingSenderId: "373184478865",
+        appId: "1:373184478865:web:cf1e0e816be89107538930"
+      };
+      firebase.initializeApp(firebaseConfig);
+    </script>
+
+    <!-- 🔥 Load Events JavaScript -->
     <script src="events.js" defer></script>
 </body>
 </html>
