@@ -58,11 +58,34 @@ function renderCalendar() {
     });
 }
 
-            function openEventModal(day) {
-                selectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
-                document.getElementById("eventModal").style.display = "block";
-            }
+  let selectedEventId = null;
 
+function openEventModal(day) {
+    selectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+    const formattedDate = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+    
+    db.collection("events").where("start", "==", formattedDate).get().then(snapshot => {
+        if (!snapshot.empty) {
+            const eventDoc = snapshot.docs[0];
+            const eventData = eventDoc.data();
+
+            document.getElementById("eventTitle").value = eventData.title;
+            document.getElementById("eventStart").value = eventData.start;
+            document.getElementById("eventEnd").value = eventData.end || "";
+            document.getElementById("eventStartTime").value = eventData.startTime || "";
+            document.getElementById("eventEndTime").value = eventData.endTime || "";
+            document.getElementById("eventDetails").value = eventData.details || "";
+            document.getElementById("eventColor").value = eventData.color || "#ffcc00";
+
+            selectedEventId = eventDoc.id;
+        } else {
+            selectedEventId = null;
+        }
+
+        document.getElementById("eventModal").style.display = "block";
+    });
+}
+  
             function closeEventModal() {
                 document.getElementById("eventModal").style.display = "none";
             }
