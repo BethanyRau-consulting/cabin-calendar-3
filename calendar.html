@@ -15,7 +15,7 @@
     <a href="journal.html">Journal</a> |
     <a href="photos.html">Pictures</a> |
     </nav>
-    <div class="calendar">
+<div class="calendar">
         <div class="header">
             <button id="prevBtn">&#9665;</button>
             <h2 id="monthName"></h2>
@@ -27,16 +27,30 @@
         </div>
         <div class="grid" id="calendarGrid"></div>
     </div>
+
     <div class="modal" id="eventModal">
         <h3>Add/Edit Event</h3>
-        <input type="text" id="eventTitle" placeholder="Event Title">
+        <label for="eventTitle">Title:</label>
+        <input type="text" id="eventTitle" placeholder="Enter event title">
+        <label for="eventStart">Start Date:</label>
         <input type="date" id="eventStart">
+        <label for="eventEnd">End Date:</label>
         <input type="date" id="eventEnd">
+        <label for="eventStartTime">Start Time:</label>
         <input type="time" id="eventStartTime">
+        <label for="eventEndTime">End Time:</label>
         <input type="time" id="eventEndTime">
-        <textarea id="eventDetails" placeholder="Event Details"></textarea>
+        <label for="eventDetails">Details:</label>
+        <textarea id="eventDetails" placeholder="Enter event details"></textarea>
         <label for="eventColor">Choose a color:</label>
-        <input type="color" id="eventColor">
+        <select id="eventColor">
+            <option value="#28a745">Green - Family Time</option>
+            <option value="#ffc107">Yellow - Family Time but open to visitors</option>
+            <option value="#dc3545">Red - Golf Weekend</option>
+            <option value="#fd7e14">Orange - Hunting</option>
+            <option value="#007bff">Blue - Work Weekend</option>
+            <option value="#6f42c1">Purple - Trout Weekend</option>
+        </select>
         <button id="saveEvent">Save</button>
         <button id="cancelEvent">Cancel</button>
         <button id="deleteEvent">Delete</button>
