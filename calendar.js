@@ -156,6 +156,11 @@ document.getElementById("nextBtn").addEventListener("click", () => {
     renderCalendar();
 });
 
+    document.getElementById("todayBtn").addEventListener("click", () => {
+    currentDate = new Date(); // ✅ Reset to the current month
+    renderCalendar(); // ✅ Refresh the calendar
+});
+
 
     renderCalendar();
 });
