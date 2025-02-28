@@ -187,4 +187,3 @@ document.getElementById("saveEvent").addEventListener("click", () => {
     document.getElementById("deleteEvent").addEventListener("click", deleteEvent);
 
     renderCalendar();
-});
