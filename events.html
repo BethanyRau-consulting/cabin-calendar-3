@@ -28,7 +28,14 @@
 
 
     <!-- 🔥 Initialize Firebase -->
-    <script>
+    <!-- ✅ Firebase Initialization -->
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    if (typeof firebase === "undefined") {
+      console.error("❌ Firebase SDK not loaded. Check your script imports.");
+    } else {
+      console.log("✅ Firebase SDK loaded successfully.");
+      
       const firebaseConfig = {
         apiKey: "AIzaSyB9rOOglOPQ0pzOwuFq-P_Puo9lroDPU7A",
         authDomain: "cabincalendar3.firebaseapp.com",
@@ -37,8 +44,12 @@
         messagingSenderId: "373184478865",
         appId: "1:373184478865:web:cf1e0e816be89107538930"
       };
+
+      // Initialize Firebase
       firebase.initializeApp(firebaseConfig);
-    </script>
+    }
+  });
+</script>
 
     <!-- 🔥 Load Events JavaScript -->
     <script src="events.js" defer></script>
