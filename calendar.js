@@ -34,13 +34,11 @@ function renderCalendar() {
         day.classList.add("day");
         day.textContent = i;
         day.dataset.date = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
-
         day.addEventListener("click", () => openEventModal(i));
-
         calendarGrid.appendChild(day);
     }
 
-    // Fetch events from Firestore and update calendar
+    // ✅ Fetch events from Firestore again
     db.collection("events").get().then(snapshot => {
         snapshot.forEach(doc => {
             const event = doc.data();
@@ -56,7 +54,6 @@ function renderCalendar() {
         console.error("Error loading events: ", error);
     });
 }
-
   let selectedEventId = null;
 
 function openEventModal(day) {
