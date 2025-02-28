@@ -19,25 +19,44 @@ document.addEventListener("DOMContentLoaded", () => {
             const db = firebase.firestore();
             let selectedDate = null;
 
-            function renderCalendar() {
-                const monthName = document.getElementById("monthName");
-                const calendarGrid = document.getElementById("calendarGrid");
+function renderCalendar() {
+    const monthName = document.getElementById("monthName");
+    const calendarGrid = document.getElementById("calendarGrid");
 
-                currentDate.setDate(1);
-                const firstDayIndex = currentDate.getDay();
-                const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
-                
-                monthName.textContent = currentDate.toLocaleDateString("en-US", { month: "long", year: "numeric" });
-                calendarGrid.innerHTML = "";
+    currentDate.setDate(1);
+    const firstDayIndex = currentDate.getDay();
+    const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
 
-                for (let i = 1; i <= lastDay; i++) {
-                    let day = document.createElement("div");
-                    day.classList.add("day");
-                    day.textContent = i;
-                    day.addEventListener("click", () => openEventModal(i));
-                    calendarGrid.appendChild(day);
-                }
-            }
+    monthName.textContent = currentDate.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+    calendarGrid.innerHTML = "";
+
+    for (let i = 1; i <= lastDay; i++) {
+        let day = document.createElement("div");
+        day.classList.add("day");
+        day.textContent = i;
+        day.dataset.date = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
+
+        day.addEventListener("click", () => openEventModal(i));
+
+        calendarGrid.appendChild(day);
+    }
+
+    // Fetch events from Firestore and update calendar
+    db.collection("events").get().then(snapshot => {
+        snapshot.forEach(doc => {
+            const event = doc.data();
+            const eventDate = event.start;
+            const eventElements = document.querySelectorAll(`.day[data-date="${eventDate}"]`);
+
+            eventElements.forEach(dayElement => {
+                dayElement.style.backgroundColor = event.color || "#ffcc00";
+                dayElement.title = event.title;
+            });
+        });
+    }).catch(error => {
+        console.error("Error loading events: ", error);
+    });
+}
 
             function openEventModal(day) {
                 selectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
