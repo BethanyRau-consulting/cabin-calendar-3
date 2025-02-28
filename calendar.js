@@ -1,3 +1,24 @@
+// ✅ Make sure Firebase is available before using it
+if (typeof firebase === "undefined") {
+    console.error("Firebase SDK not loaded. Make sure you have included Firebase scripts in your HTML file.");
+}
+
+// ✅ Firebase configuration (replace with actual values from Firebase Console)
+const firebaseConfig = {
+    apiKey: "AIzaSyB9rOOglOPQ0pzOwuFq-P_Puo9lroDPU7A",
+    authDomain: "cabincalendar3.firebaseapp.com",
+    projectId: "cabincalendar3",
+    storageBucket: "cabincalendar3.appspot.com", // ✅ Fixed storage bucket
+    messagingSenderId: "373184478865",
+    appId: "1:373184478865:web:cf1e0e816be89107538930"
+};
+
+// ✅ Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+
+// ✅ Initialize Firestore
+const db = firebase.firestore();
+
 const firebaseConfig = {
     apiKey: "AIzaSyB9rOOglOPQ0pzOwuFq-P_Puo9lroDPU7A",
     authDomain: "cabincalendar3.firebaseapp.com",
