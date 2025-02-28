@@ -97,6 +97,18 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    function deleteEvent() {
+        if (selectedEventId) {
+            db.collection("events").doc(selectedEventId).delete().then(() => {
+                console.log("✅ Event deleted successfully!");
+                renderCalendar();
+                closeEventModal();
+            }).catch(error => {
+                console.error("❌ Error deleting event:", error);
+            });
+        }
+    }
+
     function openEventModal(day) {
         selectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
         const formattedDate = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
