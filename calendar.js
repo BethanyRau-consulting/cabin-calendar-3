@@ -104,22 +104,28 @@ function saveEvent() {
         return;
     }
 
-    db.collection("events").add({
-        title,
-        start,
-        end,
-        startTime,
-        endTime,
-        details,
-        color,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-    }).then(() => {
-        renderCalendar();
-        closeEventModal();
-    }).catch(error => {
-        console.error("Error adding event: ", error);
-    });
+    if (selectedEventId) {
+        db.collection("events").doc(selectedEventId).update({
+            title, start, end, startTime, endTime, details, color
+        }).then(() => {
+            renderCalendar();
+            closeEventModal();
+        }).catch(error => {
+            console.error("Error updating event: ", error);
+        });
+    } else {
+        db.collection("events").add({
+            title, start, end, startTime, endTime, details, color,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(() => {
+            renderCalendar();
+            closeEventModal();
+        }).catch(error => {
+            console.error("Error adding event: ", error);
+        });
+    }
 }
+
 
 
             function deleteEvent() {
