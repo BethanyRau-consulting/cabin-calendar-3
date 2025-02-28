@@ -64,6 +64,39 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    function saveEvent() {
+        const title = document.getElementById("eventTitle").value;
+        const start = document.getElementById("eventStart").value;
+        const end = document.getElementById("eventEnd").value;
+        const startTime = document.getElementById("eventStartTime").value;
+        const endTime = document.getElementById("eventEndTime").value;
+        const details = document.getElementById("eventDetails").value;
+        const color = document.getElementById("eventColor").value;
+    
+        if (!title || !start) {
+            alert("Event title and start date are required!");
+            return;
+        }
+    
+        let batch = db.batch();  
+        let startDate = new Date(start);
+        let endDate = new Date(end);
+    
+        for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+            let dateStr = d.toISOString().split("T")[0];
+            let eventRef = db.collection("events").doc(); 
+            batch.set(eventRef, { title, start: dateStr, startTime, endTime, details, color });
+        }
+    
+        batch.commit().then(() => {
+            console.log("✅ Event saved successfully!");
+            renderCalendar();  
+            closeEventModal();
+        }).catch(error => {
+            console.error("❌ Error adding event:", error);
+        });
+    }
+
     function openEventModal(day) {
         selectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
         const formattedDate = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
