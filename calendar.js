@@ -16,7 +16,6 @@ const db = firebase.firestore();
 document.addEventListener("DOMContentLoaded", () => {
             let currentDate = new Date();
             let today = new Date();
-            const db = firebase.firestore();
             let selectedDate = null;
 
 function renderCalendar() {
