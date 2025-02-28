@@ -1,16 +1,20 @@
-// Firebase configuration
+//  Ensure Firebase is available before using it
+if (typeof firebase === "undefined") {
+    console.error("Firebase SDK not loaded. Ensure Firebase scripts are included in your HTML.");
+}
+
+//  Firebase Configuration
 const firebaseConfig = {
     apiKey: "AIzaSyB9rOOglOPQ0pzOwuFq-P_Puo9lroDPU7A",
     authDomain: "cabincalendar3.firebaseapp.com",
     projectId: "cabincalendar3",
-    storageBucket: "cabincalendar3.firebasestorage.app",
+    storageBucket: "cabincalendar3.appspot.com",
     messagingSenderId: "373184478865",
     appId: "1:373184478865:web:cf1e0e816be89107538930"
 };
 
-const app = initializeApp(firebaseConfig);
-
-//  Initialize Firestore
+//  Initialize Firebase & Firestore
+firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -38,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
             calendarGrid.appendChild(day);
         }
 
-        //  Always fetch latest events
+        //  Fetch latest events from Firestore
         db.collection("events").get().then(snapshot => {
             snapshot.forEach(doc => {
                 const event = doc.data();
@@ -55,6 +59,97 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    function openEventModal(day) {
+        selectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+        const formattedDate = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+
+        db.collection("events").where("start", "==", formattedDate).get().then(snapshot => {
+            if (!snapshot.empty) {
+                const eventDoc = snapshot.docs[0];
+                const eventData = eventDoc.data();
+
+                document.getElementById("eventTitle").value = eventData.title;
+                document.getElementById("eventStart").value = eventData.start;
+                document.getElementById("eventEnd").value = eventData.end || "";
+                document.getElementById("eventStartTime").value = eventData.startTime || "";
+                document.getElementById("eventEndTime").value = eventData.endTime || "";
+                document.getElementById("eventDetails").value = eventData.details || "";
+                document.getElementById("eventColor").value = eventData.color || "#ffcc00";
+
+                selectedEventId = eventDoc.id;
+            } else {
+                selectedEventId = null;
+            }
+
+            document.getElementById("eventModal").style.display = "block";
+        });
+    }
+
+    function closeEventModal() {
+        document.getElementById("eventModal").style.display = "none";
+        resetForm();
+    }
+
+    function resetForm() {
+        document.getElementById("eventTitle").value = "";
+        document.getElementById("eventStart").value = "";
+        document.getElementById("eventEnd").value = "";
+        document.getElementById("eventStartTime").value = "";
+        document.getElementById("eventEndTime").value = "";
+        document.getElementById("eventDetails").value = "";
+        document.getElementById("eventColor").value = "#ffcc00";
+        selectedEventId = null;
+    }
+
+    function saveEvent() {
+        const title = document.getElementById("eventTitle").value;
+        const start = document.getElementById("eventStart").value;
+        const end = document.getElementById("eventEnd").value;
+        const startTime = document.getElementById("eventStartTime").value;
+        const endTime = document.getElementById("eventEndTime").value;
+        const details = document.getElementById("eventDetails").value;
+        const color = document.getElementById("eventColor").value;
+
+        if (!title || !start) {
+            alert("Event title and start date are required!");
+            return;
+        }
+
+        if (selectedEventId) {
+            db.collection("events").doc(selectedEventId).update({
+                title, start, end, startTime, endTime, details, color
+            }).then(() => {
+                renderCalendar();
+                closeEventModal();
+            }).catch(error => {
+                console.error("Error updating event: ", error);
+            });
+        } else {
+            db.collection("events").add({
+                title, start, end, startTime, endTime, details, color,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                renderCalendar();
+                closeEventModal();
+            }).catch(error => {
+                console.error("Error adding event: ", error);
+            });
+        }
+    }
+
+    function deleteEvent() {
+        if (selectedEventId) {
+            db.collection("events").doc(selectedEventId).delete().then(() => {
+                selectedEventId = null;
+                renderCalendar();
+                closeEventModal();
+            }).catch(error => {
+                console.error("Error deleting event: ", error);
+            });
+        }
+    }
+
+    //  Event Listeners
     document.getElementById("prevBtn").addEventListener("click", () => {
         currentDate.setMonth(currentDate.getMonth() - 1);
         renderCalendar();
@@ -69,6 +164,10 @@ document.addEventListener("DOMContentLoaded", () => {
         currentDate = new Date(today.getFullYear(), today.getMonth(), 1);
         renderCalendar();
     });
+
+    document.getElementById("saveEvent").addEventListener("click", saveEvent);
+    document.getElementById("cancelEvent").addEventListener("click", closeEventModal);
+    document.getElementById("deleteEvent").addEventListener("click", deleteEvent);
 
     renderCalendar();
 });
