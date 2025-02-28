@@ -29,16 +29,15 @@ document.addEventListener("DOMContentLoaded", () => {
         const calendarGrid = document.getElementById("calendarGrid");
         const firstDayIndex = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
         const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
-        const prevLastDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0).getDate();
         
         monthName.textContent = currentDate.toLocaleDateString("en-US", { month: "long", year: "numeric" });
         calendarGrid.innerHTML = "";
 
-        for (let i = firstDayIndex; i > 0; i--) {
-            const day = document.createElement("div");
-            day.classList.add("day", "prev-month");
-            day.textContent = prevLastDay - i + 1;
-            calendarGrid.appendChild(day);
+        // Add blank spaces until the first day of the month
+        for (let i = 0; i < firstDayIndex; i++) {
+            const blank = document.createElement("div");
+            blank.classList.add("day", "empty");
+            calendarGrid.appendChild(blank);
         }
 
         for (let i = 1; i <= lastDay; i++) {
@@ -57,16 +56,21 @@ document.addEventListener("DOMContentLoaded", () => {
         db.collection("events").get().then(snapshot => {
             snapshot.forEach(doc => {
                 const event = doc.data();
-                const eventDate = event.start;
-                document.querySelectorAll(`.day[data-date="${eventDate}"]`).forEach(dayElement => {
-                    dayElement.style.backgroundColor = event.color || "#ffcc00";
-                    if (!dayElement.querySelector('.event-title')) {
-                        let titleDiv = document.createElement('div');
-                        titleDiv.classList.add('event-title');
-                        titleDiv.textContent = event.title;
-                        dayElement.appendChild(titleDiv);
-                    }
-                });
+                const startDate = new Date(event.start);
+                const endDate = event.end ? new Date(event.end) : startDate;
+
+                for (let d = startDate; d <= endDate; d.setDate(d.getDate() + 1)) {
+                    const eventDateStr = `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`;
+                    document.querySelectorAll(`.day[data-date="${eventDateStr}"]`).forEach(dayElement => {
+                        dayElement.style.backgroundColor = event.color || "#ffcc00";
+                        if (!dayElement.querySelector('.event-title')) {
+                            let titleDiv = document.createElement('div');
+                            titleDiv.classList.add('event-title');
+                            titleDiv.textContent = event.title;
+                            dayElement.appendChild(titleDiv);
+                        }
+                    });
+                }
             });
         }).catch(error => {
             console.error("Error loading events: ", error);
