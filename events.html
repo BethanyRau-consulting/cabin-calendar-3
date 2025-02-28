@@ -15,5 +15,25 @@
     <a href="journal.html">Journal</a> |
     <a href="photos.html">Pictures</a> |
     </nav>
+        <div class="filters">
+        <label for="filterDate">Filter by Date:</label>
+        <input type="date" id="filterDate">
+        
+        <label for="filterType">Filter by Type:</label>
+        <select id="filterType">
+            <option value="all">All</option>
+            <option value="Family Time">Family Time</option>
+            <option value="Golf Weekend">Golf Weekend</option>
+            <option value="Hunting">Hunting</option>
+            <option value="Work Weekend">Work Weekend</option>
+            <option value="Trout Weekend">Trout Weekend</option>
+        </select>
+        
+        <button id="applyFilters">Apply Filters</button>
+    </div>
+    
+    <div class="event-list" id="eventList"></div>
+    
+    <script src="events.js" defer></script>
 </body>
 </html>
