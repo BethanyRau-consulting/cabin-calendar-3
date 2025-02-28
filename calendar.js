@@ -1,5 +1,3 @@
-import { initializeApp } from "firebase/app";
-
 //  Ensure Firebase is available before using it
 if (typeof firebase === "undefined") {
     console.error("Firebase SDK not loaded. Ensure Firebase scripts are included in your HTML.");
