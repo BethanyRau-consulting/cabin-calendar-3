@@ -37,11 +37,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 const title = document.getElementById("eventTitle").value;
                 const start = document.getElementById("eventStart").value;
                 const end = document.getElementById("eventEnd").value;
+                const startTime = document.getElementById("eventStartTime").value;
+                const endTime = document.getElementById("eventEndTime").value;
                 const details = document.getElementById("eventDetails").value;
                 const color = document.getElementById("eventColor").value;
 
                 db.collection("events").add({
-                    title, start, end, details, color, date: selectedDate
+                    title, start, end, startTime, endTime, details, color, date: selectedDate
                 }).then(() => {
                     renderCalendar();
                     closeEventModal();
@@ -49,7 +51,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             function deleteEvent() {
-                // Logic to find and delete event from Firestore
                 closeEventModal();
             }
 
