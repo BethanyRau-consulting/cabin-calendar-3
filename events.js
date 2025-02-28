@@ -1,11 +1,11 @@
-// Ensure Firebase is initialized before using Firestore
+// Ensure Firebase is loaded before using Firestore
 if (typeof firebase === "undefined") {
     console.error("Firebase SDK not loaded. Ensure Firebase scripts are included in your HTML.");
 } else {
     console.log("✅ Firebase SDK loaded successfully.");
 }
 
-// Initialize Firebase Firestore
+// Initialize Firestore
 const db = firebase.firestore();
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const year = currentDate.getFullYear();
         const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
         monthName.textContent = currentDate.toLocaleDateString("en-US", { month: "long", year: "numeric" });
-        
+
         db.collection("events")
             .where("start", ">=", `${year}-${month}-01`)
             .where("start", "<=", `${year}-${month}-31`)
