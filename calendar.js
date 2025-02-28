@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }).catch(error => {
             console.error("Error loading events: ", error);
         });
-    });
+    })
 
     function openEventModal(day) {
         selectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
@@ -187,3 +187,4 @@ document.getElementById("saveEvent").addEventListener("click", () => {
     document.getElementById("deleteEvent").addEventListener("click", deleteEvent);
 
     renderCalendar();
+)};
