@@ -3,22 +3,32 @@ const db = firebase.firestore();
 
 document.addEventListener("DOMContentLoaded", () => {
     const eventList = document.getElementById("eventList");
-    const filterDate = document.getElementById("filterDate");
-    const filterType = document.getElementById("filterType");
-    const applyFilters = document.getElementById("applyFilters");
+    const monthName = document.getElementById("monthName");
+    let currentDate = new Date();
 
-    function fetchEvents() {
-        let query = db.collection("events").orderBy("start");
+    function fetchEventsForMonth() {
+        const year = currentDate.getFullYear();
+        const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+        monthName.textContent = currentDate.toLocaleDateString("en-US", { month: "long", year: "numeric" });
         
-        query.get().then(snapshot => {
-            eventList.innerHTML = ""; // Clear previous results
-            snapshot.forEach(doc => {
-                const event = doc.data();
-                displayEvent(event);
+        db.collection("events")
+            .where("start", ">=", `${year}-${month}-01`)
+            .where("start", "<=", `${year}-${month}-31`)
+            .orderBy("start")
+            .get()
+            .then(snapshot => {
+                eventList.innerHTML = "";
+                if (snapshot.empty) {
+                    eventList.innerHTML = "<p>No events found for this month.</p>";
+                } else {
+                    snapshot.forEach(doc => {
+                        displayEvent(doc.data());
+                    });
+                }
+            })
+            .catch(error => {
+                console.error("Error fetching events: ", error);
             });
-        }).catch(error => {
-            console.error("Error fetching events: ", error);
-        });
     }
 
     function displayEvent(event) {
@@ -34,30 +44,15 @@ document.addEventListener("DOMContentLoaded", () => {
         eventList.appendChild(eventItem);
     }
 
-    applyFilters.addEventListener("click", () => {
-        let query = db.collection("events").orderBy("start");
-        
-        if (filterDate.value) {
-            query = query.where("start", "==", filterDate.value);
-        }
-        
-        if (filterType.value !== "all") {
-            query = query.where("color", "==", filterType.value);
-        }
-
-        query.get().then(snapshot => {
-            eventList.innerHTML = "";
-            if (snapshot.empty) {
-                eventList.innerHTML = "<p>No events match the selected filters.</p>";
-            } else {
-                snapshot.forEach(doc => {
-                    displayEvent(doc.data());
-                });
-            }
-        }).catch(error => {
-            console.error("Error applying filters: ", error);
-        });
+    document.getElementById("prevMonth").addEventListener("click", () => {
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        fetchEventsForMonth();
     });
 
-    fetchEvents();
+    document.getElementById("nextMonth").addEventListener("click", () => {
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        fetchEventsForMonth();
+    });
+
+    fetchEventsForMonth();
 });
