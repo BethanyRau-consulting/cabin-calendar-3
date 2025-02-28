@@ -1,14 +1,13 @@
-// Ensure Firebase is loaded before using Firestore
-if (typeof firebase === "undefined") {
-    console.error("Firebase SDK not loaded. Ensure Firebase scripts are included in your HTML.");
-} else {
-    console.log("✅ Firebase SDK loaded successfully.");
-}
-
-// Initialize Firestore
-const db = firebase.firestore();
-
 document.addEventListener("DOMContentLoaded", () => {
+    if (typeof firebase === "undefined") {
+        console.error("❌ Firebase SDK not loaded. Ensure scripts are included in `events.html`.");
+        return;
+    }
+
+    console.log("✅ Firebase SDK detected. Initializing Firestore...");
+
+    // Initialize Firestore
+    const db = firebase.firestore();
     const eventList = document.getElementById("eventList");
     const monthName = document.getElementById("monthName");
     let currentDate = new Date();
@@ -34,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             })
             .catch(error => {
-                console.error("Error fetching events: ", error);
+                console.error("❌ Error fetching events: ", error);
             });
     }
 
