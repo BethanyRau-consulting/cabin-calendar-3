@@ -1,19 +1,32 @@
-// Ensure Firebase is initialized before using Firestore
+// Ensure Firebase is available before using it
 if (typeof firebase === "undefined") {
     console.error("Firebase SDK not loaded. Ensure Firebase scripts are included in your HTML.");
 } else {
     console.log("✅ Firebase SDK loaded successfully.");
 }
 
-// Initialize Firebase Firestore
+// Firebase Configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyB9rOOglOPQ0pzOwuFq-P_Puo9lroDPU7A",
+    authDomain: "cabincalendar3.firebaseapp.com",
+    projectId: "cabincalendar3",
+    storageBucket: "cabincalendar3.appspot.com",
+    messagingSenderId: "373184478865",
+    appId: "1:373184478865:web:cf1e0e816be89107538930"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
 document.addEventListener("DOMContentLoaded", () => {
     let currentDate = new Date();
-    const monthName = document.getElementById("monthName");
-    const calendarGrid = document.getElementById("calendarGrid");
+    let today = new Date();
+    let selectedEventId = null;
 
     function renderCalendar() {
+        const monthName = document.getElementById("monthName");
+        const calendarGrid = document.getElementById("calendarGrid");
         const firstDayIndex = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
         const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
         const prevLastDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0).getDate();
@@ -21,7 +34,6 @@ document.addEventListener("DOMContentLoaded", () => {
         monthName.textContent = currentDate.toLocaleDateString("en-US", { month: "long", year: "numeric" });
         calendarGrid.innerHTML = "";
 
-        // Add previous month's trailing days
         for (let i = firstDayIndex; i > 0; i--) {
             const day = document.createElement("div");
             day.classList.add("day", "prev-month");
@@ -29,7 +41,6 @@ document.addEventListener("DOMContentLoaded", () => {
             calendarGrid.appendChild(day);
         }
 
-        // Add current month's days
         for (let i = 1; i <= lastDay; i++) {
             const day = document.createElement("div");
             day.classList.add("day");
@@ -49,7 +60,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 const eventDate = event.start;
                 document.querySelectorAll(`.day[data-date="${eventDate}"]`).forEach(dayElement => {
                     dayElement.style.backgroundColor = event.color || "#ffcc00";
-                    dayElement.title = event.title;
+                    if (!dayElement.querySelector('.event-title')) {
+                        let titleDiv = document.createElement('div');
+                        titleDiv.classList.add('event-title');
+                        titleDiv.textContent = event.title;
+                        dayElement.appendChild(titleDiv);
+                    }
                 });
             });
         }).catch(error => {
