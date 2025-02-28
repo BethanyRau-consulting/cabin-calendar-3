@@ -1,7 +1,3 @@
-if (typeof firebase === "undefined") {
-    console.error("Firebase SDK not loaded. Make sure you have included Firebase scripts in your HTML file.");
-}
-
 // Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyB9rOOglOPQ0pzOwuFq-P_Puo9lroDPU7A",
