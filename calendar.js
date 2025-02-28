@@ -146,5 +146,16 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("cancelEvent").addEventListener("click", closeEventModal);
     document.getElementById("deleteEvent").addEventListener("click", deleteEvent);
 
+    document.getElementById("prevBtn").addEventListener("click", () => {
+    currentDate.setMonth(currentDate.getMonth() - 1);
+    renderCalendar();
+});
+
+document.getElementById("nextBtn").addEventListener("click", () => {
+    currentDate.setMonth(currentDate.getMonth() + 1);
+    renderCalendar();
+});
+
+
     renderCalendar();
 });
