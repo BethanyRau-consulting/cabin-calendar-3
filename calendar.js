@@ -38,7 +38,7 @@ function renderCalendar() {
         calendarGrid.appendChild(day);
     }
 
-    // ✅ Fetch events from Firestore again
+    // Fetch events from Firestore again
     db.collection("events").get().then(snapshot => {
         snapshot.forEach(doc => {
             const event = doc.data();
@@ -125,6 +125,7 @@ function saveEvent() {
 function deleteEvent() {
     if (selectedEventId) {
         db.collection("events").doc(selectedEventId).delete().then(() => {
+            selectedEventId = null; // ✅ Reset event ID
             renderCalendar();
             closeEventModal();
         }).catch(error => {
