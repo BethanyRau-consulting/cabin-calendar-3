@@ -2,22 +2,25 @@
 if (typeof firebase === "undefined") {
     console.error("Firebase SDK not loaded. Ensure Firebase scripts are included in your HTML.");
 } else {
-    console.log("Firebase SDK loaded successfully.");
+    console.log(" Firebase SDK loaded successfully.");
 }
 
-//  Firebase Configuration
+//  Correct Firebase Configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyB9rOOglOPQ0pzOwuFq-P_Puo9lroDPU7A",
-  authDomain: "cabincalendar3.firebaseapp.com",
-  projectId: "cabincalendar3",
-  storageBucket: "cabincalendar3.firebasestorage.app",
-  messagingSenderId: "373184478865",
-  appId: "1:373184478865:web:cf1e0e816be89107538930"
+    apiKey: "AIzaSyB9rOOglOPQ0pzOwuFq-P_Puo9lroDPU7A",
+    authDomain: "cabincalendar3.firebaseapp.com",
+    projectId: "cabincalendar3",
+    storageBucket: "cabincalendar3.appspot.com", // 
+    messagingSenderId: "373184478865",
+    appId: "1:373184478865:web:cf1e0e816be89107538930"
 };
 
-//  Initialize Firebase & Firestore
-const app = initializeApp(firebaseConfig);
+//  Initialize Firebase (Fixing `initializeApp` Error)
+firebase.initializeApp(firebaseConfig);
+
+//  Initialize Firestore
 const db = firebase.firestore();
+
 
 document.addEventListener("DOMContentLoaded", () => {
     let currentDate = new Date();
