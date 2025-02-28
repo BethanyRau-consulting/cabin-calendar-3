@@ -1,6 +1,8 @@
- document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
             let currentDate = new Date();
             let today = new Date();
+            const db = firebase.firestore();
+            let selectedDate = null;
 
             function renderCalendar() {
                 const monthName = document.getElementById("monthName");
@@ -9,38 +11,66 @@
                 currentDate.setDate(1);
                 const firstDayIndex = currentDate.getDay();
                 const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
-                const prevLastDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0).getDate();
-
+                
                 monthName.textContent = currentDate.toLocaleDateString("en-US", { month: "long", year: "numeric" });
                 calendarGrid.innerHTML = "";
 
-                for (let i = firstDayIndex; i > 0; i--) {
-                    calendarGrid.innerHTML += `<div class="day" style="color: lightgray;">${prevLastDay - i + 1}</div>`;
-                }
-
                 for (let i = 1; i <= lastDay; i++) {
-                    calendarGrid.innerHTML += `<div class="day">${i}</div>`;
+                    let day = document.createElement("div");
+                    day.classList.add("day");
+                    day.textContent = i;
+                    day.addEventListener("click", () => openEventModal(i));
+                    calendarGrid.appendChild(day);
                 }
             }
 
-            function prevMonth() {
+            function openEventModal(day) {
+                selectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+                document.getElementById("eventModal").style.display = "block";
+            }
+
+            function closeEventModal() {
+                document.getElementById("eventModal").style.display = "none";
+            }
+
+            function saveEvent() {
+                const title = document.getElementById("eventTitle").value;
+                const start = document.getElementById("eventStart").value;
+                const end = document.getElementById("eventEnd").value;
+                const details = document.getElementById("eventDetails").value;
+                const color = document.getElementById("eventColor").value;
+
+                db.collection("events").add({
+                    title, start, end, details, color, date: selectedDate
+                }).then(() => {
+                    renderCalendar();
+                    closeEventModal();
+                });
+            }
+
+            function deleteEvent() {
+                // Logic to find and delete event from Firestore
+                closeEventModal();
+            }
+
+            document.getElementById("prevBtn").addEventListener("click", () => {
                 currentDate.setMonth(currentDate.getMonth() - 1);
                 renderCalendar();
-            }
+            });
 
-            function nextMonth() {
+            document.getElementById("nextBtn").addEventListener("click", () => {
                 currentDate.setMonth(currentDate.getMonth() + 1);
                 renderCalendar();
-            }
+            });
 
-            function goToCurrentMonth() {
+            document.getElementById("todayBtn").addEventListener("click", () => {
                 currentDate = new Date(today.getFullYear(), today.getMonth(), 1);
                 renderCalendar();
-            }
+            });
 
-            document.getElementById("prevBtn").addEventListener("click", prevMonth);
-            document.getElementById("nextBtn").addEventListener("click", nextMonth);
-            document.getElementById("todayBtn").addEventListener("click", goToCurrentMonth);
+            document.getElementById("saveEvent").addEventListener("click", saveEvent);
+            document.getElementById("cancelEvent").addEventListener("click", closeEventModal);
+            document.getElementById("deleteEvent").addEventListener("click", deleteEvent);
 
             renderCalendar();
         });
