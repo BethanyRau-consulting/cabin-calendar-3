@@ -1,37 +1,21 @@
-// ✅ Make sure Firebase is available before using it
 if (typeof firebase === "undefined") {
     console.error("Firebase SDK not loaded. Make sure you have included Firebase scripts in your HTML file.");
 }
 
-// ✅ Firebase configuration (replace with actual values from Firebase Console)
+// Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyB9rOOglOPQ0pzOwuFq-P_Puo9lroDPU7A",
     authDomain: "cabincalendar3.firebaseapp.com",
     projectId: "cabincalendar3",
-    storageBucket: "cabincalendar3.appspot.com", // ✅ Fixed storage bucket
+    storageBucket: "cabincalendar3.firebasestorage.app",
     messagingSenderId: "373184478865",
     appId: "1:373184478865:web:cf1e0e816be89107538930"
 };
 
-// ✅ Initialize Firebase
+//  Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
-// ✅ Initialize Firestore
-const db = firebase.firestore();
-
-const firebaseConfig = {
-    apiKey: "AIzaSyB9rOOglOPQ0pzOwuFq-P_Puo9lroDPU7A",
-    authDomain: "cabincalendar3.firebaseapp.com",
-    projectId: "cabincalendar3",
-    storageBucket: "cabincalendar3.appspot.com", // ✅ Fixed this
-    messagingSenderId: "373184478865",
-    appId: "1:373184478865:web:cf1e0e816be89107538930"
-};
-
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-
-// Initialize Firestore
+//  Initialize Firestore
 const db = firebase.firestore();
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -59,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
             calendarGrid.appendChild(day);
         }
 
-        // ✅ Always fetch latest events
+        //  Always fetch latest events
         db.collection("events").get().then(snapshot => {
             snapshot.forEach(doc => {
                 const event = doc.data();
