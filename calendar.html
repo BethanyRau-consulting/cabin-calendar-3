@@ -27,6 +27,18 @@
         </div>
         <div class="grid" id="calendarGrid"></div>
     </div>
+    <div class="modal" id="eventModal">
+        <h3>Add/Edit Event</h3>
+        <input type="text" id="eventTitle" placeholder="Event Title">
+        <input type="date" id="eventStart">
+        <input type="date" id="eventEnd">
+        <textarea id="eventDetails" placeholder="Event Details"></textarea>
+        <label for="eventColor">Choose a color:</label>
+        <input type="color" id="eventColor">
+        <button id="saveEvent">Save</button>
+        <button id="cancelEvent">Cancel</button>
+        <button id="deleteEvent">Delete</button>
+    </div>
     <script src="calendar.js"></script>
 </body>
 </html>
