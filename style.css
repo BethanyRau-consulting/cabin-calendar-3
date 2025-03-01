@@ -19,7 +19,7 @@ nav {
 nav a {
     color: white;
     text-decoration: none;
-    margin: 0 20px;
+    margin: 0 15px;
     font-size: 18px;
     font-weight: bold;
     transition: color 0.3s ease-in-out;
@@ -29,29 +29,42 @@ nav a:hover {
     color: #ffd700;
 }
 
-/* Page Headers */
-h1 {
-    color: #222;
-    margin-top: 20px;
-    font-size: 32px;
-    font-weight: 600;
+/* Forms & Filtering */
+form, .filter-container {
+    width: 90%;
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
 }
 
-h2 {
-    font-size: 24px;
-    font-weight: 500;
+form label, .filter-container label {
+    font-weight: bold;
+    display: block;
     margin-top: 10px;
+    text-align: left;
+}
+
+form input, form textarea, form select, .filter-container select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
 }
 
 /* Buttons */
 button {
-    padding: 10px 15px;
+    padding: 8px 12px;
     background-color: #0073e6;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 14px;
     transition: background 0.3s ease-in-out;
 }
 
@@ -59,14 +72,8 @@ button:hover {
     background-color: #005bb5;
 }
 
-/* Forms */
-input, textarea, select {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
+.filter-container button {
+    margin-top: 10px;
 }
 
 /* Responsive Design */
@@ -113,11 +120,11 @@ input, textarea, select {
 }
 
 .day {
-    padding: 20px;
+    padding: 15px;
     border-radius: 5px;
     background: white;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-    font-size: 1.2em;
+    font-size: 1.1em;
     cursor: pointer;
     position: relative;
     transition: background 0.3s ease-in-out;
@@ -138,44 +145,14 @@ input, textarea, select {
     border-radius: 3px;
 }
 
-/* Modal */
-.modal {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
-    max-width: 500px;
-    width: 90%;
-}
-
-.modal label {
-    font-weight: bold;
-    display: block;
-    margin-top: 10px;
-}
-
-.modal input, .modal textarea, .modal select {
-    display: block;
-    width: 100%;
-    margin: 5px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 8px;
-    font-size: 16px;
-}
-
 /* Event List */
 .event-list {
-    width: 80%;
+    width: 90%;
+    max-width: 600px;
     margin: auto;
     text-align: left;
     background: white;
-    padding: 20px;
+    padding: 15px;
     border-radius: 10px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
@@ -207,7 +184,8 @@ input, textarea, select {
 
 /* Journal Form */
 .journal-form {
-    width: 50%;
+    width: 90%;
+    max-width: 500px;
     margin: 20px auto;
     padding: 15px;
     background: white;
@@ -218,13 +196,13 @@ input, textarea, select {
 .journal-form input, .journal-form textarea {
     width: 100%;
     margin: 10px 0;
-    padding: 12px;
+    padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
 }
 
 .journal-form button {
-    padding: 10px;
+    padding: 8px;
     margin: 5px;
     border: none;
     border-radius: 5px;
@@ -243,7 +221,8 @@ input, textarea, select {
 
 /* Journal Entries */
 .journal-entry {
-    width: 50%;
+    width: 90%;
+    max-width: 500px;
     margin: 15px auto;
     padding: 15px;
     background: white;
