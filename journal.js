@@ -1,12 +1,18 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // ✅ Initialize Firestore
+    if (typeof firebase === "undefined") {
+        console.error("❌ Firebase SDK not loaded. Ensure scripts are included in `journal.html`.");
+        return;
+    }
+
+    console.log("✅ Firebase SDK detected. Initializing Firestore...");
+
+    // ✅ Initialize Firestore using `firebase.firestore()`
     const db = firebase.firestore();
     const journalEntriesDiv = document.getElementById("journalEntries");
 
-    // ✅ Fetch journal entries from Firestore (Chronological Order)
     function fetchEntries() {
         db.collection("journal").orderBy("date", "asc").get().then(snapshot => {
-            journalEntriesDiv.innerHTML = ""; // Clear existing entries
+            journalEntriesDiv.innerHTML = "";
             snapshot.forEach(doc => {
                 displayEntry(doc.id, doc.data());
             });
@@ -15,7 +21,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ✅ Display a journal entry
     function displayEntry(id, data) {
         const entryDiv = document.createElement("div");
         entryDiv.classList.add("journal-entry");
@@ -28,13 +33,11 @@ document.addEventListener("DOMContentLoaded", () => {
         journalEntriesDiv.appendChild(entryDiv);
     }
 
-    // ✅ Format date (YYYY-MM-DD → MM/DD/YYYY)
     function formatDate(date) {
         const d = new Date(date);
         return d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
     }
 
-    // ✅ Add a new journal entry to Firestore
     function submitEntry() {
         const name = document.getElementById("journalName").value;
         const date = document.getElementById("journalDate").value;
@@ -51,7 +54,6 @@ document.addEventListener("DOMContentLoaded", () => {
             details,
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         }).then(() => {
-            console.log("✅ Journal entry added!");
             clearForm();
             fetchEntries();
         }).catch(error => {
@@ -59,14 +61,12 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ✅ Clear form after submission
     function clearForm() {
         document.getElementById("journalName").value = "";
         document.getElementById("journalDate").value = "";
         document.getElementById("journalDetails").value = "";
     }
 
-    // ✅ Edit a journal entry
     function editEntry(id, name, date, details) {
         document.getElementById("journalName").value = name;
         document.getElementById("journalDate").value = date;
@@ -78,7 +78,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 date,
                 details
             }).then(() => {
-                console.log("✅ Journal entry updated!");
                 clearForm();
                 fetchEntries();
             }).catch(error => {
@@ -87,11 +86,9 @@ document.addEventListener("DOMContentLoaded", () => {
         };
     }
 
-    // ✅ Delete a journal entry from Firestore
     function deleteEntry(id) {
         if (confirm("❌ Are you sure you want to delete this entry?")) {
             db.collection("journal").doc(id).delete().then(() => {
-                console.log("✅ Journal entry deleted!");
                 fetchEntries();
             }).catch(error => {
                 console.error("❌ Error deleting entry:", error);
@@ -99,10 +96,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // ✅ Attach event listeners to buttons
     document.getElementById("submitEntry").addEventListener("click", submitEntry);
     document.getElementById("cancelEntry").addEventListener("click", clearForm);
 
-    // ✅ Fetch and display entries when the page loads
     fetchEntries();
 });
