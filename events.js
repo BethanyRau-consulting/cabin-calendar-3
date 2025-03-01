@@ -111,20 +111,21 @@ function deleteEvent(id) {
     }
 }
 
-    function displayEvent(id, data) {
-        const eventDiv = document.createElement("div");
-        eventDiv.classList.add("event-entry");
-        eventDiv.innerHTML = `
-            <h3>${data.title} - ${formatDate(data.start)}</h3>
-            <p><strong>End Date:</strong> ${data.end ? formatDate(data.end) : "N/A"}</p>
-            <p><strong>Time:</strong> ${data.startTime || "N/A"} - ${data.endTime || "N/A"}</p>
-            <p><strong>Type:</strong> ${eventTypeMap[data.type] || "Unknown Type"}</p>
-            <p><strong>Details:</strong> ${data.details || "No details provided."}</p>
-            <button onclick="editEvent('${id}', '${data.title}', '${data.start}', '${data.end || ''}', '${data.startTime || ''}', '${data.endTime || ''}', '${data.type}', '${data.details.replace(/'/g, "&#39;")}')">Edit</button>
-            <button onclick="deleteEvent('${id}')">Delete</button>
-        `;
-        eventListDiv.appendChild(eventDiv);
-    }
+function displayEvent(id, data) {
+    const eventDiv = document.createElement("div");
+    eventDiv.classList.add("event-entry");
+    eventDiv.innerHTML = `
+        <h3>${data.title} - ${formatDate(data.start)}</h3>
+        <p><strong>End Date:</strong> ${data.end ? formatDate(data.end) : "N/A"}</p>
+        <p><strong>Time:</strong> ${data.startTime || "N/A"} - ${data.endTime || "N/A"}</p>
+        <p><strong>Type:</strong> ${eventTypeMap[data.type] || "Unknown Type"}</p>
+        <p><strong>Details:</strong> ${data.details || "No details provided."}</p>
+        <button onclick="editEvent('${id}', '${data.title}', '${data.start}', '${data.end || ''}', '${data.startTime || ''}', '${data.endTime || ''}', '${data.type}', '${data.details.replace(/'/g, "&#39;")}')">Edit</button>
+        <button onclick="deleteEvent('${id}')">Delete</button>
+    `;
+    eventListDiv.appendChild(eventDiv);
+}
+
 
     function formatDate(date) {
         const d = new Date(date + "T00:00:00");
