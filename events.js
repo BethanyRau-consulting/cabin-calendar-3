@@ -1,141 +1,114 @@
 document.addEventListener("DOMContentLoaded", () => {
-    if (!firebase.apps.length) {
+    if (typeof firebase === "undefined") {
         console.error("❌ Firebase SDK not loaded. Ensure scripts are included in `events.html`.");
         return;
     }
 
     console.log("✅ Firebase SDK detected. Initializing Firestore...");
     const db = firebase.firestore();
-    const eventListDiv = document.getElementById("eventList");
+    const eventList = document.getElementById("eventList");
 
-
-    const filterMonthYear = document.getElementById("filterMonthYear");
-    const filterEventsBtn = document.getElementById("filterEvents");
-
-    let selectedEventId = null;
-
-    // 🔹 Map event colors to their names
-    const eventTypeMap = {
-    "None": "Open",
-    "Green": "Family Time",
-    "Yellow": "Family Time (Visitors Welcome!)",
-    "Red": "Golf Weekend",
-    "Orange": "Hunting",
-    "Blue": "Work Weekend",
-    "Purple": "Trout Weekend"
-};
-
-
-    function fetchEvents(filterTypeValue = "", filterMonthValue = "") {
-        let query = db.collection("events");
-
-
-        if (filterMonthValue) {
-            query = query.where("start", ">=", `${filterMonthValue}-01`)
-                         .where("start", "<=", `${filterMonthValue}-31`);
-        }
-
-        query.orderBy("start", "asc").get()
-            .then(snapshot => {
-                eventListDiv.innerHTML = "";
-                if (snapshot.empty) {
-                    eventListDiv.innerHTML = "<p>No events found.</p>";
-                } else {
-                    snapshot.forEach(doc => {
-                        displayEvent(doc.id, doc.data());
-                    });
-                }
-            })
-            .catch(error => {
-                console.error("❌ Error fetching events:", error);
-            });
+    function fetchEvents() {
+        db.collection("events").orderBy("start", "asc").get().then(snapshot => {
+            eventList.innerHTML = "";
+            if (snapshot.empty) {
+                eventList.innerHTML = "<p>No events found.</p>";
+            } else {
+                snapshot.forEach(doc => {
+                    displayEvent(doc.id, doc.data());
+                });
+            }
+        }).catch(error => {
+            console.error("❌ Error fetching events:", error);
+        });
     }
 
     function displayEvent(id, data) {
-        const eventDiv = document.createElement("div");
-        eventDiv.classList.add("event-entry");
-        eventDiv.innerHTML = `
-            <h3>${data.title} - ${formatDate(data.start)}</h3>
-            <p><strong>End Date:</strong> ${data.end ? formatDate(data.end) : "N/A"}</p>
-            <p><strong>Time:</strong> ${data.startTime || "N/A"} - ${data.endTime || "N/A"}</p>
-            <p><strong>Type:</strong> ${eventTypeMap[data.type] || "Unknown Type"}</p>
-            <p><strong>Details:</strong> ${data.details || "No details provided."}</p>
-            <button onclick="editEvent('${id}', '${data.title}', '${data.start}', '${data.end || ''}', '${data.startTime || ''}', '${data.endTime || ''}', '${data.type}', '${data.details.replace(/'/g, "&#39;")}')">Edit</button>
+        const eventItem = document.createElement("div");
+        eventItem.classList.add("event-item");
+        eventItem.innerHTML = `
+            <h3>${data.title}</h3>
+            <p><strong>Date:</strong> ${formatDate(data.start)}</p>
+            <p><strong>Type:</strong> ${getEventType(data.color)}</p>
+            <button onclick="editEvent('${id}', '${data.title}', '${data.start}', '${data.color}')">Edit</button>
             <button onclick="deleteEvent('${id}')">Delete</button>
         `;
-        eventListDiv.appendChild(eventDiv);
+        eventList.appendChild(eventItem);
     }
 
     function formatDate(date) {
-        const d = new Date(date + "T00:00:00");
+        const d = new Date(date);
         return d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
     }
 
-    // Ensure editEvent function is globally accessible
-    window.editEvent = function (id, title, start, end, startTime, endTime, type, details) {
-        document.getElementById("eventTitle").value = title;
-        document.getElementById("eventStart").value = start;
-        document.getElementById("eventEnd").value = end || "";
-        document.getElementById("eventStartTime").value = startTime || "";
-        document.getElementById("eventEndTime").value = endTime || "";
-        document.getElementById("eventType").value = type;
-        document.getElementById("eventDetails").value = details || "";
-        document.getElementById("submitEvent").dataset.eventId = id; // Store event ID for updating
-    };
+    function getEventType(color) {
+        const eventTypes = {
+            "None": "Open",
+            "Green": "Family Time",
+            "Yellow": "Family Time (Visitors Welcome!)",
+            "Red": "Golf Weekend",
+            "Orange": "Hunting",
+            "Blue": "Work Weekend",
+            "Purple": "Trout Weekend"
+        };
+        return eventTypes[color] || "Unknown Type";
+    }
 
-    // Ensure deleteEvent function is globally accessible
-    window.deleteEvent = function (id) {
+    function editEvent(id, title, date, color) {
+        document.getElementById("eventTitle").value = title;
+        document.getElementById("eventDate").value = date;
+        document.getElementById("eventType").value = color;
+
+        document.getElementById("eventForm").onsubmit = (e) => {
+            e.preventDefault();
+            const updatedTitle = document.getElementById("eventTitle").value;
+            const updatedDate = document.getElementById("eventDate").value;
+            const updatedColor = document.getElementById("eventType").value;
+
+            db.collection("events").doc(id).update({
+                title: updatedTitle,
+                start: updatedDate,
+                color: updatedColor
+            }).then(() => {
+                fetchEvents();
+                document.getElementById("eventForm").reset();
+            }).catch(error => {
+                console.error("❌ Error updating event:", error);
+            });
+        };
+    }
+
+    function deleteEvent(id) {
         if (confirm("❌ Are you sure you want to delete this event?")) {
             db.collection("events").doc(id).delete().then(() => {
-                console.log("✅ Event deleted!");
                 fetchEvents();
             }).catch(error => {
                 console.error("❌ Error deleting event:", error);
             });
         }
-    };
-
-document.getElementById("submitEvent").addEventListener("click", () => {
-    const id = document.getElementById("submitEvent").dataset.eventId;
-    const title = document.getElementById("eventTitle").value;
-    const start = document.getElementById("eventStart").value;
-    const end = document.getElementById("eventEnd").value;
-    const startTime = document.getElementById("eventStartTime").value;
-    const endTime = document.getElementById("eventEndTime").value;
-    const type = document.getElementById("eventType").value;
-    const details = document.getElementById("eventDetails").value;
-
-    if (!title || !start) {
-        alert("⚠️ Event title and start date are required!");
-        return;
     }
 
-    const eventData = {
-        title, start, end, startTime, endTime, type, details,
-        color: type // Store the selected type as color
-    };
+    document.getElementById("eventForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const title = document.getElementById("eventTitle").value;
+        const date = document.getElementById("eventDate").value;
+        const color = document.getElementById("eventType").value;
 
-    if (id) {
-        db.collection("events").doc(id).update(eventData).then(() => {
-            console.log("✅ Event updated!");
-            document.getElementById("submitEvent").dataset.eventId = ""; // Reset
+        if (!title || !date) {
+            alert("⚠️ Title and date are required!");
+            return;
+        }
+
+        db.collection("events").add({
+            title,
+            start: date,
+            color
+        }).then(() => {
             fetchEvents();
-        }).catch(error => {
-            console.error("❌ Error updating event:", error);
-        });
-    } else {
-        db.collection("events").add(eventData).then(() => {
-            console.log("✅ Event added!");
-            fetchEvents();
+            document.getElementById("eventForm").reset();
         }).catch(error => {
             console.error("❌ Error adding event:", error);
         });
-    }
-});
-
-
-    filterEventsBtn.addEventListener("click", () => {
-        fetchEvents(filterType.value, filterMonthYear.value);
     });
 
     fetchEvents();
