@@ -43,32 +43,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ✅ Add a new journal entry to Firestore
     function submitEntry(event) {
-        event.preventDefault(); // 🚀 Prevent form submission from refreshing page
+    event.preventDefault(); // 🚀 Prevent form from refreshing
 
-        const name = document.getElementById("entryName").value;
-        const date = document.getElementById("entryDate").value;
-        const details = document.getElementById("entryDetails").value;
+    const name = document.getElementById("entryName").value;
+    const date = document.getElementById("entryDate").value;
+    const details = document.getElementById("entryDetails").value;
 
-        if (!name || !date || !details) {
-            alert("⚠️ All fields are required!");
-            return;
-        }
-
-        console.log("📌 Adding journal entry:", { name, date, details });
-
-        db.collection("journal").add({
-            name,
-            date,
-            details,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        }).then(() => {
-            console.log("✅ Journal entry successfully added to Firestore!");
-            clearForm();
-            fetchEntries();
-        }).catch(error => {
-            console.error("❌ Error adding entry:", error);
-        });
+    if (!name || !date || !details) {
+        alert("⚠️ All fields are required!");
+        return;
     }
+
+    console.log("📌 Attempting to add journal entry:", { name, date, details });
+
+    // ✅ Debug: Check if Firestore is available before writing
+    if (!firebase.firestore) {
+        console.error("❌ Firestore is not initialized!");
+        return;
+    }
+
+    db.collection("journal").add({
+        name,
+        date,
+        details,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(() => {
+        console.log("✅ Journal entry successfully added to Firestore!");
+        clearForm();
+        fetchEntries();
+    }).catch(error => {
+        console.error("❌ Error adding entry:", error);
+    });
+}
+
 
     // ✅ Clear form after submission
     function clearForm() {
