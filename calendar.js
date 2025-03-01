@@ -47,54 +47,52 @@ document.addEventListener("DOMContentLoaded", () => {
         fetchEvents();
     }
 
-function fetchEvents() {
-    db.collection("events").get().then(snapshot => {
-        snapshot.forEach(doc => {
-            const event = doc.data();
-            if (!event.start) return;
+    function fetchEvents() {
+        db.collection("events").get().then(snapshot => {
+            snapshot.forEach(doc => {
+                const event = doc.data();
+                if (!event.start) return;
 
-            // ✅ Fix: Adjust event date to ensure correct display
-            const startDate = new Date(event.start + "T00:00:00");
-            const endDate = event.end ? new Date(event.end + "T00:00:00") : new Date(event.start + "T00:00:00");
+                const startDate = new Date(event.start + "T00:00:00");
+                const endDate = event.end ? new Date(event.end + "T00:00:00") : new Date(event.start + "T00:00:00");
 
-            let current = new Date(startDate);
+                let current = new Date(startDate);
 
-            while (current <= endDate) {
-                const eventDateStr = `${current.getFullYear()}-${(current.getMonth() + 1).toString().padStart(2, '0')}-${current.getDate().toString().padStart(2, '0')}`;
+                while (current <= endDate) {
+                    const eventDateStr = `${current.getFullYear()}-${(current.getMonth() + 1).toString().padStart(2, '0')}-${current.getDate().toString().padStart(2, '0')}`;
 
-                document.querySelectorAll(`.day[data-date="${eventDateStr}"]`).forEach(dayElement => {
-                    dayElement.style.backgroundColor = event.color || "#ffcc00";
+                    document.querySelectorAll(`.day[data-date="${eventDateStr}"]`).forEach(dayElement => {
+                        dayElement.style.backgroundColor = event.color || "#ffcc00";
 
-                    let titleDiv = dayElement.querySelector('.event-title');
-                    if (!titleDiv) {
-                        titleDiv = document.createElement('div');
-                        titleDiv.classList.add('event-title');
-                        dayElement.appendChild(titleDiv);
-                    }
-                    titleDiv.textContent = event.title; // ✅ Display event title instead of type
-                    dayElement.addEventListener("click", () => openEventModal(eventDateStr, doc.id, event));
-                });
+                        let titleDiv = dayElement.querySelector('.event-title');
+                        if (!titleDiv) {
+                            titleDiv = document.createElement('div');
+                            titleDiv.classList.add('event-title');
+                            dayElement.appendChild(titleDiv);
+                        }
+                        titleDiv.textContent = event.title; // ✅ Display event title instead of type
+                        dayElement.addEventListener("click", () => openEventModal(eventDateStr, doc.id, event));
+                    });
 
-                current.setDate(current.getDate() + 1);
-            }
+                    current.setDate(current.getDate() + 1);
+                }
+            });
+        }).catch(error => {
+            console.error("❌ Error loading events:", error);
         });
-    }).catch(error => {
-        console.error("❌ Error loading events:", error);
-    });
-}
+    }
 
-   function openEventModal(date, eventId = null, eventData = {}) {
-    selectedEventId = eventId;
-    document.getElementById("eventStart").value = date;
-    document.getElementById("eventTitle").value = eventData.title || "";
-    document.getElementById("eventEnd").value = eventData.end || "";
-    document.getElementById("eventStartTime").value = eventData.startTime || "";
-    document.getElementById("eventEndTime").value = eventData.endTime || "";
-    document.getElementById("eventType").value = eventData.color || "None";
-    document.getElementById("eventDetails").value = eventData.details || "";
-    document.getElementById("eventModal").style.display = "block";
-}
-
+    function openEventModal(date, eventId = null, eventData = {}) {
+        selectedEventId = eventId;
+        document.getElementById("eventStart").value = date;
+        document.getElementById("eventTitle").value = eventData.title || "";
+        document.getElementById("eventEnd").value = eventData.end || "";
+        document.getElementById("eventStartTime").value = eventData.startTime || "";
+        document.getElementById("eventEndTime").value = eventData.endTime || "";
+        document.getElementById("eventType").value = eventData.color || "None";
+        document.getElementById("eventDetails").value = eventData.details || "";
+        document.getElementById("eventModal").style.display = "block";
+    }
 
     function closeEventModal() {
         document.getElementById("eventModal").style.display = "none";
