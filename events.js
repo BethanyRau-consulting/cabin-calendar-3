@@ -50,6 +50,66 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error("❌ Error fetching events:", error);
         });
     }
+function editEvent(id, title, start, end, startTime, endTime, type, details) {
+    document.getElementById("eventTitle").value = title;
+    document.getElementById("eventStart").value = start;
+    document.getElementById("eventEnd").value = end || "";
+    document.getElementById("eventStartTime").value = startTime || "";
+    document.getElementById("eventEndTime").value = endTime || "";
+    document.getElementById("eventType").value = type;
+    document.getElementById("eventDetails").value = details || "";
+    document.getElementById("submitEvent").dataset.eventId = id; // Store event ID for updating
+}
+
+document.getElementById("submitEvent").addEventListener("click", () => {
+    const id = document.getElementById("submitEvent").dataset.eventId;
+    const title = document.getElementById("eventTitle").value;
+    const start = document.getElementById("eventStart").value;
+    const end = document.getElementById("eventEnd").value;
+    const startTime = document.getElementById("eventStartTime").value;
+    const endTime = document.getElementById("eventEndTime").value;
+    const type = document.getElementById("eventType").value;
+    const details = document.getElementById("eventDetails").value;
+
+    if (!title || !start) {
+        alert("⚠️ Event title and start date are required!");
+        return;
+    }
+
+    if (id) {
+        // Update existing event
+        db.collection("events").doc(id).update({
+            title, start, end, startTime, endTime, type, details
+        }).then(() => {
+            console.log("✅ Event updated!");
+            document.getElementById("submitEvent").dataset.eventId = ""; // Reset
+            fetchEvents();
+        }).catch(error => {
+            console.error("❌ Error updating event:", error);
+        });
+    } else {
+        // Add new event
+        db.collection("events").add({
+            title, start, end, startTime, endTime, type, details
+        }).then(() => {
+            console.log("✅ Event added!");
+            fetchEvents();
+        }).catch(error => {
+            console.error("❌ Error adding event:", error);
+        });
+    }
+});
+
+function deleteEvent(id) {
+    if (confirm("❌ Are you sure you want to delete this event?")) {
+        db.collection("events").doc(id).delete().then(() => {
+            console.log("✅ Event deleted!");
+            fetchEvents();
+        }).catch(error => {
+            console.error("❌ Error deleting event:", error);
+        });
+    }
+}
 
     function displayEvent(id, data) {
         const eventDiv = document.createElement("div");
