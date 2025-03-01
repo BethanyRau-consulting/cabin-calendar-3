@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Events List</title> 
-    <link rel="stylesheet" href="style.css"> 
+    <title>Calendar</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Events List</h1>
+    <h1>Calendar</h1>
     <nav>
         <a href="index.html">Home</a> |
         <a href="calendar.html">Calendar</a> |
@@ -16,25 +16,23 @@
         <a href="photos.html">Pictures</a>
     </nav>
 
-    <h2 id="monthName"></h2>
-    <button id="prevMonth">Previous Month</button>
-    <button id="nextMonth">Next Month</button>
+    <div class="calendar">
+        <div class="header">
+            <button id="prevBtn">&#9665; Previous</button>
+            <h2 id="monthName"></h2>
+            <button id="nextBtn">Next &#9655;</button>
+        </div>
+        <button id="todayBtn">Today</button>
+        <div class="days">
+            <div>Sunday</div><div>Monday</div><div>Tuesday</div><div>Wednesday</div><div>Thursday</div><div>Friday</div><div>Saturday</div>
+        </div>
+        <div class="grid" id="calendarGrid"></div>
+    </div>
 
-    <div class="event-list" id="eventList"></div>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-
-
-    <!-- 🔥 Initialize Firebase -->
-    <!-- ✅ Firebase Initialization -->
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    if (typeof firebase === "undefined") {
-      console.error("❌ Firebase SDK not loaded. Check your script imports.");
-    } else {
-      console.log("✅ Firebase SDK loaded successfully.");
-      
+    <script>
       const firebaseConfig = {
         apiKey: "AIzaSyB9rOOglOPQ0pzOwuFq-P_Puo9lroDPU7A",
         authDomain: "cabincalendar3.firebaseapp.com",
@@ -44,13 +42,12 @@
         appId: "1:373184478865:web:cf1e0e816be89107538930"
       };
 
-      // Initialize Firebase
-      firebase.initializeApp(firebaseConfig);
-    }
-  });
-</script>
+      if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+      }
+    </script>
 
-    <!-- 🔥 Load Events JavaScript -->
-    <script src="events.js" defer></script>
+    <script src="calendar.js" defer></script>
+
 </body>
 </html>
