@@ -152,31 +152,72 @@ p {
 .event-item p strong {
     font-weight: bold;
 }
-/* Journal Entries */
-.entry {
-    background: white;
+
+/* Journal Form */
+.journal-form {
+    width: 50%;
+    margin: 20px auto;
     padding: 15px;
-    margin: 10px auto;
-    border-radius: 8px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    max-width: 500px;
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+.journal-form input, .journal-form textarea {
+    width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.journal-form button {
+    padding: 10px;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#submitEntry {
+    background-color: #28a745;
+    color: white;
+}
+
+#cancelEntry {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Journal Entries */
+.journal-entry {
+    width: 50%;
+    margin: 15px auto;
+    padding: 10px;
+    background: white;
+    border-radius: 5px;
+    border-left: 5px solid #0073e6;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
     text-align: left;
 }
 
-.entry h3 {
-    margin: 0;
-    color: #0073e6;
-}
-
-.entry p {
+.journal-entry h3 {
     margin: 5px 0;
 }
 
-.entry button {
-    background-color: red;
-    margin-right: 5px;
+.journal-entry button {
+    margin-top: 10px;
+    padding: 5px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
 }
 
-.entry button:first-of-type {
-    background-color: #0073e6;
+.journal-entry button:first-of-type {
+    background-color: #ffc107;
+}
+
+.journal-entry button:last-of-type {
+    background-color: #dc3545;
+    color: white;
 }
