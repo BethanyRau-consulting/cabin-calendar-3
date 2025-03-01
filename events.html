@@ -16,6 +16,57 @@
         <a href="photos.html">Pictures</a>
     </nav>
 
+    <h2>Add a New Event</h2>
+    <form id="eventForm" class="event-form">
+        <div class="form-group">
+            <label for="eventTitle">Title:</label>
+            <input type="text" id="eventTitle" required>
+        </div>
+
+        <div class="form-group">
+            <label for="eventStart">Start Date:</label>
+            <input type="date" id="eventStart" required>
+        </div>
+
+        <div class="form-group">
+            <label for="eventEnd">End Date:</label>
+            <input type="date" id="eventEnd">
+        </div>
+
+        <div class="form-group">
+            <label for="eventStartTime">Start Time:</label>
+            <input type="time" id="eventStartTime">
+        </div>
+
+        <div class="form-group">
+            <label for="eventEndTime">End Time:</label>
+            <input type="time" id="eventEndTime">
+        </div>
+
+        <div class="form-group">
+            <label for="eventType">Event Type:</label>
+            <select id="eventType">
+                <option value="None">Open</option>
+                <option value="Green">Family Time</option>
+                <option value="Yellow">Family Time (Visitors Welcome!)</option>
+                <option value="Red">Golf Weekend</option>
+                <option value="Orange">Hunting</option>
+                <option value="Blue">Work Weekend</option>
+                <option value="Purple">Trout Weekend</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="eventDetails">Details:</label>
+            <textarea id="eventDetails"></textarea>
+        </div>
+
+        <div class="form-buttons">
+            <button type="button" id="submitEvent">Submit</button>
+            <button type="button" id="cancelEvent">Cancel</button>
+        </div>
+    </form>
+
     <h2>Filter Events</h2>
     <div class="filter-section">
         <label for="filterType">Event Type:</label>
@@ -34,7 +85,6 @@
         <input type="month" id="filterMonthYear">
         
         <button id="filterEvents">Apply Filters</button>
-        <button id="todayBtn">Today</button>
     </div>
 
     <h2>Upcoming Events</h2>
