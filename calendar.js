@@ -58,9 +58,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 const event = doc.data();
                 const startDate = new Date(event.start);
                 const endDate = event.end ? new Date(event.end) : startDate;
-
-                for (let d = startDate; d <= endDate; d.setDate(d.getDate() + 1)) {
-                    const eventDateStr = `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`;
+                
+                let current = new Date(startDate);
+                while (current <= endDate) {
+                    const eventDateStr = `${current.getFullYear()}-${(current.getMonth() + 1).toString().padStart(2, '0')}-${current.getDate().toString().padStart(2, '0')}`;
                     document.querySelectorAll(`.day[data-date="${eventDateStr}"]`).forEach(dayElement => {
                         dayElement.style.backgroundColor = event.color || "#ffcc00";
                         if (!dayElement.querySelector('.event-title')) {
@@ -70,6 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             dayElement.appendChild(titleDiv);
                         }
                     });
+                    current.setDate(current.getDate() + 1);
                 }
             });
         }).catch(error => {
