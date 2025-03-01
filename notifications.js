@@ -14,16 +14,14 @@ document.addEventListener("DOMContentLoaded", () => {
         event.preventDefault();
 
         const email = document.getElementById("email").value.trim();
-        const phone = document.getElementById("phone").value.trim();
 
-        if (!email && !phone) {
-            alert("⚠️ Please enter at least an email or phone number.");
+        if (!email) {
+            alert("⚠️ Please enter an email.");
             return;
         }
 
         db.collection("subscribers").add({
-            email: email || null,
-            phone: phone || null,
+            email: email || null
             subscribedAt: firebase.firestore.FieldValue.serverTimestamp()
         }).then(() => {
             subscriptionMessage.style.display = "block";
