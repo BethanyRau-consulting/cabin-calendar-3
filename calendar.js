@@ -1,12 +1,13 @@
 document.addEventListener("DOMContentLoaded", () => {
     if (!firebase.apps.length) {
-        console.error("❌ Firebase App is not initialized! Check your `calendar.html`.");
+        console.error("❌ Firebase App is not initialized! Check `calendar.html`.");
         return;
     }
 
     console.log("✅ Firebase SDK detected. Initializing Firestore...");
     const db = firebase.firestore();
     let currentDate = new Date();
+    let selectedEventId = null;
 
     function renderCalendar() {
         const monthName = document.getElementById("monthName");
@@ -17,7 +18,6 @@ document.addEventListener("DOMContentLoaded", () => {
         monthName.textContent = currentDate.toLocaleDateString("en-US", { month: "long", year: "numeric" });
         calendarGrid.innerHTML = "";
 
-        // Add blank spaces until the first day of the month
         for (let i = 0; i < firstDayIndex; i++) {
             const blank = document.createElement("div");
             blank.classList.add("day", "empty");
@@ -29,6 +29,8 @@ document.addEventListener("DOMContentLoaded", () => {
             day.classList.add("day");
             day.textContent = i;
             day.dataset.date = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
+
+            day.addEventListener("click", () => openEventModal(day.dataset.date));
             calendarGrid.appendChild(day);
         }
 
@@ -43,11 +45,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const startDate = new Date(event.start);
                 const endDate = event.end ? new Date(event.end) : new Date(event.start);
-
-                if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-                    console.error("Invalid event dates: ", event);
-                    return;
-                }
 
                 let current = new Date(startDate);
                 while (current <= endDate) {
@@ -65,29 +62,24 @@ document.addEventListener("DOMContentLoaded", () => {
                     current.setDate(current.getDate() + 1);
                 }
             });
-        }).catch(error => {
-            console.error("Error loading events: ", error);
         });
     }
 
-    function prevMonth() {
-        currentDate.setMonth(currentDate.getMonth() - 1);
-        renderCalendar();
+    function openEventModal(date) {
+        selectedEventId = null;
+        document.getElementById("eventStart").value = date;
+        document.getElementById("eventEnd").value = date;
+        document.getElementById("eventModal").style.display = "block";
     }
 
-    function nextMonth() {
-        currentDate.setMonth(currentDate.getMonth() + 1);
-        renderCalendar();
+    function closeEventModal() {
+        document.getElementById("eventModal").style.display = "none";
     }
 
-    function goToToday() {
-        currentDate = new Date();
-        renderCalendar();
-    }
-
-    document.getElementById("prevBtn").addEventListener("click", prevMonth);
-    document.getElementById("nextBtn").addEventListener("click", nextMonth);
-    document.getElementById("todayBtn").addEventListener("click", goToToday);
+    document.getElementById("prevBtn").addEventListener("click", () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
+    document.getElementById("nextBtn").addEventListener("click", () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); });
+    document.getElementById("todayBtn").addEventListener("click", () => { currentDate = new Date(); renderCalendar(); });
+    document.getElementById("cancelEvent").addEventListener("click", closeEventModal);
 
     renderCalendar();
 });
