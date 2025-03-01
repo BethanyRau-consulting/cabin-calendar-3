@@ -78,9 +78,12 @@ document.addEventListener("DOMContentLoaded", () => {
                             dayElement.appendChild(titleDiv);
                         }
                         titleDiv.textContent = event.title;
-                        dayElement.addEventListener("click", () => openEventModal(eventDateStr, doc.id));
+                        dayElement.addEventListener("click", (event) => {
+                            event.stopPropagation(); // Prevent duplicate modal opens
+                            openEventModal(eventDateStr, doc.id, event.title, event.color, event.details, event.startTime, event.endTime);
+                        });
                     });
-                    current.setDate(current.getDate() + 1); // ✅ Prevent infinite loop
+                    current.setDate(current.getDate() + 1);
                 }
             });
         }).catch(error => {
@@ -88,8 +91,13 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    function openEventModal(date, eventId = null) {
+    function openEventModal(date, eventId = null, title = "", color = "", details = "", startTime = "", endTime = "") {
         selectedEventId = eventId;
+        document.getElementById("eventTitle").value = title;
+        document.getElementById("eventColor").value = color;
+        document.getElementById("eventDetails").value = details;
+        document.getElementById("eventStartTime").value = startTime;
+        document.getElementById("eventEndTime").value = endTime;
         document.getElementById("eventModal").style.display = "block";
     }
 
