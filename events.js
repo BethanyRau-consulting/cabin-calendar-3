@@ -9,6 +9,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const eventListDiv = document.getElementById("eventList");
     let selectedEventId = null;
 
+    // 🔹 Map event colors to their names
+    const eventTypeMap = {
+        "None": "Open",
+        "Green": "Family Time",
+        "Yellow": "Family Time (Visitors Welcome!)",
+        "Red": "Golf Weekend",
+        "Orange": "Hunting",
+        "Blue": "Work Weekend",
+        "Purple": "Trout Weekend"
+    };
+
     function fetchEvents() {
         db.collection("events").orderBy("start", "asc").get().then(snapshot => {
             eventListDiv.innerHTML = "";
@@ -31,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <h3>${data.title} - ${formatDate(data.start)}</h3>
             <p><strong>End Date:</strong> ${data.end ? formatDate(data.end) : "N/A"}</p>
             <p><strong>Time:</strong> ${data.startTime || "N/A"} - ${data.endTime || "N/A"}</p>
-            <p><strong>Type:</strong> ${data.type || "Open"}</p>
+            <p><strong>Type:</strong> ${eventTypeMap[data.type] || "Unknown Type"}</p>
             <p><strong>Details:</strong> ${data.details || "No details provided."}</p>
             <button onclick="editEvent('${id}', '${data.title}', '${data.start}', '${data.end || ''}', '${data.startTime || ''}', '${data.endTime || ''}', '${data.type}', '${data.details.replace(/'/g, "&#39;")}')">Edit</button>
             <button onclick="deleteEvent('${id}')">Delete</button>
