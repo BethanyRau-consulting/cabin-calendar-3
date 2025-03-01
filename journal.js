@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // ✅ Fetch journal entries from Firestore
     function fetchEntries() {
         db.collection("journal").orderBy("date", "asc").get().then(snapshot => {
-            journalEntriesDiv.innerHTML = ""; // Clear entries before adding new ones
+            journalEntriesDiv.innerHTML = ""; // Clear previous entries
             snapshot.forEach(doc => {
                 displayEntry(doc.id, doc.data());
             });
@@ -43,39 +43,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ✅ Add a new journal entry to Firestore
     function submitEntry(event) {
-    event.preventDefault(); // 🚀 Prevent form from refreshing
+        event.preventDefault(); // 🚀 Prevent form from refreshing
 
-    const name = document.getElementById("entryName").value;
-    const date = document.getElementById("entryDate").value;
-    const details = document.getElementById("entryDetails").value;
+        const name = document.getElementById("entryName").value;
+        const date = document.getElementById("entryDate").value;
+        const details = document.getElementById("entryDetails").value;
 
-    if (!name || !date || !details) {
-        alert("⚠️ All fields are required!");
-        return;
+        if (!name || !date || !details) {
+            alert("⚠️ All fields are required!");
+            return;
+        }
+
+        console.log("📌 Adding journal entry:", { name, date, details });
+
+        db.collection("journal").add({
+            name,
+            date,
+            details,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(() => {
+            console.log("✅ Journal entry successfully added to Firestore!");
+            clearForm();
+            fetchEntries();
+        }).catch(error => {
+            console.error("❌ Error adding entry:", error);
+        });
     }
-
-    console.log("📌 Attempting to add journal entry:", { name, date, details });
-
-    // ✅ Debug: Check if Firestore is available before writing
-    if (!firebase.firestore) {
-        console.error("❌ Firestore is not initialized!");
-        return;
-    }
-
-    db.collection("journal").add({
-        name,
-        date,
-        details,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    }).then(() => {
-        console.log("✅ Journal entry successfully added to Firestore!");
-        clearForm();
-        fetchEntries();
-    }).catch(error => {
-        console.error("❌ Error adding entry:", error);
-    });
-}
-
 
     // ✅ Clear form after submission
     function clearForm() {
@@ -84,8 +77,8 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("entryDetails").value = "";
     }
 
-    // ✅ Edit a journal entry
-    function editEntry(id, name, date, details) {
+    // ✅ Edit a journal entry (Now Accessible Globally)
+    window.editEntry = function (id, name, date, details) {
         document.getElementById("entryName").value = name;
         document.getElementById("entryDate").value = date;
         document.getElementById("entryDetails").value = details;
@@ -104,10 +97,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.error("❌ Error updating entry:", error);
             });
         };
-    }
+    };
 
-    // ✅ Delete a journal entry from Firestore
-    function deleteEntry(id) {
+    // ✅ Delete a journal entry from Firestore (Now Accessible Globally)
+    window.deleteEntry = function (id) {
         if (confirm("❌ Are you sure you want to delete this entry?")) {
             db.collection("journal").doc(id).delete().then(() => {
                 console.log("✅ Journal entry deleted!");
@@ -116,7 +109,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.error("❌ Error deleting entry:", error);
             });
         }
-    }
+    };
 
     // ✅ Attach event listeners
     document.getElementById("journalForm").addEventListener("submit", submitEntry);
