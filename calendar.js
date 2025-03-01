@@ -1,12 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
-    if (typeof firebase === "undefined") {
-        console.error("❌ Firebase SDK not loaded. Ensure scripts are included in `calendar.html`.");
+    if (!firebase.apps.length) {
+        console.error("❌ Firebase App is not initialized! Check your `calendar.html`.");
         return;
     }
 
     console.log("✅ Firebase SDK detected. Initializing Firestore...");
-
-    // ✅ Initialize Firestore
     const db = firebase.firestore();
     let currentDate = new Date();
 
@@ -72,7 +70,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ✅ Add Functions for Month Navigation
     function prevMonth() {
         currentDate.setMonth(currentDate.getMonth() - 1);
         renderCalendar();
@@ -84,15 +81,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function goToToday() {
-        currentDate = new Date(); // Reset to the current month
+        currentDate = new Date();
         renderCalendar();
     }
 
-    // ✅ Attach Event Listeners to Buttons
     document.getElementById("prevBtn").addEventListener("click", prevMonth);
     document.getElementById("nextBtn").addEventListener("click", nextMonth);
     document.getElementById("todayBtn").addEventListener("click", goToToday);
 
-    // ✅ Initialize Calendar
     renderCalendar();
 });
