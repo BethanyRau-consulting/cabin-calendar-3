@@ -11,10 +11,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const filterType = document.getElementById("filterType");
     const filterMonthYear = document.getElementById("filterMonthYear");
     const filterEventsBtn = document.getElementById("filterEvents");
-    const todayBtn = document.getElementById("todayBtn");
 
     let selectedEventId = null;
-    let currentDate = new Date();
 
     // 🔹 Map event colors to their names
     const eventTypeMap = {
@@ -75,11 +73,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     filterEventsBtn.addEventListener("click", () => {
         fetchEvents(filterType.value, filterMonthYear.value);
-    });
-
-    todayBtn.addEventListener("click", () => {
-        filterMonthYear.value = currentDate.toISOString().slice(0, 7);
-        fetchEvents("", filterMonthYear.value);
     });
 
     fetchEvents();
