@@ -7,7 +7,14 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("✅ Firebase SDK detected. Initializing Firestore...");
     const db = firebase.firestore();
     const eventListDiv = document.getElementById("eventList");
+
+    const filterType = document.getElementById("filterType");
+    const filterMonthYear = document.getElementById("filterMonthYear");
+    const filterEventsBtn = document.getElementById("filterEvents");
+    const todayBtn = document.getElementById("todayBtn");
+
     let selectedEventId = null;
+    let currentDate = new Date();
 
     // 🔹 Map event colors to their names
     const eventTypeMap = {
@@ -20,8 +27,19 @@ document.addEventListener("DOMContentLoaded", () => {
         "Purple": "Trout Weekend"
     };
 
-    function fetchEvents() {
-        db.collection("events").orderBy("start", "asc").get().then(snapshot => {
+    function fetchEvents(filterTypeValue = "", filterMonthValue = "") {
+        let query = db.collection("events").orderBy("start", "asc");
+
+        if (filterTypeValue) {
+            query = query.where("type", "==", filterTypeValue);
+        }
+
+        if (filterMonthValue) {
+            query = query.where("start", ">=", `${filterMonthValue}-01`)
+                         .where("start", "<=", `${filterMonthValue}-31`);
+        }
+
+        query.get().then(snapshot => {
             eventListDiv.innerHTML = "";
             if (snapshot.empty) {
                 eventListDiv.innerHTML = "<p>No events found.</p>";
@@ -55,57 +73,14 @@ document.addEventListener("DOMContentLoaded", () => {
         return d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
     }
 
-    function submitEvent() {
-        const title = document.getElementById("eventTitle").value;
-        const start = document.getElementById("eventStart").value;
-        const end = document.getElementById("eventEnd").value;
-        const startTime = document.getElementById("eventStartTime").value;
-        const endTime = document.getElementById("eventEndTime").value;
-        const type = document.getElementById("eventType").value;
-        const details = document.getElementById("eventDetails").value;
+    filterEventsBtn.addEventListener("click", () => {
+        fetchEvents(filterType.value, filterMonthYear.value);
+    });
 
-        if (!title || !start) {
-            alert("⚠️ Event title and start date are required!");
-            return;
-        }
-
-        if (selectedEventId) {
-            db.collection("events").doc(selectedEventId).update({
-                title, start, end, startTime, endTime, type, details
-            }).then(() => {
-                console.log("✅ Event updated!");
-                resetForm();
-                fetchEvents();
-            }).catch(error => {
-                console.error("❌ Error updating event:", error);
-            });
-        } else {
-            db.collection("events").add({
-                title, start, end, startTime, endTime, type, details,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(() => {
-                console.log("✅ Event added!");
-                resetForm();
-                fetchEvents();
-            }).catch(error => {
-                console.error("❌ Error adding event:", error);
-            });
-        }
-    }
-
-    function resetForm() {
-        document.getElementById("eventTitle").value = "";
-        document.getElementById("eventStart").value = "";
-        document.getElementById("eventEnd").value = "";
-        document.getElementById("eventStartTime").value = "";
-        document.getElementById("eventEndTime").value = "";
-        document.getElementById("eventType").value = "None";
-        document.getElementById("eventDetails").value = "";
-        selectedEventId = null;
-    }
-
-    document.getElementById("submitEvent").addEventListener("click", submitEvent);
-    document.getElementById("cancelEvent").addEventListener("click", resetForm);
+    todayBtn.addEventListener("click", () => {
+        filterMonthYear.value = currentDate.toISOString().slice(0, 7);
+        fetchEvents("", filterMonthYear.value);
+    });
 
     fetchEvents();
 });
