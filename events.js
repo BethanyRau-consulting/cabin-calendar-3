@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     function fetchEvents(filterTypeValue = "", filterMonthValue = "") {
-        let query = db.collection("events").orderBy("start", "asc");
+        let query = db.collection("events");
 
         if (filterTypeValue) {
             query = query.where("type", "==", filterTypeValue);
@@ -37,18 +37,20 @@ document.addEventListener("DOMContentLoaded", () => {
                          .where("start", "<=", `${filterMonthValue}-31`);
         }
 
-        query.get().then(snapshot => {
-            eventListDiv.innerHTML = "";
-            if (snapshot.empty) {
-                eventListDiv.innerHTML = "<p>No events found.</p>";
-            } else {
-                snapshot.forEach(doc => {
-                    displayEvent(doc.id, doc.data());
-                });
-            }
-        }).catch(error => {
-            console.error("❌ Error fetching events:", error);
-        });
+        query.orderBy("start", "asc").get()
+            .then(snapshot => {
+                eventListDiv.innerHTML = "";
+                if (snapshot.empty) {
+                    eventListDiv.innerHTML = "<p>No events found.</p>";
+                } else {
+                    snapshot.forEach(doc => {
+                        displayEvent(doc.id, doc.data());
+                    });
+                }
+            })
+            .catch(error => {
+                console.error("❌ Error fetching events:", error);
+            });
     }
 
     function displayEvent(id, data) {
@@ -71,7 +73,8 @@ document.addEventListener("DOMContentLoaded", () => {
         return d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
     }
 
-    function editEvent(id, title, start, end, startTime, endTime, type, details) {
+    // Ensure editEvent function is globally accessible
+    window.editEvent = function (id, title, start, end, startTime, endTime, type, details) {
         document.getElementById("eventTitle").value = title;
         document.getElementById("eventStart").value = start;
         document.getElementById("eventEnd").value = end || "";
@@ -80,7 +83,19 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("eventType").value = type;
         document.getElementById("eventDetails").value = details || "";
         document.getElementById("submitEvent").dataset.eventId = id; // Store event ID for updating
-    }
+    };
+
+    // Ensure deleteEvent function is globally accessible
+    window.deleteEvent = function (id) {
+        if (confirm("❌ Are you sure you want to delete this event?")) {
+            db.collection("events").doc(id).delete().then(() => {
+                console.log("✅ Event deleted!");
+                fetchEvents();
+            }).catch(error => {
+                console.error("❌ Error deleting event:", error);
+            });
+        }
+    };
 
     document.getElementById("submitEvent").addEventListener("click", () => {
         const id = document.getElementById("submitEvent").dataset.eventId;
@@ -120,17 +135,6 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         }
     });
-
-    function deleteEvent(id) {
-        if (confirm("❌ Are you sure you want to delete this event?")) {
-            db.collection("events").doc(id).delete().then(() => {
-                console.log("✅ Event deleted!");
-                fetchEvents();
-            }).catch(error => {
-                console.error("❌ Error deleting event:", error);
-            });
-        }
-    }
 
     filterEventsBtn.addEventListener("click", () => {
         fetchEvents(filterType.value, filterMonthYear.value);
