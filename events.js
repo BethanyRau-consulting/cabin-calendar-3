@@ -53,15 +53,16 @@ function displayEvent(event) {
     const eventItem = document.createElement("div");
     eventItem.classList.add("event-item");
 
-    // 🔹 Convert hex color to lowercase to ensure a match
-    const normalizedColor = event.color ? event.color.toLowerCase() : "";
+    // 🔹 Use the exact stored date string without converting to a Date object
+    const startDate = event.start;  
+    const endDate = event.end ? event.end : event.start;
 
     // 🔹 Convert hex color to event name (fallback to "Unknown Type" if missing)
-    const eventType = colorMapping[normalizedColor] || "Unknown Type";
+    const eventType = colorMapping[event.color.toLowerCase()] || "Unknown Type";
 
     eventItem.innerHTML = `
         <h3>${event.title}</h3>
-        <p><strong>Date:</strong> ${formatDate(event.start)} - ${event.end ? formatDate(event.end) : formatDate(event.start)}</p>
+        <p><strong>Date:</strong> ${formatDate(startDate)} - ${formatDate(endDate)}</p>
         <p><strong>Time:</strong> ${event.startTime || "N/A"} - ${event.endTime || "N/A"}</p>
         <p><strong>Details:</strong> ${event.details || "No details provided."}</p>
         <p><strong>Type:</strong> ${eventType}</p>
@@ -69,11 +70,11 @@ function displayEvent(event) {
     eventList.appendChild(eventItem);
 }
 
+// ✅ Format Date Function (No UTC Conversion)
+function formatDate(dateString) {
+    return dateString; // 🔹 Display exactly as stored in Firestore
+}
 
-    function formatDate(date) {
-        const d = new Date(date);
-        return d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
-    }
 
     document.getElementById("prevMonth").addEventListener("click", () => {
         currentDate.setMonth(currentDate.getMonth() - 1);
