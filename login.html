@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Login</h1>
+    <p>Please enter the password to access the website:</p>
+    
+    <input type="password" id="passwordInput" placeholder="Enter password">
+    <button id="loginButton">Login</button>
+    
+    <p id="errorMessage" style="color: red; display: none;">Incorrect password. Try again.</p>
+
+    <script>
+        document.getElementById("loginButton").addEventListener("click", function() {
+            const password = document.getElementById("passwordInput").value;
+            if (password === "password") {
+                sessionStorage.setItem("authenticated", "true");
+                window.location.href = "index.html";
+            } else {
+                document.getElementById("errorMessage").style.display = "block";
+            }
+        });
+    </script>
+</body>
+</html>
