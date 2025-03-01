@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const db = firebase.firestore();
     const eventListDiv = document.getElementById("eventList");
 
-    const filterType = document.getElementById("filterType");
+
     const filterMonthYear = document.getElementById("filterMonthYear");
     const filterEventsBtn = document.getElementById("filterEvents");
 
@@ -29,9 +29,6 @@ document.addEventListener("DOMContentLoaded", () => {
     function fetchEvents(filterTypeValue = "", filterMonthValue = "") {
         let query = db.collection("events");
 
-        if (filterTypeValue) {
-            query = query.where("type", "==", filterTypeValue);
-        }
 
         if (filterMonthValue) {
             query = query.where("start", ">=", `${filterMonthValue}-01`)
