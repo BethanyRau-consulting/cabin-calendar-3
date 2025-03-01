@@ -9,68 +9,85 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentDate = new Date();
     let selectedEventId = null;
 
-    function renderCalendar() {
-        const monthName = document.getElementById("monthName");
-        const calendarGrid = document.getElementById("calendarGrid");
-        const firstDayIndex = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
-        const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
+function renderCalendar() {
+    const monthName = document.getElementById("monthName");
+    const calendarGrid = document.getElementById("calendarGrid");
+    const firstDayIndex = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
+    const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
 
-        monthName.textContent = currentDate.toLocaleDateString("en-US", { month: "long", year: "numeric" });
-        calendarGrid.innerHTML = "";
+    monthName.textContent = currentDate.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+    calendarGrid.innerHTML = "";
 
-        for (let i = 0; i < firstDayIndex; i++) {
-            const blank = document.createElement("div");
-            blank.classList.add("day", "empty");
-            calendarGrid.appendChild(blank);
-        }
-
-        for (let i = 1; i <= lastDay; i++) {
-            const day = document.createElement("div");
-            day.classList.add("day");
-            day.textContent = i;
-            day.dataset.date = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
-
-            day.addEventListener("click", () => openEventModal(day.dataset.date, null));
-
-            calendarGrid.appendChild(day);
-        }
-
-        fetchEvents();
+    // Add blank spaces until the first day of the month
+    for (let i = 0; i < firstDayIndex; i++) {
+        const blank = document.createElement("div");
+        blank.classList.add("day", "empty");
+        calendarGrid.appendChild(blank);
     }
 
-    function fetchEvents() {
-        db.collection("events").get().then(snapshot => {
-            snapshot.forEach(doc => {
-                const event = doc.data();
-                if (!event.start || typeof event.start !== 'string') return;
+    for (let i = 1; i <= lastDay; i++) {
+        const day = document.createElement("div");
+        day.classList.add("day");
+        day.textContent = i;
+        day.dataset.date = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
+        day.addEventListener("click", () => openEventModal(day.dataset.date));
 
-                let startDate = new Date(event.start + "T00:00:00");
-                let endDate = event.end ? new Date(event.end + "T00:00:00") : startDate;
+        // Create an inner div for event colors
+        const eventColorContainer = document.createElement("div");
+        eventColorContainer.classList.add("event-colors");
+        day.appendChild(eventColorContainer);
 
-                let current = new Date(startDate);
-                while (current <= endDate) {
-                    const eventDateStr = current.toISOString().split("T")[0];
-                    document.querySelectorAll(`.day[data-date="${eventDateStr}"]`).forEach(dayElement => {
-                        dayElement.style.backgroundColor = event.color || "#ffcc00";
+        calendarGrid.appendChild(day);
+    }
 
-                        let titleDiv = dayElement.querySelector('.event-title');
-                        if (!titleDiv) {
-                            titleDiv = document.createElement('div');
-                            titleDiv.classList.add('event-title');
-                            dayElement.appendChild(titleDiv);
-                        }
-                        titleDiv.textContent = event.title;
+    fetchEvents();
+}
 
-                        dayElement.addEventListener("click", (eventClick) => {
-                            eventClick.stopPropagation();
-                            openEventModal(event.start, doc.id, event.title, event.color, event.details, event.startTime, event.endTime, event.end);
-                        });
-                    });
-                    current.setDate(current.getDate() + 1);
+function fetchEvents() {
+    db.collection("events").get().then(snapshot => {
+        let eventsByDate = {};
+
+        snapshot.forEach(doc => {
+            const event = doc.data();
+            if (!event.start || typeof event.start !== 'string') return;
+
+            const startDate = new Date(event.start);
+            const endDate = event.end ? new Date(event.end) : new Date(event.start);
+            let current = new Date(startDate);
+
+            while (current <= endDate) {
+                const eventDateStr = `${current.getFullYear()}-${(current.getMonth() + 1).toString().padStart(2, '0')}-${current.getDate().toString().padStart(2, '0')}`;
+                
+                if (!eventsByDate[eventDateStr]) {
+                    eventsByDate[eventDateStr] = [];
                 }
+                eventsByDate[eventDateStr].push(event.color || "#ffcc00");
+
+                current.setDate(current.getDate() + 1);
+            }
+        });
+
+        // Apply colors to the calendar days
+        Object.keys(eventsByDate).forEach(date => {
+            const dayElements = document.querySelectorAll(`.day[data-date="${date}"]`);
+            dayElements.forEach(dayElement => {
+                const eventColorContainer = dayElement.querySelector(".event-colors");
+                eventColorContainer.innerHTML = ""; // Clear previous colors
+
+                const colors = eventsByDate[date];
+                colors.forEach(color => {
+                    const colorDiv = document.createElement("div");
+                    colorDiv.style.backgroundColor = color;
+                    colorDiv.classList.add("event-color");
+                    eventColorContainer.appendChild(colorDiv);
+                });
             });
         });
-    }
+    }).catch(error => {
+        console.error("❌ Error loading events:", error);
+    });
+}
+
 
     function openEventModal(date, eventId = null, title = "", color = "#ffcc00", details = "", startTime = "", endTime = "", endDate = date) {
         console.log(`📅 Opening event modal for date: ${date}`);
