@@ -64,12 +64,13 @@ document.addEventListener("DOMContentLoaded", () => {
                     const eventDateStr = `${current.getFullYear()}-${(current.getMonth() + 1).toString().padStart(2, '0')}-${current.getDate().toString().padStart(2, '0')}`;
                     document.querySelectorAll(`.day[data-date="${eventDateStr}"]`).forEach(dayElement => {
                         dayElement.style.backgroundColor = event.color || "#ffcc00";
-                        if (!dayElement.querySelector('.event-title')) {
-                            let titleDiv = document.createElement('div');
+                        let titleDiv = dayElement.querySelector('.event-title');
+                        if (!titleDiv) {
+                            titleDiv = document.createElement('div');
                             titleDiv.classList.add('event-title');
-                            titleDiv.textContent = event.title;
                             dayElement.appendChild(titleDiv);
                         }
+                        titleDiv.textContent = event.title;
                     });
                     current.setDate(current.getDate() + 1);
                 }
