@@ -30,7 +30,8 @@ document.addEventListener("DOMContentLoaded", () => {
             day.textContent = i;
             day.dataset.date = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
 
-            day.addEventListener("click", () => openEventModal(day.dataset.date));
+            day.addEventListener("click", () => openEventModal(day.dataset.date, null));
+
             calendarGrid.appendChild(day);
         }
 
@@ -51,6 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     const eventDateStr = `${current.getFullYear()}-${(current.getMonth() + 1).toString().padStart(2, '0')}-${current.getDate().toString().padStart(2, '0')}`;
                     document.querySelectorAll(`.day[data-date="${eventDateStr}"]`).forEach(dayElement => {
                         dayElement.style.backgroundColor = event.color || "#ffcc00";
+
                         let titleDiv = dayElement.querySelector('.event-title');
                         if (!titleDiv) {
                             titleDiv = document.createElement('div');
@@ -58,6 +60,12 @@ document.addEventListener("DOMContentLoaded", () => {
                             dayElement.appendChild(titleDiv);
                         }
                         titleDiv.textContent = event.title;
+
+                        // ✅ Attach event listener to edit event when clicked
+                        dayElement.addEventListener("click", (eventClick) => {
+                            eventClick.stopPropagation();
+                            openEventModal(event.start, doc.id, event.title, event.color, event.details, event.startTime, event.endTime, event.end);
+                        });
                     });
                     current.setDate(current.getDate() + 1);
                 }
@@ -65,21 +73,83 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    function openEventModal(date) {
-        selectedEventId = null;
+    function openEventModal(date, eventId = null, title = "", color = "#ffcc00", details = "", startTime = "", endTime = "", endDate = date) {
+        console.log(`📅 Opening event modal for date: ${date}`);
+
+        selectedEventId = eventId;
+
+        document.getElementById("eventTitle").value = title;
         document.getElementById("eventStart").value = date;
-        document.getElementById("eventEnd").value = date;
+        document.getElementById("eventEnd").value = endDate;
+        document.getElementById("eventStartTime").value = startTime;
+        document.getElementById("eventEndTime").value = endTime;
+        document.getElementById("eventDetails").value = details;
+        document.getElementById("eventColor").value = color;
+
         document.getElementById("eventModal").style.display = "block";
     }
 
     function closeEventModal() {
+        console.log("❌ Closing event modal.");
         document.getElementById("eventModal").style.display = "none";
+    }
+
+    function saveEvent() {
+        const title = document.getElementById("eventTitle").value;
+        const start = document.getElementById("eventStart").value;
+        const end = document.getElementById("eventEnd").value;
+        const startTime = document.getElementById("eventStartTime").value;
+        const endTime = document.getElementById("eventEndTime").value;
+        const details = document.getElementById("eventDetails").value;
+        const color = document.getElementById("eventColor").value;
+
+        if (!title || !start) {
+            alert("⚠️ Event title and start date are required!");
+            return;
+        }
+
+        const eventData = { title, start, end, startTime, endTime, details, color };
+
+        if (selectedEventId) {
+            db.collection("events").doc(selectedEventId).update(eventData).then(() => {
+                console.log("✅ Event updated successfully!");
+                closeEventModal();
+                renderCalendar();
+            }).catch(error => {
+                console.error("❌ Error updating event:", error);
+            });
+        } else {
+            db.collection("events").add(eventData).then(() => {
+                console.log("✅ Event saved successfully!");
+                closeEventModal();
+                renderCalendar();
+            }).catch(error => {
+                console.error("❌ Error adding event:", error);
+            });
+        }
+    }
+
+    function deleteEvent() {
+        if (!selectedEventId) return;
+
+        if (confirm("❌ Are you sure you want to delete this event?")) {
+            db.collection("events").doc(selectedEventId).delete().then(() => {
+                console.log("✅ Event deleted successfully!");
+                closeEventModal();
+                renderCalendar();
+            }).catch(error => {
+                console.error("❌ Error deleting event:", error);
+            });
+        }
     }
 
     document.getElementById("prevBtn").addEventListener("click", () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
     document.getElementById("nextBtn").addEventListener("click", () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); });
     document.getElementById("todayBtn").addEventListener("click", () => { currentDate = new Date(); renderCalendar(); });
+
     document.getElementById("cancelEvent").addEventListener("click", closeEventModal);
+    document.getElementById("saveEvent").addEventListener("click", saveEvent);
+    document.getElementById("deleteEvent").addEventListener("click", deleteEvent);
 
     renderCalendar();
 });
