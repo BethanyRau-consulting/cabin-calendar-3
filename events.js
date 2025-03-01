@@ -16,14 +16,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 🔹 Map event colors to their names
     const eventTypeMap = {
-        "None": "Open",
-        "Green": "Family Time",
-        "Yellow": "Family Time (Visitors Welcome!)",
-        "Red": "Golf Weekend",
-        "Orange": "Hunting",
-        "Blue": "Work Weekend",
-        "Purple": "Trout Weekend"
-    };
+  const eventTypeMap = {
+    "None": "Open",
+    "Green": "Family Time",
+    "Yellow": "Family Time (Visitors Welcome!)",
+    "Red": "Golf Weekend",
+    "Orange": "Hunting",
+    "Blue": "Work Weekend",
+    "Purple": "Trout Weekend"
+};
+
 
     function fetchEvents(filterTypeValue = "", filterMonthValue = "") {
         let query = db.collection("events");
