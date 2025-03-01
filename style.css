@@ -145,41 +145,96 @@ button:hover {
     border-radius: 3px;
 }
 
-/* Event List */
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+    max-width: 500px;
+    width: 90%;
+}
+
+.modal label {
+    font-weight: bold;
+    display: block;
+    margin-top: 10px;
+}
+
+.modal input, .modal textarea, .modal select {
+    display: block;
+    width: 100%;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 8px;
+    font-size: 16px;
+}
+
+/* Event List (Styled like Journal Entries) */
 .event-list {
     width: 90%;
-    max-width: 600px;
-    margin: auto;
-    text-align: left;
+    max-width: 500px;
+    margin: 20px auto;
     background: white;
     padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+    text-align: left;
 }
 
 .event-item {
-    font-size: 14px;
-    border-bottom: 1px solid #ddd;
-    padding: 10px 0;
-    transition: background 0.3s ease-in-out;
+    background: white;
+    border-left: 5px solid #0073e6;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
 }
 
 .event-item:hover {
-    background: #f8f9fa;
+    transform: translateY(-3px);
 }
 
 .event-item h3 {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: bold;
-    margin: 0;
+    margin-bottom: 5px;
 }
 
 .event-item p {
+    font-size: 14px;
     margin: 5px 0;
 }
 
 .event-item p strong {
     font-weight: bold;
+}
+
+/* Event Buttons */
+.event-item button {
+    margin-top: 8px;
+    padding: 6px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.event-item button:first-of-type {
+    background-color: #ffc107;
+    color: black;
+}
+
+.event-item button:last-of-type {
+    background-color: #dc3545;
+    color: white;
 }
 
 /* Journal Form */
