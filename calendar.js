@@ -47,40 +47,41 @@ document.addEventListener("DOMContentLoaded", () => {
         fetchEvents();
     }
 
-    function fetchEvents() {
-        db.collection("events").get().then(snapshot => {
-            snapshot.forEach(doc => {
-                const event = doc.data();
-                if (!event.start) return;
+function fetchEvents() {
+    db.collection("events").get().then(snapshot => {
+        snapshot.forEach(doc => {
+            const event = doc.data();
+            if (!event.start) return;
 
-                const startDate = new Date(event.start);
-                startDate.setDate(startDate.getDate() + 1); // Fix date shift issue
-                const endDate = event.end ? new Date(event.end) : new Date(event.start);
-                endDate.setDate(endDate.getDate() + 1); // Ensure multi-day events display correctly
-                let current = new Date(startDate);
+            // ✅ Fix: Adjust event date to ensure correct display
+            const startDate = new Date(event.start + "T00:00:00");
+            const endDate = event.end ? new Date(event.end + "T00:00:00") : new Date(event.start + "T00:00:00");
 
-                while (current <= endDate) {
-                    const eventDateStr = `${current.getFullYear()}-${(current.getMonth() + 1).toString().padStart(2, '0')}-${current.getDate().toString().padStart(2, '0')}`;
+            let current = new Date(startDate);
 
-                    document.querySelectorAll(`.day[data-date="${eventDateStr}"]`).forEach(dayElement => {
-                        dayElement.style.backgroundColor = event.color || "#ffcc00";
-                        let titleDiv = dayElement.querySelector('.event-title');
-                        if (!titleDiv) {
-                            titleDiv = document.createElement('div');
-                            titleDiv.classList.add('event-title');
-                            dayElement.appendChild(titleDiv);
-                        }
-                        titleDiv.textContent = eventTypeMap[event.color] || "Unknown Type";
-                        dayElement.addEventListener("click", () => openEventModal(eventDateStr, doc.id, event));
-                    });
+            while (current <= endDate) {
+                const eventDateStr = `${current.getFullYear()}-${(current.getMonth() + 1).toString().padStart(2, '0')}-${current.getDate().toString().padStart(2, '0')}`;
 
-                    current.setDate(current.getDate() + 1);
-                }
-            });
-        }).catch(error => {
-            console.error("❌ Error loading events:", error);
+                document.querySelectorAll(`.day[data-date="${eventDateStr}"]`).forEach(dayElement => {
+                    dayElement.style.backgroundColor = event.color || "#ffcc00";
+
+                    let titleDiv = dayElement.querySelector('.event-title');
+                    if (!titleDiv) {
+                        titleDiv = document.createElement('div');
+                        titleDiv.classList.add('event-title');
+                        dayElement.appendChild(titleDiv);
+                    }
+                    titleDiv.textContent = event.title; // ✅ Display event title instead of type
+                    dayElement.addEventListener("click", () => openEventModal(eventDateStr, doc.id, event));
+                });
+
+                current.setDate(current.getDate() + 1);
+            }
         });
-    }
+    }).catch(error => {
+        console.error("❌ Error loading events:", error);
+    });
+}
 
     function openEventModal(date, eventId = null, eventData = {}) {
         selectedEventId = eventId;
