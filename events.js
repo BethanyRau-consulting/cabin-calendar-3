@@ -16,7 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 🔹 Map event colors to their names
     const eventTypeMap = {
-  const eventTypeMap = {
     "None": "Open",
     "Green": "Family Time",
     "Yellow": "Family Time (Visitors Welcome!)",
