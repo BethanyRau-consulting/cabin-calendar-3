@@ -1,101 +1,108 @@
-// Ensure Firebase is available before using it
-if (typeof firebase === "undefined") {
-    console.error("Firebase SDK not loaded. Ensure Firebase scripts are included in your HTML.");
-} else {
-    console.log("✅ Firebase SDK loaded successfully.");
-}
-
-// Firebase Configuration
-const firebaseConfig = {
-    apiKey: "AIzaSyB9rOOglOPQ0pzOwuFq-P_Puo9lroDPU7A",
-    authDomain: "cabincalendar3.firebaseapp.com",
-    projectId: "cabincalendar3",
-    storageBucket: "cabincalendar3.appspot.com",
-    messagingSenderId: "373184478865",
-    appId: "1:373184478865:web:cf1e0e816be89107538930"
-};
-
-// Initialize Firebase if not already initialized
-if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-}
-const db = firebase.firestore();
-
 document.addEventListener("DOMContentLoaded", () => {
-    const journalForm = document.getElementById("journalForm");
-    const journalEntries = document.getElementById("journalEntries");
-    let editingEntryId = null;
+    // ✅ Initialize Firestore
+    const db = firebase.firestore();
+    const journalEntriesDiv = document.getElementById("journalEntries");
 
-    function loadEntries() {
+    // ✅ Fetch journal entries from Firestore (Chronological Order)
+    function fetchEntries() {
         db.collection("journal").orderBy("date", "asc").get().then(snapshot => {
-            journalEntries.innerHTML = "";
+            journalEntriesDiv.innerHTML = ""; // Clear existing entries
             snapshot.forEach(doc => {
                 displayEntry(doc.id, doc.data());
             });
-        }).catch(error => console.error("Error fetching journal entries:", error));
+        }).catch(error => {
+            console.error("❌ Error fetching journal entries:", error);
+        });
     }
 
-    function displayEntry(id, entry) {
+    // ✅ Display a journal entry
+    function displayEntry(id, data) {
         const entryDiv = document.createElement("div");
-        entryDiv.classList.add("entry");
+        entryDiv.classList.add("journal-entry");
         entryDiv.innerHTML = `
-            <h3>${entry.name} - ${entry.date}</h3>
-            <p>${entry.details}</p>
-            <button onclick="editEntry('${id}', '${entry.name}', '${entry.date}', '${entry.details}')">Edit</button>
+            <h3>${data.name} - ${formatDate(data.date)}</h3>
+            <p>${data.details}</p>
+            <button onclick="editEntry('${id}', '${data.name}', '${data.date}', '${data.details}')">Edit</button>
             <button onclick="deleteEntry('${id}')">Delete</button>
         `;
-        journalEntries.appendChild(entryDiv);
+        journalEntriesDiv.appendChild(entryDiv);
     }
 
-    function submitEntry(event) {
-        event.preventDefault();
-        const name = document.getElementById("entryName").value;
-        const date = document.getElementById("entryDate").value;
-        const details = document.getElementById("entryDetails").value;
-        
+    // ✅ Format date (YYYY-MM-DD → MM/DD/YYYY)
+    function formatDate(date) {
+        const d = new Date(date);
+        return d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+    }
+
+    // ✅ Add a new journal entry to Firestore
+    function submitEntry() {
+        const name = document.getElementById("journalName").value;
+        const date = document.getElementById("journalDate").value;
+        const details = document.getElementById("journalDetails").value;
+
         if (!name || !date || !details) {
-            alert("All fields are required!");
+            alert("⚠️ All fields are required!");
             return;
         }
 
-        const entryData = { name, date, details };
+        db.collection("journal").add({
+            name,
+            date,
+            details,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(() => {
+            console.log("✅ Journal entry added!");
+            clearForm();
+            fetchEntries();
+        }).catch(error => {
+            console.error("❌ Error adding entry:", error);
+        });
+    }
 
-        if (editingEntryId) {
-            db.collection("journal").doc(editingEntryId).update(entryData).then(() => {
-                console.log("✅ Entry updated successfully!");
-                editingEntryId = null;
-                journalForm.reset();
-                loadEntries();
-            }).catch(error => console.error("❌ Error updating entry:", error));
-        } else {
-            db.collection("journal").add(entryData).then(() => {
-                console.log("✅ Entry added successfully!");
-                journalForm.reset();
-                loadEntries();
-            }).catch(error => console.error("❌ Error adding entry:", error));
+    // ✅ Clear form after submission
+    function clearForm() {
+        document.getElementById("journalName").value = "";
+        document.getElementById("journalDate").value = "";
+        document.getElementById("journalDetails").value = "";
+    }
+
+    // ✅ Edit a journal entry
+    function editEntry(id, name, date, details) {
+        document.getElementById("journalName").value = name;
+        document.getElementById("journalDate").value = date;
+        document.getElementById("journalDetails").value = details;
+
+        document.getElementById("submitEntry").onclick = () => {
+            db.collection("journal").doc(id).update({
+                name,
+                date,
+                details
+            }).then(() => {
+                console.log("✅ Journal entry updated!");
+                clearForm();
+                fetchEntries();
+            }).catch(error => {
+                console.error("❌ Error updating entry:", error);
+            });
+        };
+    }
+
+    // ✅ Delete a journal entry from Firestore
+    function deleteEntry(id) {
+        if (confirm("❌ Are you sure you want to delete this entry?")) {
+            db.collection("journal").doc(id).delete().then(() => {
+                console.log("✅ Journal entry deleted!");
+                fetchEntries();
+            }).catch(error => {
+                console.error("❌ Error deleting entry:", error);
+            });
         }
     }
 
-    function editEntry(id, name, date, details) {
-        document.getElementById("entryName").value = name;
-        document.getElementById("entryDate").value = date;
-        document.getElementById("entryDetails").value = details;
-        editingEntryId = id;
-    }
+    // ✅ Attach event listeners to buttons
+    document.getElementById("submitEntry").addEventListener("click", submitEntry);
+    document.getElementById("cancelEntry").addEventListener("click", clearForm);
 
-    function deleteEntry(id) {
-        db.collection("journal").doc(id).delete().then(() => {
-            console.log("✅ Entry deleted successfully!");
-            loadEntries();
-        }).catch(error => console.error("❌ Error deleting entry:", error));
-    }
-
-    document.getElementById("cancelEntry").addEventListener("click", () => {
-        journalForm.reset();
-        editingEntryId = null;
-    });
-    
-    journalForm.addEventListener("submit", submitEntry);
-
-    loadEntries();
+    // ✅ Fetch and display entries when the page loads
+    fetchEntries();
 });
