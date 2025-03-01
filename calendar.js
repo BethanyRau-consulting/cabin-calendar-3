@@ -57,7 +57,12 @@ document.addEventListener("DOMContentLoaded", () => {
             snapshot.forEach(doc => {
                 const event = doc.data();
                 const startDate = new Date(event.start);
-                const endDate = event.end ? new Date(event.end) : startDate;
+                const endDate = event.end ? new Date(event.end) : new Date(event.start);
+                
+                if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+                    console.error("Invalid event dates: ", event);
+                    return;
+                }
                 
                 let current = new Date(startDate);
                 while (current <= endDate) {
@@ -72,7 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         }
                         titleDiv.textContent = event.title;
                     });
-                    current.setDate(current.getDate() + 1);
+                    current.setDate(current.getDate() + 1); // ✅ Prevent infinite loop
                 }
             });
         }).catch(error => {
