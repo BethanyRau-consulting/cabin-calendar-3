@@ -7,15 +7,28 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("✅ Firebase SDK detected. Initializing Firestore...");
     const db = firebase.firestore();
     const journalEntriesDiv = document.getElementById("journalEntries");
-    let selectedEntryId = null; // To track the entry being edited
+    const filterSelect = document.getElementById("filterOrder");
+    const monthYearSelect = document.getElementById("filterMonthYear");
 
-    function fetchEntries(order = "asc") {
+    let selectedEntryId = null; 
+
+    function fetchEntries(order = "asc", monthYear = "") {
         let query = db.collection("journal").orderBy("date", order);
+
+        if (monthYear) {
+            query = query.where("date", ">=", `${monthYear}-01`)
+                         .where("date", "<=", `${monthYear}-31`);
+        }
+
         query.get().then(snapshot => {
             journalEntriesDiv.innerHTML = "";
-            snapshot.forEach(doc => {
-                displayEntry(doc.id, doc.data());
-            });
+            if (snapshot.empty) {
+                journalEntriesDiv.innerHTML = "<p>No journal entries found.</p>";
+            } else {
+                snapshot.forEach(doc => {
+                    displayEntry(doc.id, doc.data());
+                });
+            }
         }).catch(error => {
             console.error("❌ Error fetching journal entries:", error);
         });
@@ -34,14 +47,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function formatDate(date) {
-        return new Date(date + "T00:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+        const d = new Date(date + "T00:00:00");
+        return d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
     }
 
     window.editEntry = function (id, name, date, details) {
         document.getElementById("entryName").value = name;
         document.getElementById("entryDate").value = date;
         document.getElementById("entryDetails").value = details;
-        selectedEntryId = id; // Track the entry being edited
+        selectedEntryId = id; 
 
         document.getElementById("submitEntry").textContent = "Update";
     };
@@ -62,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }).then(() => {
                 console.log("✅ Journal entry updated!");
                 resetForm();
-                fetchEntries();
+                fetchEntries(filterSelect.value, monthYearSelect.value);
             }).catch(error => {
                 console.error("❌ Error updating entry:", error);
             });
@@ -73,7 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }).then(() => {
                 console.log("✅ Journal entry added!");
                 resetForm();
-                fetchEntries();
+                fetchEntries(filterSelect.value, monthYearSelect.value);
             }).catch(error => {
                 console.error("❌ Error adding entry:", error);
             });
@@ -84,7 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (confirm("❌ Are you sure you want to delete this entry?")) {
             db.collection("journal").doc(id).delete().then(() => {
                 console.log("✅ Entry deleted!");
-                fetchEntries();
+                fetchEntries(filterSelect.value, monthYearSelect.value);
             }).catch(error => {
                 console.error("❌ Error deleting entry:", error);
             });
@@ -98,6 +112,9 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("submitEntry").textContent = "Submit";
         selectedEntryId = null;
     }
+
+    filterSelect.addEventListener("change", () => fetchEntries(filterSelect.value, monthYearSelect.value));
+    monthYearSelect.addEventListener("change", () => fetchEntries(filterSelect.value, monthYearSelect.value));
 
     document.getElementById("submitEntry").addEventListener("click", submitEntry);
     document.getElementById("cancelEntry").addEventListener("click", resetForm);
