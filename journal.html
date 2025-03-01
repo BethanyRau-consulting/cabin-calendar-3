@@ -32,6 +32,16 @@
     </form>
     
     <h2>Previous Entries</h2>
+
+    <label for="filterOrder">Sort by:</label>
+    <select id="filterOrder">
+        <option value="asc">Oldest to Newest</option>
+        <option value="desc">Newest to Oldest</option>
+    </select>
+
+    <label for="filterMonthYear">Filter by Month/Year:</label>
+    <input type="month" id="filterMonthYear">
+
     <div id="journalEntries"></div>
 
     <!-- ✅ Load Firebase SDK -->
