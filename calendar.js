@@ -83,17 +83,18 @@ function fetchEvents() {
     });
 }
 
-    function openEventModal(date, eventId = null, eventData = {}) {
-        selectedEventId = eventId;
-        document.getElementById("eventStart").value = date;
-        document.getElementById("eventTitle").value = eventData.title || "";
-        document.getElementById("eventEnd").value = eventData.end || "";
-        document.getElementById("eventStartTime").value = eventData.startTime || "";
-        document.getElementById("eventEndTime").value = eventData.endTime || "";
-        document.getElementById("eventType").value = eventData.color || "None";
-        document.getElementById("eventDetails").value = eventData.details || "";
-        document.getElementById("eventModal").style.display = "block";
-    }
+   function openEventModal(date, eventId = null, eventData = {}) {
+    selectedEventId = eventId;
+    document.getElementById("eventStart").value = date;
+    document.getElementById("eventTitle").value = eventData.title || "";
+    document.getElementById("eventEnd").value = eventData.end || "";
+    document.getElementById("eventStartTime").value = eventData.startTime || "";
+    document.getElementById("eventEndTime").value = eventData.endTime || "";
+    document.getElementById("eventType").value = eventData.color || "None";
+    document.getElementById("eventDetails").value = eventData.details || "";
+    document.getElementById("eventModal").style.display = "block";
+}
+
 
     function closeEventModal() {
         document.getElementById("eventModal").style.display = "none";
