@@ -1,30 +1,26 @@
-// Ensure Firebase is available before using it
-if (typeof firebase === "undefined") {
-    console.error("Firebase SDK not loaded. Ensure Firebase scripts are included in your HTML.");
-} else {
-    console.log("✅ Firebase SDK loaded successfully.");
-}
-
-// Firebase Configuration
-const firebaseConfig = {
-    apiKey: "AIzaSyB9rOOglOPQ0pzOwuFq-P_Puo9lroDPU7A",
-    authDomain: "cabincalendar3.firebaseapp.com",
-    projectId: "cabincalendar3",
-    storageBucket: "cabincalendar3.appspot.com",
-    messagingSenderId: "373184478865",
-    appId: "1:373184478865:web:cf1e0e816be89107538930"
-};
-
-// Initialize Firebase if not already initialized
-if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-}
-const db = firebase.firestore();
-
 document.addEventListener("DOMContentLoaded", () => {
+    if (!firebase.apps.length) {
+        console.error("❌ Firebase SDK not loaded. Ensure scripts are included in `events.html`.");
+        return;
+    }
+
+    console.log("✅ Firebase SDK detected. Initializing Firestore...");
+    const db = firebase.firestore();
     const eventList = document.getElementById("eventList");
     const monthName = document.getElementById("monthName");
     let currentDate = new Date();
+
+    // 🔹 Mapping of Hex Codes to Event Type Names
+    const colorMapping = {
+        "#ff0000": "Red - Golf Weekend",
+        "#ffa500": "Orange - Hunting",
+        "#0000ff": "Blue - Work Weekend",
+        "#800080": "Purple - Trout Weekend",
+        "#008000": "Green - Family Time",
+        "#ffff00": "Yellow - Family Time (Visitors Allowed)",
+        "#ff69b4": "Pink - Special Occasion",
+        "#d3d3d3": "Gray - Other"
+    };
 
     function fetchEventsForMonth() {
         const year = currentDate.getFullYear();
@@ -47,21 +43,30 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             })
             .catch(error => {
-                console.error("Error fetching events: ", error);
+                console.error("❌ Error fetching events:", error);
             });
     }
 
     function displayEvent(event) {
         const eventItem = document.createElement("div");
         eventItem.classList.add("event-item");
+
+        // 🔹 Convert hex color to event name (fallback to "Unknown Type" if missing)
+        const eventType = colorMapping[event.color] || "Unknown Type";
+
         eventItem.innerHTML = `
             <h3>${event.title}</h3>
-            <p><strong>Date:</strong> ${event.start} - ${event.end || event.start}</p>
+            <p><strong>Date:</strong> ${formatDate(event.start)} - ${event.end ? formatDate(event.end) : formatDate(event.start)}</p>
             <p><strong>Time:</strong> ${event.startTime || "N/A"} - ${event.endTime || "N/A"}</p>
             <p><strong>Details:</strong> ${event.details || "No details provided."}</p>
-            <p><strong>Type:</strong> ${event.color || "N/A"}</p>
+            <p><strong>Type:</strong> ${eventType}</p>
         `;
         eventList.appendChild(eventItem);
+    }
+
+    function formatDate(date) {
+        const d = new Date(date);
+        return d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
     }
 
     document.getElementById("prevMonth").addEventListener("click", () => {
