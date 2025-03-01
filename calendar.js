@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentDate = new Date();
     let selectedEventId = null;
 
-    // 🔹 Map event colors to their respective names
     const eventTypeMap = {
         "None": "Open",
         "Green": "Family Time",
@@ -23,7 +22,8 @@ document.addEventListener("DOMContentLoaded", () => {
     function renderCalendar() {
         const monthName = document.getElementById("monthName");
         const calendarGrid = document.getElementById("calendarGrid");
-        const firstDayIndex = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
+        currentDate.setDate(1);
+        const firstDayIndex = currentDate.getDay();
         const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
 
         monthName.textContent = currentDate.toLocaleDateString("en-US", { month: "long", year: "numeric" });
@@ -51,10 +51,12 @@ document.addEventListener("DOMContentLoaded", () => {
         db.collection("events").get().then(snapshot => {
             snapshot.forEach(doc => {
                 const event = doc.data();
-                if (!event.start || typeof event.start !== 'string') return;
+                if (!event.start) return;
 
                 const startDate = new Date(event.start);
+                startDate.setDate(startDate.getDate() + 1); // Fix date shift issue
                 const endDate = event.end ? new Date(event.end) : new Date(event.start);
+                endDate.setDate(endDate.getDate() + 1); // Ensure multi-day events display correctly
                 let current = new Date(startDate);
 
                 while (current <= endDate) {
@@ -62,7 +64,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     document.querySelectorAll(`.day[data-date="${eventDateStr}"]`).forEach(dayElement => {
                         dayElement.style.backgroundColor = event.color || "#ffcc00";
-
                         let titleDiv = dayElement.querySelector('.event-title');
                         if (!titleDiv) {
                             titleDiv = document.createElement('div');
@@ -145,6 +146,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById("nextBtn").addEventListener("click", () => {
         currentDate.setMonth(currentDate.getMonth() + 1);
+        renderCalendar();
+    });
+
+    document.getElementById("todayBtn").addEventListener("click", () => {
+        currentDate = new Date();
         renderCalendar();
     });
 
