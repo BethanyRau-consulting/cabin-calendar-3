@@ -9,15 +9,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const eventListDiv = document.getElementById("eventList");
     let selectedEventId = null;
 
-    function fetchEvents(order = "asc", monthYear = "") {
-        let query = db.collection("events").orderBy("start", order);
-
-        if (monthYear) {
-            query = query.where("start", ">=", `${monthYear}-01`)
-                         .where("start", "<=", `${monthYear}-31`);
-        }
-
-        query.get().then(snapshot => {
+    function fetchEvents() {
+        db.collection("events").orderBy("start", "asc").get().then(snapshot => {
             eventListDiv.innerHTML = "";
             if (snapshot.empty) {
                 eventListDiv.innerHTML = "<p>No events found.</p>";
@@ -38,8 +31,9 @@ document.addEventListener("DOMContentLoaded", () => {
             <h3>${data.title} - ${formatDate(data.start)}</h3>
             <p><strong>End Date:</strong> ${data.end ? formatDate(data.end) : "N/A"}</p>
             <p><strong>Time:</strong> ${data.startTime || "N/A"} - ${data.endTime || "N/A"}</p>
+            <p><strong>Type:</strong> ${data.type || "Open"}</p>
             <p><strong>Details:</strong> ${data.details || "No details provided."}</p>
-            <button onclick="editEvent('${id}', '${data.title}', '${data.start}', '${data.end || ''}', '${data.startTime || ''}', '${data.endTime || ''}', '${data.details.replace(/'/g, "&#39;")}')">Edit</button>
+            <button onclick="editEvent('${id}', '${data.title}', '${data.start}', '${data.end || ''}', '${data.startTime || ''}', '${data.endTime || ''}', '${data.type}', '${data.details.replace(/'/g, "&#39;")}')">Edit</button>
             <button onclick="deleteEvent('${id}')">Delete</button>
         `;
         eventListDiv.appendChild(eventDiv);
@@ -56,6 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const end = document.getElementById("eventEnd").value;
         const startTime = document.getElementById("eventStartTime").value;
         const endTime = document.getElementById("eventEndTime").value;
+        const type = document.getElementById("eventType").value;
         const details = document.getElementById("eventDetails").value;
 
         if (!title || !start) {
@@ -65,7 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (selectedEventId) {
             db.collection("events").doc(selectedEventId).update({
-                title, start, end, startTime, endTime, details
+                title, start, end, startTime, endTime, type, details
             }).then(() => {
                 console.log("✅ Event updated!");
                 resetForm();
@@ -75,7 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         } else {
             db.collection("events").add({
-                title, start, end, startTime, endTime, details,
+                title, start, end, startTime, endTime, type, details,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             }).then(() => {
                 console.log("✅ Event added!");
@@ -87,37 +82,14 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    window.editEvent = function (id, title, start, end, startTime, endTime, details) {
-        document.getElementById("eventTitle").value = title;
-        document.getElementById("eventStart").value = start;
-        document.getElementById("eventEnd").value = end;
-        document.getElementById("eventStartTime").value = startTime;
-        document.getElementById("eventEndTime").value = endTime;
-        document.getElementById("eventDetails").value = details;
-        selectedEventId = id;
-
-        document.getElementById("submitEvent").textContent = "Update";
-    };
-
-    window.deleteEvent = function (id) {
-        if (confirm("❌ Are you sure you want to delete this event?")) {
-            db.collection("events").doc(id).delete().then(() => {
-                console.log("✅ Event deleted!");
-                fetchEvents();
-            }).catch(error => {
-                console.error("❌ Error deleting event:", error);
-            });
-        }
-    };
-
     function resetForm() {
         document.getElementById("eventTitle").value = "";
         document.getElementById("eventStart").value = "";
         document.getElementById("eventEnd").value = "";
         document.getElementById("eventStartTime").value = "";
         document.getElementById("eventEndTime").value = "";
+        document.getElementById("eventType").value = "None";
         document.getElementById("eventDetails").value = "";
-        document.getElementById("submitEvent").textContent = "Submit";
         selectedEventId = null;
     }
 
