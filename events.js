@@ -47,22 +47,26 @@ document.addEventListener("DOMContentLoaded", () => {
             });
     }
 
-    function displayEvent(event) {
-        const eventItem = document.createElement("div");
-        eventItem.classList.add("event-item");
+function displayEvent(event) {
+    const eventItem = document.createElement("div");
+    eventItem.classList.add("event-item");
 
-        // 🔹 Convert hex color to event name (fallback to "Unknown Type" if missing)
-        const eventType = colorMapping[event.color] || "Unknown Type";
+    // 🔹 Convert hex color to lowercase to ensure a match
+    const normalizedColor = event.color ? event.color.toLowerCase() : "";
 
-        eventItem.innerHTML = `
-            <h3>${event.title}</h3>
-            <p><strong>Date:</strong> ${formatDate(event.start)} - ${event.end ? formatDate(event.end) : formatDate(event.start)}</p>
-            <p><strong>Time:</strong> ${event.startTime || "N/A"} - ${event.endTime || "N/A"}</p>
-            <p><strong>Details:</strong> ${event.details || "No details provided."}</p>
-            <p><strong>Type:</strong> ${eventType}</p>
-        `;
-        eventList.appendChild(eventItem);
-    }
+    // 🔹 Convert hex color to event name (fallback to "Unknown Type" if missing)
+    const eventType = colorMapping[normalizedColor] || "Unknown Type";
+
+    eventItem.innerHTML = `
+        <h3>${event.title}</h3>
+        <p><strong>Date:</strong> ${formatDate(event.start)} - ${event.end ? formatDate(event.end) : formatDate(event.start)}</p>
+        <p><strong>Time:</strong> ${event.startTime || "N/A"} - ${event.endTime || "N/A"}</p>
+        <p><strong>Details:</strong> ${event.details || "No details provided."}</p>
+        <p><strong>Type:</strong> ${eventType}</p>
+    `;
+    eventList.appendChild(eventItem);
+}
+
 
     function formatDate(date) {
         const d = new Date(date);
