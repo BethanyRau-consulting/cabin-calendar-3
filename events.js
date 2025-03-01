@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "#0000ff": "Blue - Work Weekend",
         "#800080": "Purple - Trout Weekend",
         "#008000": "Green - Family Time",
-        "#ffff00": "Yellow - Family Time (Visitors Allowed)",
+        "#ffff00": "Yellow - Family Time (Visitors Welcome!)",
         "#ff69b4": "Pink - Special Occasion",
         "#d3d3d3": "Gray - Other"
     };
