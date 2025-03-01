@@ -56,13 +56,12 @@ document.addEventListener("DOMContentLoaded", () => {
         db.collection("events").get().then(snapshot => {
             snapshot.forEach(doc => {
                 const event = doc.data();
-                const startDate = new Date(event.start);
-                const endDate = event.end ? new Date(event.end) : new Date(event.start);
-                
-                if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-                    console.error("Invalid event dates: ", event);
+                if (!event.start) {
+                    console.error("Invalid event: missing start date", event);
                     return;
                 }
+                const startDate = new Date(event.start);
+                const endDate = event.end ? new Date(event.end) : new Date(event.start);
                 
                 let current = new Date(startDate);
                 while (current <= endDate) {
@@ -77,12 +76,24 @@ document.addEventListener("DOMContentLoaded", () => {
                         }
                         titleDiv.textContent = event.title;
                     });
-                    current.setDate(current.getDate() + 1); // ✅ Prevent infinite loop
+                    current.setDate(current.getDate() + 1);
                 }
             });
         }).catch(error => {
             console.error("Error loading events: ", error);
         });
+    }
+
+    function openEventModal(date) {
+        selectedEventId = null;
+        document.getElementById("eventTitle").value = "";
+        document.getElementById("eventStart").value = date;
+        document.getElementById("eventEnd").value = "";
+        document.getElementById("eventStartTime").value = "";
+        document.getElementById("eventEndTime").value = "";
+        document.getElementById("eventDetails").value = "";
+        document.getElementById("eventColor").value = "#ffcc00";
+        document.getElementById("eventModal").style.display = "block";
     }
 
     function prevMonth() {
