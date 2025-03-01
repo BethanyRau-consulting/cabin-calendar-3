@@ -10,17 +10,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const monthName = document.getElementById("monthName");
     let currentDate = new Date();
 
-    // 🔹 Mapping of Hex Codes to Event Type Names
-    const colorMapping = {
-        "#ff0000": "Red - Golf Weekend",
-        "#ffa500": "Orange - Hunting",
-        "#0000ff": "Blue - Work Weekend",
-        "#800080": "Purple - Trout Weekend",
-        "#008000": "Green - Family Time",
-        "#ffff00": "Yellow - Family Time (Visitors Welcome!)",
-        "#ff69b4": "Pink - Special Occasion",
-        "#d3d3d3": "Gray - Other"
-    };
+const colorMapping = {
+    "#ff0000": "Red - Golf Weekend",
+    "#ffa500": "Orange - Hunting",
+    "#0000ff": "Blue - Work Weekend",
+    "#800080": "Purple - Trout Weekend",
+    "#008000": "Green - Family Time",
+    "#ffff00": "Yellow - Family Time (Visitors Allowed)",
+    "#ff69b4": "Pink - Special Occasion",
+    "#d3d3d3": "Gray - Other",
+    "#ffcc00": "Yellow - Cabin Use",
+    "#00ff00": "Bright Green - Family Gathering"
+};
+
 
     function fetchEventsForMonth() {
         const year = currentDate.getFullYear();
