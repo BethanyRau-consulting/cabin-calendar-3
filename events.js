@@ -99,44 +99,44 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    document.getElementById("submitEvent").addEventListener("click", () => {
-        const id = document.getElementById("submitEvent").dataset.eventId;
-        const title = document.getElementById("eventTitle").value;
-        const start = document.getElementById("eventStart").value;
-        const end = document.getElementById("eventEnd").value;
-        const startTime = document.getElementById("eventStartTime").value;
-        const endTime = document.getElementById("eventEndTime").value;
-        const type = document.getElementById("eventType").value;
-        const details = document.getElementById("eventDetails").value;
+document.getElementById("submitEvent").addEventListener("click", () => {
+    const id = document.getElementById("submitEvent").dataset.eventId;
+    const title = document.getElementById("eventTitle").value;
+    const start = document.getElementById("eventStart").value;
+    const end = document.getElementById("eventEnd").value;
+    const startTime = document.getElementById("eventStartTime").value;
+    const endTime = document.getElementById("eventEndTime").value;
+    const type = document.getElementById("eventType").value;
+    const details = document.getElementById("eventDetails").value;
 
-        if (!title || !start) {
-            alert("⚠️ Event title and start date are required!");
-            return;
-        }
+    if (!title || !start) {
+        alert("⚠️ Event title and start date are required!");
+        return;
+    }
 
-        if (id) {
-            // Update existing event
-            db.collection("events").doc(id).update({
-                title, start, end, startTime, endTime, type, details
-            }).then(() => {
-                console.log("✅ Event updated!");
-                document.getElementById("submitEvent").dataset.eventId = ""; // Reset
-                fetchEvents();
-            }).catch(error => {
-                console.error("❌ Error updating event:", error);
-            });
-        } else {
-            // Add new event
-            db.collection("events").add({
-                title, start, end, startTime, endTime, type, details
-            }).then(() => {
-                console.log("✅ Event added!");
-                fetchEvents();
-            }).catch(error => {
-                console.error("❌ Error adding event:", error);
-            });
-        }
-    });
+    const eventData = {
+        title, start, end, startTime, endTime, type, details,
+        color: type // Store the selected type as color
+    };
+
+    if (id) {
+        db.collection("events").doc(id).update(eventData).then(() => {
+            console.log("✅ Event updated!");
+            document.getElementById("submitEvent").dataset.eventId = ""; // Reset
+            fetchEvents();
+        }).catch(error => {
+            console.error("❌ Error updating event:", error);
+        });
+    } else {
+        db.collection("events").add(eventData).then(() => {
+            console.log("✅ Event added!");
+            fetchEvents();
+        }).catch(error => {
+            console.error("❌ Error adding event:", error);
+        });
+    }
+});
+
 
     filterEventsBtn.addEventListener("click", () => {
         fetchEvents(filterType.value, filterMonthYear.value);
