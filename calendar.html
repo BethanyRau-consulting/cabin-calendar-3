@@ -29,11 +29,49 @@
         <div class="grid" id="calendarGrid"></div>
     </div>
 
-    <!-- ✅ Load Firebase SDK FIRST -->
+    <!-- 🔹 Event Modal -->
+    <div class="modal" id="eventModal">
+        <h3>Add/Edit Event</h3>
+        <label for="eventTitle">Title:</label>
+        <input type="text" id="eventTitle" placeholder="Event Title">
+        
+        <label for="eventStart">Start Date:</label>
+        <input type="date" id="eventStart">
+
+        <label for="eventEnd">End Date:</label>
+        <input type="date" id="eventEnd">
+
+        <label for="eventStartTime">Start Time:</label>
+        <input type="time" id="eventStartTime">
+
+        <label for="eventEndTime">End Time:</label>
+        <input type="time" id="eventEndTime">
+
+        <label for="eventDetails">Details:</label>
+        <textarea id="eventDetails" placeholder="Event Details"></textarea>
+
+        <label for="eventColor">Choose a color:</label>
+        <select id="eventColor">
+            <option value="#ff0000">Red - Golf Weekend</option>
+            <option value="#ffa500">Orange - Hunting</option>
+            <option value="#0000ff">Blue - Work Weekend</option>
+            <option value="#800080">Purple - Trout Weekend</option>
+            <option value="#008000">Green - Family Time</option>
+            <option value="#ffff00">Yellow - Family Time (Visitors Allowed)</option>
+            <option value="#ff69b4">Pink - Special Occasion</option>
+            <option value="#d3d3d3">Gray - Other</option>
+        </select>
+
+        <button id="saveEvent">Save</button>
+        <button id="cancelEvent">Cancel</button>
+        <button id="deleteEvent">Delete</button>
+    </div>
+
+    <!-- ✅ Load Firebase SDK First -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
-    <!-- ✅ Initialize Firebase BEFORE loading calendar.js -->
+    <!-- ✅ Initialize Firebase BEFORE calendar.js -->
     <script>
       const firebaseConfig = {
         apiKey: "AIzaSyB9rOOglOPQ0pzOwuFq-P_Puo9lroDPU7A",
