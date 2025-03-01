@@ -1,11 +1,24 @@
-// Ensure Firebase is initialized before using Firestore
+// Ensure Firebase is available before using it
 if (typeof firebase === "undefined") {
     console.error("Firebase SDK not loaded. Ensure Firebase scripts are included in your HTML.");
 } else {
     console.log("✅ Firebase SDK loaded successfully.");
 }
 
-// Initialize Firebase Firestore
+// Firebase Configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyB9rOOglOPQ0pzOwuFq-P_Puo9lroDPU7A",
+    authDomain: "cabincalendar3.firebaseapp.com",
+    projectId: "cabincalendar3",
+    storageBucket: "cabincalendar3.appspot.com",
+    messagingSenderId: "373184478865",
+    appId: "1:373184478865:web:cf1e0e816be89107538930"
+};
+
+// Initialize Firebase if not already initialized
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
 const db = firebase.firestore();
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -13,29 +26,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const monthName = document.getElementById("monthName");
     let currentDate = new Date();
 
-    const colorMapping = {
-        "#00FF00": "Family Time",
-        "#FFFF00": "Family Time (Visitors Welcome)",
-        "#FF0000": "Golf Weekend",
-        "#FFA500": "Hunting",
-        "#0000FF": "Work Weekend",
-        "#800080": "Trout Weekend"
-    };
-
-    function formatDate(dateStr) {
-        if (!dateStr) return "N/A";
-        const date = new Date(dateStr);
-        const month = (date.getMonth() + 1).toString().padStart(2, '0');
-        const day = date.getDate().toString().padStart(2, '0');
-        const year = date.getFullYear();
-        return `${month}-${day}-${year}`;
-    }
-
     function fetchEventsForMonth() {
         const year = currentDate.getFullYear();
         const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
         monthName.textContent = currentDate.toLocaleDateString("en-US", { month: "long", year: "numeric" });
-        
+
         db.collection("events")
             .where("start", ">=", `${year}-${month}-01`)
             .where("start", "<=", `${year}-${month}-31`)
@@ -59,13 +54,12 @@ document.addEventListener("DOMContentLoaded", () => {
     function displayEvent(event) {
         const eventItem = document.createElement("div");
         eventItem.classList.add("event-item");
-        const eventType = colorMapping[event.color] || "Unknown Type";
         eventItem.innerHTML = `
             <h3>${event.title}</h3>
-            <p><strong>Date:</strong> ${formatDate(event.start)} - ${formatDate(event.end || event.start)}</p>
+            <p><strong>Date:</strong> ${event.start} - ${event.end || event.start}</p>
             <p><strong>Time:</strong> ${event.startTime || "N/A"} - ${event.endTime || "N/A"}</p>
             <p><strong>Details:</strong> ${event.details || "No details provided."}</p>
-            <p><strong>Type:</strong> ${eventType}</p>
+            <p><strong>Type:</strong> ${event.color || "N/A"}</p>
         `;
         eventList.appendChild(eventItem);
     }
