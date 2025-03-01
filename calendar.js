@@ -78,8 +78,8 @@ document.addEventListener("DOMContentLoaded", () => {
                             dayElement.appendChild(titleDiv);
                         }
                         titleDiv.textContent = event.title;
-                        dayElement.addEventListener("click", (event) => {
-                            event.stopPropagation(); // Prevent duplicate modal opens
+                        dayElement.addEventListener("click", (eventClick) => {
+                            eventClick.stopPropagation(); // Prevent duplicate modal opens
                             openEventModal(eventDateStr, doc.id, event.title, event.color, event.details, event.startTime, event.endTime);
                         });
                     });
@@ -105,14 +105,29 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("eventModal").style.display = "none";
     }
 
-    function prevMonth() {
-        currentDate.setMonth(currentDate.getMonth() - 1);
-        renderCalendar();
-    }
+    function saveEvent() {
+        const title = document.getElementById("eventTitle").value;
+        const color = document.getElementById("eventColor").value;
+        const details = document.getElementById("eventDetails").value;
+        const startTime = document.getElementById("eventStartTime").value;
+        const endTime = document.getElementById("eventEndTime").value;
 
-    function nextMonth() {
-        currentDate.setMonth(currentDate.getMonth() + 1);
-        renderCalendar();
+        if (!title) {
+            alert("Event title is required!");
+            return;
+        }
+
+        const eventData = { title, color, details, startTime, endTime };
+
+        if (selectedEventId) {
+            db.collection("events").doc(selectedEventId).update(eventData).then(() => {
+                console.log("✅ Event updated successfully!");
+                closeEventModal();
+                renderCalendar();
+            }).catch(error => {
+                console.error("❌ Error updating event:", error);
+            });
+        }
     }
 
     document.getElementById("prevBtn").addEventListener("click", prevMonth);
@@ -123,6 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     
     document.getElementById("cancelEvent").addEventListener("click", closeEventModal);
+    document.getElementById("saveEvent").addEventListener("click", saveEvent);
 
     renderCalendar();
 });
