@@ -27,31 +27,34 @@
         <label for="entryDetails">Details:</label>
         <textarea id="entryDetails" required></textarea>
         
-        <button type="submit" id="submitEntry">Submit</button>
+        <button type="button" id="submitEntry">Submit</button>
         <button type="button" id="cancelEntry">Cancel</button>
     </form>
     
     <h2>Previous Entries</h2>
     <div id="journalEntries"></div>
 
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    <!-- ✅ Firebase Initialization -->
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyB9rOOglOPQ0pzOwuFq-P_Puo9lroDPU7A",
-    authDomain: "cabincalendar3.firebaseapp.com",
-    projectId: "cabincalendar3",
-    storageBucket: "cabincalendar3.appspot.com",
-    messagingSenderId: "373184478865",
-    appId: "1:373184478865:web:cf1e0e816be89107538930"
-  };
+    <!-- ✅ Load Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
-  if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-  }
-</script>
+    <!-- ✅ Initialize Firebase -->
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyB9rOOglOPQ0pzOwuFq-P_Puo9lroDPU7A",
+            authDomain: "cabincalendar3.firebaseapp.com",
+            projectId: "cabincalendar3",
+            storageBucket: "cabincalendar3.appspot.com",
+            messagingSenderId: "373184478865",
+            appId: "1:373184478865:web:cf1e0e816be89107538930"
+        };
 
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+    </script>
+
+    <!-- ✅ Load journal.js AFTER Firebase is initialized -->
     <script src="journal.js" defer></script>
 </body>
 </html>
