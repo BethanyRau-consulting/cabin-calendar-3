@@ -56,12 +56,14 @@ document.addEventListener("DOMContentLoaded", () => {
         db.collection("events").get().then(snapshot => {
             snapshot.forEach(doc => {
                 const event = doc.data();
-                if (!event.start) {
-                    console.error("Invalid event: missing start date", event);
-                    return;
-                }
+                if (!event.start) return;
                 const startDate = new Date(event.start);
                 const endDate = event.end ? new Date(event.end) : new Date(event.start);
+                
+                if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+                    console.error("Invalid event dates: ", event);
+                    return;
+                }
                 
                 let current = new Date(startDate);
                 while (current <= endDate) {
@@ -76,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         }
                         titleDiv.textContent = event.title;
                     });
-                    current.setDate(current.getDate() + 1);
+                    current.setDate(current.getDate() + 1); // ✅ Prevent infinite loop
                 }
             });
         }).catch(error => {
@@ -86,14 +88,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function openEventModal(date) {
         selectedEventId = null;
-        document.getElementById("eventTitle").value = "";
-        document.getElementById("eventStart").value = date;
-        document.getElementById("eventEnd").value = "";
-        document.getElementById("eventStartTime").value = "";
-        document.getElementById("eventEndTime").value = "";
-        document.getElementById("eventDetails").value = "";
-        document.getElementById("eventColor").value = "#ffcc00";
         document.getElementById("eventModal").style.display = "block";
+    }
+
+    function closeEventModal() {
+        document.getElementById("eventModal").style.display = "none";
     }
 
     function prevMonth() {
@@ -112,6 +111,8 @@ document.addEventListener("DOMContentLoaded", () => {
         currentDate = new Date();
         renderCalendar();
     });
+    
+    document.getElementById("cancelEvent").addEventListener("click", closeEventModal);
 
     renderCalendar();
 });
