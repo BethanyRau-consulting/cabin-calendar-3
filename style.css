@@ -1,9 +1,9 @@
 /* General Styles */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Poppins', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    background-color: #f8f9fa;
     color: #333;
     text-align: center;
 }
@@ -13,49 +13,60 @@ nav {
     background-color: #0073e6;
     padding: 15px;
     text-align: center;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 nav a {
     color: white;
     text-decoration: none;
-    margin: 0 15px;
+    margin: 0 20px;
     font-size: 18px;
     font-weight: bold;
-    transition: 0.3s;
+    transition: color 0.3s ease-in-out;
 }
 
 nav a:hover {
-    text-decoration: underline;
+    color: #ffd700;
 }
 
 /* Page Headers */
 h1 {
     color: #222;
     margin-top: 20px;
+    font-size: 32px;
+    font-weight: 600;
 }
 
-/* Paragraphs */
-p {
-    font-size: 18px;
-    line-height: 1.6;
-    max-width: 600px;
-    margin: 20px auto;
+h2 {
+    font-size: 24px;
+    font-weight: 500;
+    margin-top: 10px;
 }
 
 /* Buttons */
-.button {
-    display: inline-block;
-    padding: 10px 20px;
+button {
+    padding: 10px 15px;
     background-color: #0073e6;
     color: white;
-    text-decoration: none;
-    font-size: 16px;
+    border: none;
     border-radius: 5px;
-    transition: 0.3s;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s ease-in-out;
 }
 
-.button:hover {
+button:hover {
     background-color: #005bb5;
+}
+
+/* Forms */
+input, textarea, select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
 }
 
 /* Responsive Design */
@@ -66,78 +77,118 @@ p {
     }
 }
 
-        .calendar {
-            width: 80%;
-            max-width: 1200px;
-            margin: auto;
-        }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 1.5em;
-        }
-        .days {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            font-weight: bold;
-            font-size: 1.2em;
-        }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 5px;
-        }
-        .day {
-            padding: 20px;
-            border: 1px solid #ccc;
-            font-size: 1.2em;
-            cursor: pointer;
-            position: relative;
-        }
-        .event-title {
-            position: absolute;
-            bottom: 5px;
-            left: 5px;
-            font-size: 0.8em;
-            color: white;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 2px 5px;
-            border-radius: 3px;
-        }
+/* Calendar Styles */
+.calendar {
+    width: 90%;
+    max-width: 1000px;
+    margin: 30px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
 
-        .modal {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 20px;
-            border: 1px solid #ccc;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-        }
-        .modal label {
-            font-weight: bold;
-            display: block;
-            margin-top: 10px;
-        }
-        .modal input, .modal textarea, .modal select {
-            display: block;
-            width: 100%;
-            margin: 5px 0;
-        }
-/* Styles for event list */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.5em;
+    padding: 10px 0;
+}
+
+.days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    font-weight: bold;
+    font-size: 1.2em;
+    background: #f1f1f1;
+    padding: 10px 0;
+    border-radius: 5px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+}
+
+.day {
+    padding: 20px;
+    border-radius: 5px;
+    background: white;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    font-size: 1.2em;
+    cursor: pointer;
+    position: relative;
+    transition: background 0.3s ease-in-out;
+}
+
+.day:hover {
+    background: #f0f8ff;
+}
+
+.event-title {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    font-size: 0.9em;
+    color: white;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 2px 6px;
+    border-radius: 3px;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+    max-width: 500px;
+    width: 90%;
+}
+
+.modal label {
+    font-weight: bold;
+    display: block;
+    margin-top: 10px;
+}
+
+.modal input, .modal textarea, .modal select {
+    display: block;
+    width: 100%;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 8px;
+    font-size: 16px;
+}
+
+/* Event List */
 .event-list {
     width: 80%;
     margin: auto;
     text-align: left;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .event-item {
     font-size: 14px;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #ddd;
     padding: 10px 0;
+    transition: background 0.3s ease-in-out;
+}
+
+.event-item:hover {
+    background: #f8f9fa;
 }
 
 .event-item h3 {
@@ -160,14 +211,14 @@ p {
     margin: 20px auto;
     padding: 15px;
     background: white;
-    border-radius: 5px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
 }
 
 .journal-form input, .journal-form textarea {
     width: 100%;
     margin: 10px 0;
-    padding: 10px;
+    padding: 12px;
     border: 1px solid #ccc;
     border-radius: 5px;
 }
@@ -194,28 +245,31 @@ p {
 .journal-entry {
     width: 50%;
     margin: 15px auto;
-    padding: 10px;
+    padding: 15px;
     background: white;
-    border-radius: 5px;
+    border-radius: 8px;
     border-left: 5px solid #0073e6;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
     text-align: left;
 }
 
 .journal-entry h3 {
     margin: 5px 0;
+    font-size: 18px;
+    font-weight: bold;
 }
 
 .journal-entry button {
     margin-top: 10px;
-    padding: 5px;
+    padding: 8px;
     border: none;
-    border-radius: 3px;
+    border-radius: 4px;
     cursor: pointer;
 }
 
 .journal-entry button:first-of-type {
     background-color: #ffc107;
+    color: black;
 }
 
 .journal-entry button:last-of-type {
