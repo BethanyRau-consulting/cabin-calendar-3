@@ -101,7 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function saveEvent() {
         const title = document.getElementById("eventTitle").value;
         const start = document.getElementById("eventStart").value;
-        const end = document.getElementById("eventEnd").value;
+        const end = document.getElementById("eventEnd").value || start; // Ensure end date is at least start date
         const startTime = document.getElementById("eventStartTime").value;
         const endTime = document.getElementById("eventEndTime").value;
         const type = document.getElementById("eventType").value;
@@ -115,15 +115,16 @@ document.addEventListener("DOMContentLoaded", () => {
         const eventData = { title, start, end, startTime, endTime, type, details, color: type };
 
         if (selectedEventId) {
-            db.collection("events").doc(selectedEventId).update(eventData).then(() => {
+            db.collection("events").doc(selectedEventId).set(eventData) // ✅ Use `.set()` instead of `.update()`
+            .then(() => {
                 console.log("✅ Event updated!");
-                fetchEvents();
+                renderCalendar(); // ✅ Reload the calendar after editing
                 closeEventModal();
             }).catch(error => console.error("❌ Error updating event:", error));
         } else {
             db.collection("events").add(eventData).then(() => {
                 console.log("✅ Event added!");
-                fetchEvents();
+                renderCalendar();
                 closeEventModal();
             }).catch(error => console.error("❌ Error adding event:", error));
         }
@@ -133,7 +134,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (selectedEventId && confirm("❌ Are you sure you want to delete this event?")) {
             db.collection("events").doc(selectedEventId).delete().then(() => {
                 console.log("✅ Event deleted!");
-                fetchEvents();
+                renderCalendar();
                 closeEventModal();
             }).catch(error => console.error("❌ Error deleting event:", error));
         }
