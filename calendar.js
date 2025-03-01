@@ -56,7 +56,8 @@ document.addEventListener("DOMContentLoaded", () => {
         db.collection("events").get().then(snapshot => {
             snapshot.forEach(doc => {
                 const event = doc.data();
-                if (!event.start) return;
+                if (!event.start || typeof event.start !== 'string') return;
+                
                 const startDate = new Date(event.start);
                 const endDate = event.end ? new Date(event.end) : new Date(event.start);
                 
@@ -77,6 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             dayElement.appendChild(titleDiv);
                         }
                         titleDiv.textContent = event.title;
+                        dayElement.addEventListener("click", () => openEventModal(eventDateStr, doc.id));
                     });
                     current.setDate(current.getDate() + 1); // ✅ Prevent infinite loop
                 }
@@ -86,8 +88,8 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    function openEventModal(date) {
-        selectedEventId = null;
+    function openEventModal(date, eventId = null) {
+        selectedEventId = eventId;
         document.getElementById("eventModal").style.display = "block";
     }
 
