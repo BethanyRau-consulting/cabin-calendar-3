@@ -17,27 +17,54 @@
     </nav>
 
     <h2>Add a New Event</h2>
-    <form id="eventForm">
-        <label for="eventTitle">Title:</label>
-        <input type="text" id="eventTitle" required>
+    <form id="eventForm" class="event-form">
+        <div class="form-group">
+            <label for="eventTitle">Title:</label>
+            <input type="text" id="eventTitle" required>
+        </div>
 
-        <label for="eventStart">Start Date:</label>
-        <input type="date" id="eventStart" required>
+        <div class="form-group">
+            <label for="eventStart">Start Date:</label>
+            <input type="date" id="eventStart" required>
+        </div>
 
-        <label for="eventEnd">End Date:</label>
-        <input type="date" id="eventEnd">
+        <div class="form-group">
+            <label for="eventEnd">End Date:</label>
+            <input type="date" id="eventEnd">
+        </div>
 
-        <label for="eventStartTime">Start Time:</label>
-        <input type="time" id="eventStartTime">
+        <div class="form-group">
+            <label for="eventStartTime">Start Time:</label>
+            <input type="time" id="eventStartTime">
+        </div>
 
-        <label for="eventEndTime">End Time:</label>
-        <input type="time" id="eventEndTime">
+        <div class="form-group">
+            <label for="eventEndTime">End Time:</label>
+            <input type="time" id="eventEndTime">
+        </div>
 
-        <label for="eventDetails">Details:</label>
-        <textarea id="eventDetails"></textarea>
+        <div class="form-group">
+            <label for="eventType">Event Type:</label>
+            <select id="eventType">
+                <option value="None">Open</option>
+                <option value="Green">Family Time</option>
+                <option value="Yellow">Family Time (Visitors Welcome!)</option>
+                <option value="Red">Golf Weekend</option>
+                <option value="Orange">Hunting</option>
+                <option value="Blue">Work Weekend</option>
+                <option value="Purple">Trout Weekend</option>
+            </select>
+        </div>
 
-        <button type="button" id="submitEvent">Submit</button>
-        <button type="button" id="cancelEvent">Cancel</button>
+        <div class="form-group">
+            <label for="eventDetails">Details:</label>
+            <textarea id="eventDetails"></textarea>
+        </div>
+
+        <div class="form-buttons">
+            <button type="button" id="submitEvent">Submit</button>
+            <button type="button" id="cancelEvent">Cancel</button>
+        </div>
     </form>
 
     <h2>Upcoming Events</h2>
