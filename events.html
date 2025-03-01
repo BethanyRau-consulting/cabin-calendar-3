@@ -3,14 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Events List</title>
-    <link rel="stylesheet" href="style.css">
-    <script>
-    if (sessionStorage.getItem("authenticated") !== "true") {
-        window.location.href = "login.html";
-    }
-</script>
-
+    <title>Events List</title> 
+    <link rel="stylesheet" href="style.css"> 
 </head>
 <body>
     <h1>Events List</h1>
@@ -22,91 +16,56 @@
         <a href="photos.html">Pictures</a>
     </nav>
 
-    <h2>Add a New Event</h2>
-    <form id="eventForm" class="event-form">
-        <div class="form-group">
+    <h2 id="monthName"></h2>
+    <button id="prevMonth">Previous Month</button>
+    <button id="nextMonth">Next Month</button>
+
+    <div id="addEventForm">
+        <h2>Add an Event</h2>
+        <form id="eventForm">
             <label for="eventTitle">Title:</label>
             <input type="text" id="eventTitle" required>
-        </div>
+            
+            <label for="eventDate">Date:</label>
+            <input type="date" id="eventDate" required>
 
-        <div class="form-group">
-            <label for="eventStart">Start Date:</label>
-            <input type="date" id="eventStart" required>
-        </div>
-
-        <div class="form-group">
-            <label for="eventEnd">End Date:</label>
-            <input type="date" id="eventEnd">
-        </div>
-
-        <div class="form-group">
-            <label for="eventStartTime">Start Time:</label>
-            <input type="time" id="eventStartTime">
-        </div>
-
-        <div class="form-group">
-            <label for="eventEndTime">End Time:</label>
-            <input type="time" id="eventEndTime">
-        </div>
-
-        <div class="form-group">
             <label for="eventType">Event Type:</label>
-<select id="eventType">
-    <option value="None">Open</option>
-    <option value="Green">Family Time</option>
-    <option value="Yellow">Family Time (Visitors Welcome!)</option>
-    <option value="Red">Golf Weekend</option>
-    <option value="Orange">Hunting</option>
-    <option value="Blue">Work Weekend</option>
-    <option value="Purple">Trout Weekend</option>
-</select>
+            <select id="eventType">
+                <option value="None">Open</option>
+                <option value="Green">Family Time</option>
+                <option value="Yellow">Family Time (Visitors Welcome!)</option>
+                <option value="Red">Golf Weekend</option>
+                <option value="Orange">Hunting</option>
+                <option value="Blue">Work Weekend</option>
+                <option value="Purple">Trout Weekend</option>
+            </select>
 
-        </div>
-
-        <div class="form-group">
-            <label for="eventDetails">Details:</label>
-            <textarea id="eventDetails"></textarea>
-        </div>
-
-        <div class="form-buttons">
-            <button type="button" id="submitEvent">Submit</button>
+            <button type="submit">Add Event</button>
             <button type="button" id="cancelEvent">Cancel</button>
-        </div>
-    </form>
-
-    <h2>Filter Events</h2>
-    <div class="filter-section">
-        <label for="filterMonthYear">Month/Year:</label>
-        <input type="month" id="filterMonthYear">
-        
-        <button id="filterEvents">Apply Filters</button>
+        </form>
     </div>
 
-    <h2>Upcoming Events</h2>
-    <div id="eventList"></div>
+    <h2>Event List</h2>
+    <div class="event-list" id="eventList"></div>
 
-    <!-- ✅ Load Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <!-- 🔥 Load Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
 
-    <!-- ✅ Initialize Firebase -->
+    <!-- 🔥 Initialize Firebase -->
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyB9rOOglOPQ0pzOwuFq-P_Puo9lroDPU7A",
-            authDomain: "cabincalendar3.firebaseapp.com",
-            projectId: "cabincalendar3",
-            storageBucket: "cabincalendar3.appspot.com",
-            messagingSenderId: "373184478865",
-            appId: "1:373184478865:web:cf1e0e816be89107538930"
-        };
-
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
+      const firebaseConfig = {
+        apiKey: "AIzaSyB9rOOglOPQ0pzOwuFq-P_Puo9lroDPU7A",
+        authDomain: "cabincalendar3.firebaseapp.com",
+        projectId: "cabincalendar3",
+        storageBucket: "cabincalendar3.appspot.com",
+        messagingSenderId: "373184478865",
+        appId: "1:373184478865:web:cf1e0e816be89107538930"
+      };
+      firebase.initializeApp(firebaseConfig);
     </script>
 
-    <!-- ✅ Load events.js AFTER Firebase is initialized -->
+    <!-- 🔥 Load Events JavaScript -->
     <script src="events.js" defer></script>
-    
 </body>
 </html>
