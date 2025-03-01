@@ -44,12 +44,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 const event = doc.data();
                 if (!event.start || typeof event.start !== 'string') return;
 
-                const startDate = new Date(event.start);
-                const endDate = event.end ? new Date(event.end) : new Date(event.start);
+                let startDate = new Date(event.start + "T00:00:00");
+                let endDate = event.end ? new Date(event.end + "T00:00:00") : startDate;
 
                 let current = new Date(startDate);
                 while (current <= endDate) {
-                    const eventDateStr = `${current.getFullYear()}-${(current.getMonth() + 1).toString().padStart(2, '0')}-${current.getDate().toString().padStart(2, '0')}`;
+                    const eventDateStr = current.toISOString().split("T")[0];
                     document.querySelectorAll(`.day[data-date="${eventDateStr}"]`).forEach(dayElement => {
                         dayElement.style.backgroundColor = event.color || "#ffcc00";
 
@@ -61,7 +61,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         }
                         titleDiv.textContent = event.title;
 
-                        // ✅ Attach event listener to edit event when clicked
                         dayElement.addEventListener("click", (eventClick) => {
                             eventClick.stopPropagation();
                             openEventModal(event.start, doc.id, event.title, event.color, event.details, event.startTime, event.endTime, event.end);
@@ -90,7 +89,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function closeEventModal() {
-        console.log("❌ Closing event modal.");
         document.getElementById("eventModal").style.display = "none";
     }
 
@@ -112,7 +110,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (selectedEventId) {
             db.collection("events").doc(selectedEventId).update(eventData).then(() => {
-                console.log("✅ Event updated successfully!");
                 closeEventModal();
                 renderCalendar();
             }).catch(error => {
@@ -120,7 +117,6 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         } else {
             db.collection("events").add(eventData).then(() => {
-                console.log("✅ Event saved successfully!");
                 closeEventModal();
                 renderCalendar();
             }).catch(error => {
@@ -134,7 +130,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (confirm("❌ Are you sure you want to delete this event?")) {
             db.collection("events").doc(selectedEventId).delete().then(() => {
-                console.log("✅ Event deleted successfully!");
                 closeEventModal();
                 renderCalendar();
             }).catch(error => {
