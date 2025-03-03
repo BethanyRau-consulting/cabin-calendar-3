@@ -32,12 +32,12 @@ nav a:hover {
 /* Forms & Filtering */
 form, .filter-container {
     width: 90%;
-    max-width: 500px;
+    max-width: 1000px; /* Matches calendar width */
     margin: 20px auto;
-    padding: 15px;
+    padding: 20px;
     background: white;
-    border-radius: 8px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.15);
 }
 
 form label, .filter-container label {
@@ -49,22 +49,22 @@ form label, .filter-container label {
 
 form input, form textarea, form select, .filter-container select {
     width: 100%;
-    padding: 8px;
+    padding: 10px;
     margin-top: 5px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    font-size: 14px;
+    font-size: 16px;
 }
 
 /* Buttons */
 button {
-    padding: 8px 12px;
+    padding: 10px 15px;
     background-color: #0073e6;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 16px;
     transition: background 0.3s ease-in-out;
 }
 
@@ -120,7 +120,7 @@ button:hover {
 }
 
 .day {
-    padding: 15px;
+    padding: 20px;
     border-radius: 5px;
     background: white;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
@@ -153,10 +153,10 @@ button:hover {
     left: 50%;
     transform: translate(-50%, -50%);
     background: white;
-    padding: 20px;
-    border-radius: 8px;
+    padding: 25px;
+    border-radius: 10px;
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
-    max-width: 500px;
+    max-width: 600px;
     width: 90%;
 }
 
@@ -172,67 +172,67 @@ button:hover {
     margin: 5px 0;
     border: 1px solid #ccc;
     border-radius: 5px;
-    padding: 8px;
+    padding: 10px;
     font-size: 16px;
 }
 
-/* Event List (Styled like Journal Entries) */
-.event-list {
+/* Event List & Journal Entries */
+.event-list, .journal-entries {
     width: 90%;
-    max-width: 500px;
+    max-width: 1000px;
     margin: 20px auto;
     background: white;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.15);
     text-align: left;
 }
 
-.event-item {
+.event-item, .journal-entry {
     background: white;
     border-left: 5px solid #0073e6;
     padding: 15px;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     border-radius: 8px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease-in-out;
 }
 
-.event-item:hover {
+.event-item:hover, .journal-entry:hover {
     transform: translateY(-3px);
 }
 
-.event-item h3 {
-    font-size: 18px;
+.event-item h3, .journal-entry h3 {
+    font-size: 20px;
     font-weight: bold;
     margin-bottom: 5px;
 }
 
-.event-item p {
-    font-size: 14px;
+.event-item p, .journal-entry p {
+    font-size: 16px;
     margin: 5px 0;
 }
 
-.event-item p strong {
+.event-item p strong, .journal-entry p strong {
     font-weight: bold;
 }
 
-/* Event Buttons */
-.event-item button {
-    margin-top: 8px;
-    padding: 6px 10px;
+/* Event & Journal Buttons */
+.event-item button, .journal-entry button {
+    margin-top: 10px;
+    padding: 8px 12px;
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 16px;
 }
 
-.event-item button:first-of-type {
+.event-item button:first-of-type, .journal-entry button:first-of-type {
     background-color: #ffc107;
     color: black;
 }
 
-.event-item button:last-of-type {
+.event-item button:last-of-type, .journal-entry button:last-of-type {
     background-color: #dc3545;
     color: white;
 }
@@ -240,24 +240,24 @@ button:hover {
 /* Journal Form */
 .journal-form {
     width: 90%;
-    max-width: 500px;
+    max-width: 1000px;
     margin: 20px auto;
-    padding: 15px;
+    padding: 20px;
     background: white;
-    border-radius: 8px;
-    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.15);
 }
 
 .journal-form input, .journal-form textarea {
     width: 100%;
     margin: 10px 0;
-    padding: 10px;
+    padding: 12px;
     border: 1px solid #ccc;
     border-radius: 5px;
 }
 
 .journal-form button {
-    padding: 8px;
+    padding: 10px;
     margin: 5px;
     border: none;
     border-radius: 5px;
@@ -270,43 +270,6 @@ button:hover {
 }
 
 #cancelEntry {
-    background-color: #dc3545;
-    color: white;
-}
-
-/* Journal Entries */
-.journal-entry {
-    width: 90%;
-    max-width: 500px;
-    margin: 15px auto;
-    padding: 15px;
-    background: white;
-    border-radius: 8px;
-    border-left: 5px solid #0073e6;
-    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
-    text-align: left;
-}
-
-.journal-entry h3 {
-    margin: 5px 0;
-    font-size: 18px;
-    font-weight: bold;
-}
-
-.journal-entry button {
-    margin-top: 10px;
-    padding: 8px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.journal-entry button:first-of-type {
-    background-color: #ffc107;
-    color: black;
-}
-
-.journal-entry button:last-of-type {
     background-color: #dc3545;
     color: white;
 }
