@@ -8,12 +8,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const db = firebase.firestore();
     const eventList = document.getElementById("eventList");
 
-    function fetchEvents(sortOrder = "newest", filterMonth = "", filterYear = "") {
-        let query = db.collection("events").orderBy("start", sortOrder === "newest" ? "desc" : "asc");
+    function fetchEvents(filterDate = "") {
+        let query = db.collection("events").orderBy("start", "asc");
 
-        if (filterMonth && filterYear) {
-            query = query.where("start", ">=", `${filterYear}-${filterMonth}-01`)
-                         .where("start", "<=", `${filterYear}-${filterMonth}-31`);
+        if (filterDate) {
+            query = query.where("start", "==", filterDate);
         }
 
         query.get().then(snapshot => {
@@ -36,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
         eventItem.innerHTML = `
             <h3>${data.title}</h3>
             <p><strong>Date:</strong> ${formatDate(data.start)}</p>
-            <p><strong>Type:</strong> ${data.color}</p>
+            <p><strong>Type:</strong> ${getEventType(data.color)}</p>
             <button onclick="editEvent('${id}')">Edit</button>
             <button onclick="deleteEvent('${id}')">Delete</button>
         `;
@@ -46,6 +45,19 @@ document.addEventListener("DOMContentLoaded", () => {
     function formatDate(date) {
         const d = new Date(date);
         return d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+    }
+
+    function getEventType(color) {
+        const eventTypes = {
+            "None": "Open",
+            "Green": "Family Time",
+            "Yellow": "Family Time (Visitors Welcome!)",
+            "Red": "Golf Weekend",
+            "Orange": "Hunting",
+            "Blue": "Work Weekend",
+            "Purple": "Trout Weekend"
+        };
+        return eventTypes[color] || "Unknown Type";
     }
 
     function editEvent(id) {
@@ -90,10 +102,31 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     document.getElementById("applyFilters").addEventListener("click", () => {
-        const sortOrder = document.getElementById("sortOrder").value;
-        const filterMonth = document.getElementById("filterMonth").value;
-        const filterYear = document.getElementById("filterYear").value;
-        fetchEvents(sortOrder, filterMonth, filterYear);
+        const filterDate = document.getElementById("filterDate").value;
+        fetchEvents(filterDate);
+    });
+
+    document.getElementById("eventForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const title = document.getElementById("eventTitle").value;
+        const date = document.getElementById("eventDate").value;
+        const color = document.getElementById("eventType").value;
+
+        if (!title || !date) {
+            alert("⚠️ Title and date are required!");
+            return;
+        }
+
+        db.collection("events").add({
+            title,
+            start: date,
+            color
+        }).then(() => {
+            fetchEvents();
+            document.getElementById("eventForm").reset();
+        }).catch(error => {
+            console.error("❌ Error adding event:", error);
+        });
     });
 
     fetchEvents();
