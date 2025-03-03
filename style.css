@@ -121,7 +121,7 @@ button:hover {
 }
 
 .day {
-    padding: 20px;
+    padding: 25px;  /* Increased size */
     border-radius: 5px;
     background: white;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
@@ -129,6 +129,7 @@ button:hover {
     cursor: pointer;
     position: relative;
     transition: background 0.3s ease-in-out;
+    min-height: 50px;  /* Prevents event text from crowding */
 }
 
 .day:hover {
@@ -137,13 +138,26 @@ button:hover {
 
 .event-title {
     position: absolute;
-    bottom: 5px;
-    left: 5px;
-    font-size: 0.9em;
-    color: white;
-    background: rgba(0, 0, 0, 0.7);
-    padding: 2px 6px;
+    bottom: 3px;
+    left: 3px;
+    font-size: 0.8em; /* Smaller font */
+    color: black;
+    background: none; /* Removes gray background */
+    padding: 2px 4px;
     border-radius: 3px;
+    font-weight: bold;
+    max-width: 100%; /* Ensures it doesn’t stretch */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.day.has-event {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    text-align: center;
 }
 
 /* Modal */
