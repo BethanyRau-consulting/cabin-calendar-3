@@ -22,9 +22,18 @@
 
         <label for="eventTitle">Title:</label>
         <input type="text" id="eventTitle" required>
-        
-        <label for="eventDate">Date:</label>
-        <input type="date" id="eventDate" required>
+
+        <label for="eventStart">Start Date:</label>
+        <input type="date" id="eventStart" required>
+
+        <label for="eventEnd">End Date:</label>
+        <input type="date" id="eventEnd">
+
+        <label for="eventStartTime">Start Time:</label>
+        <input type="time" id="eventStartTime">
+
+        <label for="eventEndTime">End Time:</label>
+        <input type="time" id="eventEndTime">
 
         <label for="eventType">Event Type:</label>
         <select id="eventType">
@@ -36,6 +45,9 @@
             <option value="Blue">Work Weekend</option>
             <option value="Purple">Trout Weekend</option>
         </select>
+
+        <label for="eventDetails">Details:</label>
+        <textarea id="eventDetails"></textarea>
 
         <button type="submit" id="saveEvent">Save Event</button>
         <button type="button" id="cancelEvent">Cancel</button>
