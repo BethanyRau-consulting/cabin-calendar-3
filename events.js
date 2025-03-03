@@ -36,8 +36,8 @@ document.addEventListener("DOMContentLoaded", () => {
             <h3>${data.title}</h3>
             <p><strong>Date:</strong> ${formatDate(data.start)}</p>
             <p><strong>Type:</strong> ${getEventType(data.color)}</p>
-            <button onclick="editEvent('${id}')">Edit</button>
-            <button onclick="deleteEvent('${id}')">Delete</button>
+            <button class="edit-btn" data-id="${id}">Edit</button>
+            <button class="delete-btn" data-id="${id}">Delete</button>
         `;
         eventList.appendChild(eventItem);
     }
@@ -60,8 +60,8 @@ document.addEventListener("DOMContentLoaded", () => {
         return eventTypes[color] || "Unknown Type";
     }
 
-    function editEvent(id) {
-        db.collection("events").doc(id).get().then(doc => {
+    function editEvent(eventId) {
+        db.collection("events").doc(eventId).get().then(doc => {
             if (doc.exists) {
                 const data = doc.data();
                 document.getElementById("eventTitle").value = data.title;
@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     const updatedDate = document.getElementById("eventDate").value;
                     const updatedColor = document.getElementById("eventType").value;
 
-                    db.collection("events").doc(id).update({
+                    db.collection("events").doc(eventId).update({
                         title: updatedTitle,
                         start: updatedDate,
                         color: updatedColor
@@ -91,9 +91,9 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    function deleteEvent(id) {
+    function deleteEvent(eventId) {
         if (confirm("❌ Are you sure you want to delete this event?")) {
-            db.collection("events").doc(id).delete().then(() => {
+            db.collection("events").doc(eventId).delete().then(() => {
                 fetchEvents();
             }).catch(error => {
                 console.error("❌ Error deleting event:", error);
@@ -129,5 +129,18 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    // ✅ Use Event Delegation to Handle Clicks on Edit & Delete
+    eventList.addEventListener("click", (event) => {
+        if (event.target.classList.contains("edit-btn")) {
+            editEvent(event.target.dataset.id);
+        } else if (event.target.classList.contains("delete-btn")) {
+            deleteEvent(event.target.dataset.id);
+        }
+    });
+
     fetchEvents();
+
+    // ✅ Expose Functions Globally (Fixes `editEvent` & `deleteEvent` Not Defined)
+    window.editEvent = editEvent;
+    window.deleteEvent = deleteEvent;
 });
