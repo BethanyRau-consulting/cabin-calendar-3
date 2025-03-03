@@ -32,7 +32,7 @@ nav a:hover {
 /* Forms & Filtering */
 form, .filter-container {
     width: 90%;
-    max-width: 1000px; /* Matches calendar width */
+    max-width: 700px; /* Adjusted to prevent fields from overflowing */
     margin: 20px auto;
     padding: 20px;
     background: white;
@@ -48,12 +48,13 @@ form label, .filter-container label {
 }
 
 form input, form textarea, form select, .filter-container select {
-    width: 100%;
+    width: calc(100% - 20px); /* Ensures inputs fit neatly inside the form */
     padding: 10px;
     margin-top: 5px;
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 16px;
+    box-sizing: border-box;
 }
 
 /* Buttons */
@@ -168,7 +169,7 @@ button:hover {
 
 .modal input, .modal textarea, .modal select {
     display: block;
-    width: 100%;
+    width: calc(100% - 20px);
     margin: 5px 0;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -179,7 +180,7 @@ button:hover {
 /* Event List & Journal Entries */
 .event-list, .journal-entries {
     width: 90%;
-    max-width: 1000px;
+    max-width: 700px; /* Matches the form width */
     margin: 20px auto;
     background: white;
     padding: 20px;
@@ -240,7 +241,7 @@ button:hover {
 /* Journal Form */
 .journal-form {
     width: 90%;
-    max-width: 1000px;
+    max-width: 700px; /* Matches event form */
     margin: 20px auto;
     padding: 20px;
     background: white;
@@ -249,11 +250,12 @@ button:hover {
 }
 
 .journal-form input, .journal-form textarea {
-    width: 100%;
+    width: calc(100% - 20px);
     margin: 10px 0;
     padding: 12px;
     border: 1px solid #ccc;
     border-radius: 5px;
+    box-sizing: border-box;
 }
 
 .journal-form button {
