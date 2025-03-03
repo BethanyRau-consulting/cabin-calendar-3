@@ -186,6 +186,19 @@ button:hover {
     text-align: left;
 }
 
+.journal-entry {
+    width: 90%;
+    max-width: 700px;  /* Matches the journal form */
+    margin: 15px auto;
+    padding: 15px;
+    background: white;
+    border-radius: 10px;
+    border-left: 5px solid #0073e6;
+    box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.15);
+    text-align: left;
+}
+
+
 /* 📝 Individual Event or Journal Entry */
 .event-item, .journal-entry {
     background: white;
