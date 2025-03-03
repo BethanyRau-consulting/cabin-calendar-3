@@ -37,8 +37,10 @@ document.addEventListener("DOMContentLoaded", () => {
         eventItem.classList.add("event-item");
         eventItem.innerHTML = `
             <h3>${data.title}</h3>
-            <p><strong>Date:</strong> ${formatDate(data.start)}</p>
+            <p><strong>Date:</strong> ${formatDate(data.start)} - ${data.end ? formatDate(data.end) : "N/A"}</p>
+            <p><strong>Time:</strong> ${data.startTime || "N/A"} - ${data.endTime || "N/A"}</p>
             <p><strong>Type:</strong> ${getEventType(data.color)}</p>
+            <p><strong>Details:</strong> ${data.details || "No details provided."}</p>
             <button class="edit-btn" data-id="${id}">Edit</button>
             <button class="delete-btn" data-id="${id}">Delete</button>
         `;
@@ -69,8 +71,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 const data = doc.data();
                 document.getElementById("eventId").value = eventId;
                 document.getElementById("eventTitle").value = data.title;
-                document.getElementById("eventDate").value = data.start;
+                document.getElementById("eventStart").value = data.start;
+                document.getElementById("eventEnd").value = data.end || "";
+                document.getElementById("eventStartTime").value = data.startTime || "";
+                document.getElementById("eventEndTime").value = data.endTime || "";
                 document.getElementById("eventType").value = data.color;
+                document.getElementById("eventDetails").value = data.details || "";
             }
         }).catch(error => {
             console.error("❌ Error fetching event:", error);
@@ -94,38 +100,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById("eventForm").addEventListener("submit", (e) => {
         e.preventDefault();
-        const eventId = document.getElementById("eventId").value;
-        const title = document.getElementById("eventTitle").value;
-        const date = document.getElementById("eventDate").value;
-        const color = document.getElementById("eventType").value;
-
-        if (!title || !date) {
-            alert("⚠️ Title and date are required!");
-            return;
-        }
-
-        const eventData = { title, start: date, color };
-
-        if (eventId) {
-            db.collection("events").doc(eventId).update(eventData).then(() => {
-                fetchEvents();
-                document.getElementById("eventForm").reset();
-            });
-        } else {
-            db.collection("events").add(eventData).then(() => {
-                fetchEvents();
-                document.getElementById("eventForm").reset();
-            });
-        }
-    });
-
-    eventList.addEventListener("click", (event) => {
-        if (event.target.classList.contains("edit-btn")) {
-            editEvent(event.target.dataset.id);
-        } else if (event.target.classList.contains("delete-btn")) {
-            deleteEvent(event.target.dataset.id);
-        }
+        saveEvent();
     });
 
     fetchEvents();
+
+    window.editEvent = editEvent;
+    window.deleteEvent = deleteEvent;
 });
