@@ -1,16 +1,16 @@
-/* General Styles */
+/* 🌿 General Styles */
 body {
     font-family: 'Poppins', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f8f9fa;
+    background-color: #f5f5f5; /* Soft Grey Background */
     color: #333;
     text-align: center;
 }
 
-/* Navigation Bar */
+/* 📌 Navigation Bar */
 nav {
-    background-color: #0073e6;
+    background-color: #6a8d73; /* Pastel Green */
     padding: 15px;
     text-align: center;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
@@ -26,13 +26,13 @@ nav a {
 }
 
 nav a:hover {
-    color: #ffd700;
+    color: #f1f1f1;
 }
 
-/* Forms & Filtering */
+/* 📋 Forms & Filtering */
 form, .filter-container {
     width: 90%;
-    max-width: 700px; /* Adjusted to prevent fields from overflowing */
+    max-width: 700px;
     margin: 20px auto;
     padding: 20px;
     background: white;
@@ -45,54 +45,45 @@ form label, .filter-container label {
     display: block;
     margin-top: 10px;
     text-align: left;
+    color: #4a4a4a;
 }
 
 form input, form textarea, form select, .filter-container select {
-    width: calc(100% - 20px); /* Ensures inputs fit neatly inside the form */
-    padding: 10px;
+    width: calc(100% - 20px);
+    padding: 12px;
     margin-top: 5px;
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 16px;
     box-sizing: border-box;
+    background-color: #f8f8f8;
 }
 
-/* Buttons */
+/* 🎨 Buttons */
 button {
-    padding: 10px 15px;
-    background-color: #0073e6;
+    padding: 12px 18px;
+    background-color: #6a8d73;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
     cursor: pointer;
     font-size: 16px;
-    transition: background 0.3s ease-in-out;
+    transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
 }
 
 button:hover {
-    background-color: #005bb5;
+    background-color: #5a7c63;
+    transform: scale(1.05);
 }
 
-.filter-container button {
-    margin-top: 10px;
-}
-
-/* Responsive Design */
-@media (max-width: 600px) {
-    nav a {
-        display: block;
-        margin: 10px 0;
-    }
-}
-
-/* Calendar Styles */
+/* 📅 Calendar Styling */
 .calendar {
     width: 90%;
     max-width: 1000px;
     margin: 30px auto;
     background: white;
-    padding: 20px;
-    border-radius: 10px;
+    padding: 25px;
+    border-radius: 12px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -102,6 +93,7 @@ button:hover {
     align-items: center;
     font-size: 1.5em;
     padding: 10px 0;
+    color: #4a4a4a;
 }
 
 .days {
@@ -109,58 +101,48 @@ button:hover {
     grid-template-columns: repeat(7, 1fr);
     font-weight: bold;
     font-size: 1.2em;
-    background: #f1f1f1;
-    padding: 10px 0;
-    border-radius: 5px;
+    background: #d9e2d4; /* Light Green */
+    padding: 12px 0;
+    border-radius: 8px;
 }
 
 .grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 5px;
+    gap: 6px;
 }
 
 .day {
-    padding: 25px;  /* Increased size */
-    border-radius: 5px;
+    padding: 28px; /* Bigger Size */
+    border-radius: 6px;
     background: white;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.08);
     font-size: 1.1em;
     cursor: pointer;
     position: relative;
     transition: background 0.3s ease-in-out;
-    min-height: 50px;  /* Prevents event text from crowding */
 }
 
 .day:hover {
-    background: #f0f8ff;
+    background: #edf3eb; /* Soft Green Hover */
 }
 
 .event-title {
     position: absolute;
     bottom: 3px;
     left: 3px;
-    font-size: 0.8em; /* Smaller font */
+    font-size: 0.8em;
     color: black;
-    background: none; /* Removes gray background */
+    background: none;
     padding: 2px 4px;
-    border-radius: 3px;
     font-weight: bold;
-    max-width: 100%; /* Ensures it doesn’t stretch */
+    max-width: 100%;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.day.has-event {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    text-align: center;
-}
-
-/* Modal */
+/* 📜 Modal Pop-up */
 .modal {
     display: none;
     position: fixed;
@@ -169,7 +151,7 @@ button:hover {
     transform: translate(-50%, -50%);
     background: white;
     padding: 25px;
-    border-radius: 10px;
+    border-radius: 12px;
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
     max-width: 600px;
     width: 90%;
@@ -179,6 +161,7 @@ button:hover {
     font-weight: bold;
     display: block;
     margin-top: 10px;
+    color: #4a4a4a;
 }
 
 .modal input, .modal textarea, .modal select {
@@ -186,42 +169,30 @@ button:hover {
     width: calc(100% - 20px);
     margin: 5px 0;
     border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 10px;
+    border-radius: 6px;
+    padding: 12px;
     font-size: 16px;
 }
 
-/* Event List & Journal Entries */
+/* 📌 Event List & Journal Entries */
 .event-list, .journal-entries {
     width: 90%;
-    max-width: 700px; /* Matches the form width */
+    max-width: 700px;
     margin: 20px auto;
     background: white;
     padding: 20px;
-    border-radius: 10px;
+    border-radius: 12px;
     box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.15);
     text-align: left;
 }
 
-.journal-entry {
-    width: 90%;
-    max-width: 700px;  /* Matches the journal form */
-    margin: 15px auto;
-    padding: 15px;
-    background: white;
-    border-radius: 10px;
-    border-left: 5px solid #0073e6;
-    box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.15);
-    text-align: left;
-}
-
-
+/* 📝 Individual Event or Journal Entry */
 .event-item, .journal-entry {
     background: white;
-    border-left: 5px solid #0073e6;
-    padding: 15px;
+    border-left: 6px solid #6a8d73; /* Pastel Green */
+    padding: 18px;
     margin-bottom: 15px;
-    border-radius: 8px;
+    border-radius: 10px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease-in-out;
 }
@@ -234,6 +205,7 @@ button:hover {
     font-size: 20px;
     font-weight: bold;
     margin-bottom: 5px;
+    color: #4a4a4a;
 }
 
 .event-item p, .journal-entry p {
@@ -245,12 +217,12 @@ button:hover {
     font-weight: bold;
 }
 
-/* Event & Journal Buttons */
+/* 📌 Buttons Inside Events & Journals */
 .event-item button, .journal-entry button {
     margin-top: 10px;
     padding: 8px 12px;
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
     cursor: pointer;
     font-size: 16px;
 }
@@ -265,40 +237,13 @@ button:hover {
     color: white;
 }
 
-/* Journal Form */
+/* 📖 Journal Form */
 .journal-form {
     width: 90%;
-    max-width: 700px; /* Matches event form */
+    max-width: 700px;
     margin: 20px auto;
     padding: 20px;
     background: white;
     border-radius: 10px;
     box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.15);
-}
-
-.journal-form input, .journal-form textarea {
-    width: calc(100% - 20px);
-    margin: 10px 0;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-sizing: border-box;
-}
-
-.journal-form button {
-    padding: 10px;
-    margin: 5px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-#submitEntry {
-    background-color: #28a745;
-    color: white;
-}
-
-#cancelEntry {
-    background-color: #dc3545;
-    color: white;
 }
