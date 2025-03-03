@@ -16,44 +16,62 @@
         <a href="photos.html">Pictures</a>
     </nav>
 
-    <h2 id="monthName"></h2>
-    <button id="prevMonth">Previous Month</button>
-    <button id="nextMonth">Next Month</button>
+    <h2>Add an Event</h2>
+    <form id="eventForm">
+        <label for="eventTitle">Title:</label>
+        <input type="text" id="eventTitle" required>
+        
+        <label for="eventDate">Date:</label>
+        <input type="date" id="eventDate" required>
 
-    <div id="addEventForm">
-        <h2>Add an Event</h2>
-        <form id="eventForm">
-            <label for="eventTitle">Title:</label>
-            <input type="text" id="eventTitle" required>
-            
-            <label for="eventDate">Date:</label>
-            <input type="date" id="eventDate" required>
+        <label for="eventType">Event Type:</label>
+        <select id="eventType">
+            <option value="None">Open</option>
+            <option value="Green">Family Time</option>
+            <option value="Yellow">Family Time (Visitors Welcome!)</option>
+            <option value="Red">Golf Weekend</option>
+            <option value="Orange">Hunting</option>
+            <option value="Blue">Work Weekend</option>
+            <option value="Purple">Trout Weekend</option>
+        </select>
 
-            <label for="eventType">Event Type:</label>
-            <select id="eventType">
-                <option value="None">Open</option>
-                <option value="Green">Family Time</option>
-                <option value="Yellow">Family Time (Visitors Welcome!)</option>
-                <option value="Red">Golf Weekend</option>
-                <option value="Orange">Hunting</option>
-                <option value="Blue">Work Weekend</option>
-                <option value="Purple">Trout Weekend</option>
-            </select>
+        <button type="submit">Add Event</button>
+        <button type="button" id="cancelEvent">Cancel</button>
+    </form>
 
-            <button type="submit">Add Event</button>
-            <button type="button" id="cancelEvent">Cancel</button>
-        </form>
+    <h2>Filter Events</h2>
+    <div class="filter-container">
+        <label for="filterMonth">Month:</label>
+        <select id="filterMonth">
+            <option value="">All</option>
+            <option value="01">January</option>
+            <option value="02">February</option>
+            <option value="03">March</option>
+            <option value="04">April</option>
+            <option value="05">May</option>
+            <option value="06">June</option>
+            <option value="07">July</option>
+            <option value="08">August</option>
+            <option value="09">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+        </select>
+
+        <label for="filterYear">Year:</label>
+        <input type="number" id="filterYear" min="2000" max="2100" placeholder="Enter year">
+
+        <button id="applyFilters">Apply Filters</button>
     </div>
 
     <h2>Event List</h2>
     <div class="event-list" id="eventList"></div>
 
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <!-- ✅ Correct Firebase SDK Imports -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
-
-    <!-- 🔥 Initialize Firebase -->
+    <!-- ✅ Firebase Initialization -->
     <script>
       const firebaseConfig = {
         apiKey: "AIzaSyB9rOOglOPQ0pzOwuFq-P_Puo9lroDPU7A",
@@ -63,10 +81,13 @@
         messagingSenderId: "373184478865",
         appId: "1:373184478865:web:cf1e0e816be89107538930"
       };
-      firebase.initializeApp(firebaseConfig);
+
+      if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+      }
     </script>
 
-    <!-- 🔥 Load Events JavaScript -->
+    <!-- ✅ Load Events JavaScript -->
     <script src="events.js" defer></script>
 </body>
 </html>
