@@ -9,12 +9,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const eventList = document.getElementById("eventList");
     let selectedEventId = null;
 
-    function fetchEvents(filterMonth = "", filterYear = "") {
+    function fetchEvents(filterDate = "") {
         let query = db.collection("events").orderBy("start", "asc");
 
-        if (filterMonth && filterYear) {
-            query = query.where("start", ">=", `${filterYear}-${filterMonth}-01`)
-                         .where("start", "<=", `${filterYear}-${filterMonth}-31`);
+        if (filterDate) {
+            const [year, month] = filterDate.split("-");
+            query = query.where("start", ">=", `${year}-${month}-01`)
+                         .where("start", "<=", `${year}-${month}-31`);
         }
 
         query.get().then(snapshot => {
@@ -38,8 +39,8 @@ document.addEventListener("DOMContentLoaded", () => {
             <h3>${data.title}</h3>
             <p><strong>Date:</strong> ${formatDate(data.start)}</p>
             <p><strong>Type:</strong> ${getEventType(data.color)}</p>
-            <button onclick="editEvent('${id}')">Edit</button>
-            <button onclick="deleteEvent('${id}')">Delete</button>
+            <button class="edit-btn" data-id="${id}">Edit</button>
+            <button class="delete-btn" data-id="${id}">Delete</button>
         `;
         eventList.appendChild(eventItem);
     }
@@ -87,9 +88,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     document.getElementById("applyFilters").addEventListener("click", () => {
-        const filterMonth = document.getElementById("filterMonth").value;
-        const filterYear = document.getElementById("filterYear").value;
-        fetchEvents(filterMonth, filterYear);
+        const filterDate = document.getElementById("filterDate").value;
+        fetchEvents(filterDate);
     });
 
     document.getElementById("eventForm").addEventListener("submit", (e) => {
@@ -116,6 +116,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 fetchEvents();
                 document.getElementById("eventForm").reset();
             });
+        }
+    });
+
+    eventList.addEventListener("click", (event) => {
+        if (event.target.classList.contains("edit-btn")) {
+            editEvent(event.target.dataset.id);
+        } else if (event.target.classList.contains("delete-btn")) {
+            deleteEvent(event.target.dataset.id);
         }
     });
 
