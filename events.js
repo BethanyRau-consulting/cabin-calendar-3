@@ -7,12 +7,14 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("✅ Firebase SDK detected. Initializing Firestore...");
     const db = firebase.firestore();
     const eventList = document.getElementById("eventList");
+    let selectedEventId = null;
 
-    function fetchEvents(filterDate = "") {
+    function fetchEvents(filterMonth = "", filterYear = "") {
         let query = db.collection("events").orderBy("start", "asc");
 
-        if (filterDate) {
-            query = query.where("start", "==", filterDate);
+        if (filterMonth && filterYear) {
+            query = query.where("start", ">=", `${filterYear}-${filterMonth}-01`)
+                         .where("start", "<=", `${filterYear}-${filterMonth}-31`);
         }
 
         query.get().then(snapshot => {
@@ -36,14 +38,14 @@ document.addEventListener("DOMContentLoaded", () => {
             <h3>${data.title}</h3>
             <p><strong>Date:</strong> ${formatDate(data.start)}</p>
             <p><strong>Type:</strong> ${getEventType(data.color)}</p>
-            <button class="edit-btn" data-id="${id}">Edit</button>
-            <button class="delete-btn" data-id="${id}">Delete</button>
+            <button onclick="editEvent('${id}')">Edit</button>
+            <button onclick="deleteEvent('${id}')">Delete</button>
         `;
         eventList.appendChild(eventItem);
     }
 
     function formatDate(date) {
-        const d = new Date(date);
+        const d = new Date(date + "T12:00:00Z"); // Fixes date offset issue
         return d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
     }
 
@@ -64,27 +66,10 @@ document.addEventListener("DOMContentLoaded", () => {
         db.collection("events").doc(eventId).get().then(doc => {
             if (doc.exists) {
                 const data = doc.data();
+                document.getElementById("eventId").value = eventId;
                 document.getElementById("eventTitle").value = data.title;
                 document.getElementById("eventDate").value = data.start;
                 document.getElementById("eventType").value = data.color;
-
-                document.getElementById("eventForm").onsubmit = (e) => {
-                    e.preventDefault();
-                    const updatedTitle = document.getElementById("eventTitle").value;
-                    const updatedDate = document.getElementById("eventDate").value;
-                    const updatedColor = document.getElementById("eventType").value;
-
-                    db.collection("events").doc(eventId).update({
-                        title: updatedTitle,
-                        start: updatedDate,
-                        color: updatedColor
-                    }).then(() => {
-                        fetchEvents();
-                        document.getElementById("eventForm").reset();
-                    }).catch(error => {
-                        console.error("❌ Error updating event:", error);
-                    });
-                };
             }
         }).catch(error => {
             console.error("❌ Error fetching event:", error);
@@ -102,12 +87,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     document.getElementById("applyFilters").addEventListener("click", () => {
-        const filterDate = document.getElementById("filterDate").value;
-        fetchEvents(filterDate);
+        const filterMonth = document.getElementById("filterMonth").value;
+        const filterYear = document.getElementById("filterYear").value;
+        fetchEvents(filterMonth, filterYear);
     });
 
     document.getElementById("eventForm").addEventListener("submit", (e) => {
         e.preventDefault();
+        const eventId = document.getElementById("eventId").value;
         const title = document.getElementById("eventTitle").value;
         const date = document.getElementById("eventDate").value;
         const color = document.getElementById("eventType").value;
@@ -117,30 +104,20 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        db.collection("events").add({
-            title,
-            start: date,
-            color
-        }).then(() => {
-            fetchEvents();
-            document.getElementById("eventForm").reset();
-        }).catch(error => {
-            console.error("❌ Error adding event:", error);
-        });
-    });
+        const eventData = { title, start: date, color };
 
-    // ✅ Use Event Delegation to Handle Clicks on Edit & Delete
-    eventList.addEventListener("click", (event) => {
-        if (event.target.classList.contains("edit-btn")) {
-            editEvent(event.target.dataset.id);
-        } else if (event.target.classList.contains("delete-btn")) {
-            deleteEvent(event.target.dataset.id);
+        if (eventId) {
+            db.collection("events").doc(eventId).update(eventData).then(() => {
+                fetchEvents();
+                document.getElementById("eventForm").reset();
+            });
+        } else {
+            db.collection("events").add(eventData).then(() => {
+                fetchEvents();
+                document.getElementById("eventForm").reset();
+            });
         }
     });
 
     fetchEvents();
-
-    // ✅ Expose Functions Globally (Fixes `editEvent` & `deleteEvent` Not Defined)
-    window.editEvent = editEvent;
-    window.deleteEvent = deleteEvent;
 });
