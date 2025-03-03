@@ -86,9 +86,46 @@ document.addEventListener("DOMContentLoaded", () => {
     function deleteEvent(eventId) {
         if (confirm("❌ Are you sure you want to delete this event?")) {
             db.collection("events").doc(eventId).delete().then(() => {
+                console.log("✅ Event deleted successfully!");
                 fetchEvents();
             }).catch(error => {
                 console.error("❌ Error deleting event:", error);
+            });
+        }
+    }
+
+    function saveEvent() {
+        const eventId = document.getElementById("eventId").value;
+        const title = document.getElementById("eventTitle").value;
+        const start = document.getElementById("eventStart").value;
+        const end = document.getElementById("eventEnd").value || null;
+        const startTime = document.getElementById("eventStartTime").value || null;
+        const endTime = document.getElementById("eventEndTime").value || null;
+        const details = document.getElementById("eventDetails").value || "";
+        const color = document.getElementById("eventType").value;
+
+        if (!title || !start) {
+            alert("⚠️ Title and start date are required!");
+            return;
+        }
+
+        const eventData = { title, start, end, startTime, endTime, details, color };
+
+        if (eventId) {
+            db.collection("events").doc(eventId).update(eventData).then(() => {
+                console.log("✅ Event updated successfully!");
+                fetchEvents();
+                document.getElementById("eventForm").reset();
+            }).catch(error => {
+                console.error("❌ Error updating event:", error);
+            });
+        } else {
+            db.collection("events").add(eventData).then(() => {
+                console.log("✅ Event saved successfully!");
+                fetchEvents();
+                document.getElementById("eventForm").reset();
+            }).catch(error => {
+                console.error("❌ Error adding event:", error);
             });
         }
     }
@@ -103,8 +140,13 @@ document.addEventListener("DOMContentLoaded", () => {
         saveEvent();
     });
 
-    fetchEvents();
+    eventList.addEventListener("click", (event) => {
+        if (event.target.classList.contains("edit-btn")) {
+            editEvent(event.target.dataset.id);
+        } else if (event.target.classList.contains("delete-btn")) {
+            deleteEvent(event.target.dataset.id);
+        }
+    });
 
-    window.editEvent = editEvent;
-    window.deleteEvent = deleteEvent;
+    fetchEvents();
 });
