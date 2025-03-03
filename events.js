@@ -8,8 +8,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const db = firebase.firestore();
     const eventList = document.getElementById("eventList");
 
-    function fetchEvents(filterMonth = "", filterYear = "") {
-        let query = db.collection("events").orderBy("start", "asc");
+    function fetchEvents(sortOrder = "newest", filterMonth = "", filterYear = "") {
+        let query = db.collection("events").orderBy("start", sortOrder === "newest" ? "desc" : "asc");
 
         if (filterMonth && filterYear) {
             query = query.where("start", ">=", `${filterYear}-${filterMonth}-01`)
@@ -36,8 +36,8 @@ document.addEventListener("DOMContentLoaded", () => {
         eventItem.innerHTML = `
             <h3>${data.title}</h3>
             <p><strong>Date:</strong> ${formatDate(data.start)}</p>
-            <p><strong>Type:</strong> ${getEventType(data.color)}</p>
-            <button onclick="editEvent('${id}', '${data.title}', '${data.start}', '${data.color}')">Edit</button>
+            <p><strong>Type:</strong> ${data.color}</p>
+            <button onclick="editEvent('${id}')">Edit</button>
             <button onclick="deleteEvent('${id}')">Delete</button>
         `;
         eventList.appendChild(eventItem);
@@ -48,41 +48,35 @@ document.addEventListener("DOMContentLoaded", () => {
         return d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
     }
 
-    function getEventType(color) {
-        const eventTypes = {
-            "None": "Open",
-            "Green": "Family Time",
-            "Yellow": "Family Time (Visitors Welcome!)",
-            "Red": "Golf Weekend",
-            "Orange": "Hunting",
-            "Blue": "Work Weekend",
-            "Purple": "Trout Weekend"
-        };
-        return eventTypes[color] || "Unknown Type";
-    }
+    function editEvent(id) {
+        db.collection("events").doc(id).get().then(doc => {
+            if (doc.exists) {
+                const data = doc.data();
+                document.getElementById("eventTitle").value = data.title;
+                document.getElementById("eventDate").value = data.start;
+                document.getElementById("eventType").value = data.color;
 
-    function editEvent(id, title, date, color) {
-        document.getElementById("eventTitle").value = title;
-        document.getElementById("eventDate").value = date;
-        document.getElementById("eventType").value = color;
+                document.getElementById("eventForm").onsubmit = (e) => {
+                    e.preventDefault();
+                    const updatedTitle = document.getElementById("eventTitle").value;
+                    const updatedDate = document.getElementById("eventDate").value;
+                    const updatedColor = document.getElementById("eventType").value;
 
-        document.getElementById("eventForm").onsubmit = (e) => {
-            e.preventDefault();
-            const updatedTitle = document.getElementById("eventTitle").value;
-            const updatedDate = document.getElementById("eventDate").value;
-            const updatedColor = document.getElementById("eventType").value;
-
-            db.collection("events").doc(id).update({
-                title: updatedTitle,
-                start: updatedDate,
-                color: updatedColor
-            }).then(() => {
-                fetchEvents();
-                document.getElementById("eventForm").reset();
-            }).catch(error => {
-                console.error("❌ Error updating event:", error);
-            });
-        };
+                    db.collection("events").doc(id).update({
+                        title: updatedTitle,
+                        start: updatedDate,
+                        color: updatedColor
+                    }).then(() => {
+                        fetchEvents();
+                        document.getElementById("eventForm").reset();
+                    }).catch(error => {
+                        console.error("❌ Error updating event:", error);
+                    });
+                };
+            }
+        }).catch(error => {
+            console.error("❌ Error fetching event:", error);
+        });
     }
 
     function deleteEvent(id) {
@@ -96,9 +90,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     document.getElementById("applyFilters").addEventListener("click", () => {
+        const sortOrder = document.getElementById("sortOrder").value;
         const filterMonth = document.getElementById("filterMonth").value;
         const filterYear = document.getElementById("filterYear").value;
-        fetchEvents(filterMonth, filterYear);
+        fetchEvents(sortOrder, filterMonth, filterYear);
     });
 
     fetchEvents();
