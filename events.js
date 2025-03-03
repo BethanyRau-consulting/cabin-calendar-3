@@ -8,8 +8,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const db = firebase.firestore();
     const eventList = document.getElementById("eventList");
 
-    function fetchEvents() {
-        db.collection("events").orderBy("start", "asc").get().then(snapshot => {
+    function fetchEvents(filterMonth = "", filterYear = "") {
+        let query = db.collection("events").orderBy("start", "asc");
+
+        if (filterMonth && filterYear) {
+            query = query.where("start", ">=", `${filterYear}-${filterMonth}-01`)
+                         .where("start", "<=", `${filterYear}-${filterMonth}-31`);
+        }
+
+        query.get().then(snapshot => {
             eventList.innerHTML = "";
             if (snapshot.empty) {
                 eventList.innerHTML = "<p>No events found.</p>";
@@ -88,27 +95,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    document.getElementById("eventForm").addEventListener("submit", (e) => {
-        e.preventDefault();
-        const title = document.getElementById("eventTitle").value;
-        const date = document.getElementById("eventDate").value;
-        const color = document.getElementById("eventType").value;
-
-        if (!title || !date) {
-            alert("⚠️ Title and date are required!");
-            return;
-        }
-
-        db.collection("events").add({
-            title,
-            start: date,
-            color
-        }).then(() => {
-            fetchEvents();
-            document.getElementById("eventForm").reset();
-        }).catch(error => {
-            console.error("❌ Error adding event:", error);
-        });
+    document.getElementById("applyFilters").addEventListener("click", () => {
+        const filterMonth = document.getElementById("filterMonth").value;
+        const filterYear = document.getElementById("filterYear").value;
+        fetchEvents(filterMonth, filterYear);
     });
 
     fetchEvents();
