@@ -261,3 +261,21 @@ button:hover {
     border-radius: 10px;
     box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.15);
 }
+
+.event-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+.event-block {
+    font-size: 0.7em;
+    text-align: center;
+    padding: 2px;
+    color: black;
+    font-weight: bold;
+    overflow: hidden;
+    border-bottom: 1px solid white; /* Thin separator between events */
+}
