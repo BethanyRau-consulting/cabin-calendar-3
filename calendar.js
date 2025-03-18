@@ -61,25 +61,44 @@ const eventTypeMap = {
 while (current <= endDate) {
     const eventDateStr = `${current.getFullYear()}-${(current.getMonth() + 1).toString().padStart(2, '0')}-${current.getDate().toString().padStart(2, '0')}`;
 
-    document.querySelectorAll(`.day[data-date="${eventDateStr}"]`).forEach(dayElement => {
-        const eventType = event.color || "None"; // Get event type color from Firestore
-        const eventData = eventTypeMap[eventType] || eventTypeMap["None"]; // Default to "None" if undefined
+document.querySelectorAll(`.day[data-date="${eventDateStr}"]`).forEach(dayElement => {
+    let existingEvents = dayElement.dataset.events ? JSON.parse(dayElement.dataset.events) : [];
+    existingEvents.push(event);
+    dayElement.dataset.events = JSON.stringify(existingEvents);
 
-        // ✅ Apply pastel background color
-        dayElement.style.backgroundColor = eventData.color;
+    // Clear previous styles
+    dayElement.innerHTML = "";
+    dayElement.style.background = "none";
+    
+    // Create a container for stacked events
+    const eventContainer = document.createElement("div");
+    eventContainer.classList.add("event-container");
 
-        let titleDiv = dayElement.querySelector('.event-title');
-        if (!titleDiv) {
-            titleDiv = document.createElement('div');
-            titleDiv.classList.add('event-title');
-            dayElement.appendChild(titleDiv);
-        }
+    // Determine split height per event
+    const eventHeight = 100 / existingEvents.length; // % based
 
-        // ✅ Display event label instead of raw color name
-        titleDiv.textContent = eventData.label;
+    existingEvents.forEach((evt, index) => {
+        const eventType = evt.color || "None";
+        const eventData = eventTypeMap[eventType] || eventTypeMap["None"];
 
-        dayElement.addEventListener("click", () => openEventModal(eventDateStr, doc.id, event));
+        // Create a div for each event & split evenly
+        let eventDiv = document.createElement("div");
+        eventDiv.classList.add("event-block");
+        eventDiv.style.height = `${eventHeight}%`;
+        eventDiv.style.backgroundColor = eventData.color;
+        eventDiv.textContent = eventData.label;
+
+        eventDiv.addEventListener("click", (e) => {
+            e.stopPropagation();
+            openEventModal(eventDateStr, evt.id, evt);
+        });
+
+        eventContainer.appendChild(eventDiv);
     });
+
+    dayElement.appendChild(eventContainer);
+});
+
 
     current.setDate(current.getDate() + 1);
 }
