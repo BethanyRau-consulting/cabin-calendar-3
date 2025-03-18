@@ -66,16 +66,25 @@ document.querySelectorAll(`.day[data-date="${eventDateStr}"]`).forEach(dayElemen
     existingEvents.push(event);
     dayElement.dataset.events = JSON.stringify(existingEvents);
 
-    // Clear previous styles
-    dayElement.innerHTML = "";
-    dayElement.style.background = "none";
-    
+    // Ensure the date number stays visible
+    let dateNumber = dayElement.querySelector('.date-number');
+    if (!dateNumber) {
+        dateNumber = document.createElement("div");
+        dateNumber.classList.add("date-number");
+        dateNumber.textContent = dayElement.dataset.date.split("-")[2]; // Extract day from date format
+        dayElement.appendChild(dateNumber);
+    }
+
+    // Remove any existing event containers
+    let existingEventContainer = dayElement.querySelector(".event-container");
+    if (existingEventContainer) existingEventContainer.remove();
+
     // Create a container for stacked events
     const eventContainer = document.createElement("div");
     eventContainer.classList.add("event-container");
 
     // Determine split height per event
-    const eventHeight = 100 / existingEvents.length; // % based
+    const eventHeight = 80 / existingEvents.length; // % based, leaving space for date
 
     existingEvents.forEach((evt, index) => {
         const eventType = evt.color || "None";
@@ -98,6 +107,7 @@ document.querySelectorAll(`.day[data-date="${eventDateStr}"]`).forEach(dayElemen
 
     dayElement.appendChild(eventContainer);
 });
+
 
 
     current.setDate(current.getDate() + 1);
