@@ -9,15 +9,15 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentDate = new Date();
     let selectedEventId = null;
 
-    const eventTypeMap = {
-        "None": "Open",
-        "Green": "Family Time",
-        "Yellow": "Family Time (Visitors Welcome!)",
-        "Red": "Golf Weekend",
-        "Orange": "Hunting",
-        "Blue": "Work Weekend",
-        "Purple": "Trout Weekend"
-    };
+const eventTypeMap = {
+    "None": { label: "Open", color: "#FFFFFF" },
+    "Green": { label: "Family Time", color: "#A8E6A3" },
+    "Yellow": { label: "Family Time (Visitors Welcome!)", color: "#FFF4A3" },
+    "Red": { label: "Golf Weekend", color: "#FFB3B3" },
+    "Orange": { label: "Hunting", color: "#FFD699" },
+    "Blue": { label: "Work Weekend", color: "#A3D9FF" },
+    "Purple": { label: "Trout Weekend", color: "#D3A3FF" }
+};
 
     function renderCalendar() {
         const monthName = document.getElementById("monthName");
@@ -58,24 +58,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 let current = new Date(startDate);
 
-                while (current <= endDate) {
-                    const eventDateStr = `${current.getFullYear()}-${(current.getMonth() + 1).toString().padStart(2, '0')}-${current.getDate().toString().padStart(2, '0')}`;
+while (current <= endDate) {
+    const eventDateStr = `${current.getFullYear()}-${(current.getMonth() + 1).toString().padStart(2, '0')}-${current.getDate().toString().padStart(2, '0')}`;
 
-                    document.querySelectorAll(`.day[data-date="${eventDateStr}"]`).forEach(dayElement => {
-                        dayElement.style.backgroundColor = event.color || "#ffcc00";
+    document.querySelectorAll(`.day[data-date="${eventDateStr}"]`).forEach(dayElement => {
+        const eventType = event.color || "None"; // Get event type color from Firestore
+        const eventData = eventTypeMap[eventType] || eventTypeMap["None"]; // Default to "None" if undefined
 
-                        let titleDiv = dayElement.querySelector('.event-title');
-                        if (!titleDiv) {
-                            titleDiv = document.createElement('div');
-                            titleDiv.classList.add('event-title');
-                            dayElement.appendChild(titleDiv);
-                        }
-                        titleDiv.textContent = event.title; // ✅ Display event title instead of type
-                        dayElement.addEventListener("click", () => openEventModal(eventDateStr, doc.id, event));
-                    });
+        // ✅ Apply pastel background color
+        dayElement.style.backgroundColor = eventData.color;
 
-                    current.setDate(current.getDate() + 1);
-                }
+        let titleDiv = dayElement.querySelector('.event-title');
+        if (!titleDiv) {
+            titleDiv = document.createElement('div');
+            titleDiv.classList.add('event-title');
+            dayElement.appendChild(titleDiv);
+        }
+
+        // ✅ Display event label instead of raw color name
+        titleDiv.textContent = eventData.label;
+
+        dayElement.addEventListener("click", () => openEventModal(eventDateStr, doc.id, event));
+    });
+
+    current.setDate(current.getDate() + 1);
+}
+
             });
         }).catch(error => {
             console.error("❌ Error loading events:", error);
