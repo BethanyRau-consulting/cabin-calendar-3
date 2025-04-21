@@ -301,3 +301,41 @@ button:hover {
     flex-grow: 1;
 }
 
+.calendar-key {
+    width: 90%;
+    max-width: 1000px;
+    margin: 20px auto;
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: left;
+}
+
+.calendar-key h3 {
+    margin-bottom: 10px;
+    font-size: 18px;
+    color: #333;
+}
+
+.calendar-key ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.calendar-key li {
+    margin: 5px 0;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+}
+
+.key-box {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
