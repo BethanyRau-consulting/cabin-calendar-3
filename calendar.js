@@ -167,15 +167,21 @@ document.querySelectorAll(`.day[data-date="${eventDateStr}"]`).forEach(dayElemen
         }
     }
 
-    function deleteEvent() {
-        if (selectedEventId && confirm("❌ Are you sure you want to delete this event?")) {
-            db.collection("events").doc(selectedEventId).delete().then(() => {
-                console.log("✅ Event deleted!");
-                renderCalendar();
-                closeEventModal();
-            }).catch(error => console.error("❌ Error deleting event:", error));
-        }
+function deleteEvent() {
+    if (!selectedEventId) {
+        alert("No event selected to delete.");
+        return;
     }
+
+    db.collection("events").doc(selectedEventId).delete().then(() => {
+        console.log("✅ Event deleted.");
+        selectedEventId = null;
+        document.getElementById("eventModal").style.display = "none";
+        renderCalendar(); // Refresh calendar display
+    }).catch(error => {
+        console.error("❌ Error deleting event:", error);
+    });
+}
 
     document.getElementById("prevBtn").addEventListener("click", () => {
         currentDate.setMonth(currentDate.getMonth() - 1);
