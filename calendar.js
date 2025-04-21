@@ -46,6 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
             dateNumber.textContent = i;
             day.appendChild(dateNumber);
 
+            day.addEventListener("click", () => openEventModal(dateStr)); // ✅ Click for new event
             calendarGrid.appendChild(day);
         }
 
@@ -59,7 +60,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (!event.start) return;
 
                 event.id = doc.id; // ✅ Store Firestore ID for editing/deleting
-
                 const startDate = new Date(event.start + "T00:00:00");
                 const endDate = event.end ? new Date(event.end + "T00:00:00") : new Date(event.start + "T00:00:00");
 
@@ -82,8 +82,8 @@ document.addEventListener("DOMContentLoaded", () => {
                         eventDiv.textContent = event.title;
 
                         eventDiv.addEventListener("click", (e) => {
-                            e.stopPropagation();
-                            openEventModal(eventDateStr, event.id, event);
+                            e.stopPropagation(); // prevent bubbling to day click
+                            openEventModal(eventDateStr, event.id, event); // ✅ Edit event
                         });
 
                         container.appendChild(eventDiv);
@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function closeEventModal() {
         document.getElementById("eventModal").style.display = "none";
-        selectedEventId = null; // ✅ Clear on cancel
+        selectedEventId = null;
     }
 
     function saveEvent() {
