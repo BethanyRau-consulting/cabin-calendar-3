@@ -41,7 +41,6 @@ document.addEventListener("DOMContentLoaded", () => {
             const dateStr = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
             day.dataset.date = dateStr;
 
-            // Date number for display
             const dateNumber = document.createElement("div");
             dateNumber.classList.add("date-number");
             dateNumber.textContent = i;
@@ -59,6 +58,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 const event = doc.data();
                 if (!event.start) return;
 
+                event.id = doc.id; // ✅ Store Firestore ID for editing/deleting
+
                 const startDate = new Date(event.start + "T00:00:00");
                 const endDate = event.end ? new Date(event.end + "T00:00:00") : new Date(event.start + "T00:00:00");
 
@@ -67,16 +68,14 @@ document.addEventListener("DOMContentLoaded", () => {
                     const eventDateStr = `${current.getFullYear()}-${(current.getMonth() + 1).toString().padStart(2, '0')}-${current.getDate().toString().padStart(2, '0')}`;
 
                     document.querySelectorAll(`.day[data-date="${eventDateStr}"]`).forEach(dayElement => {
-                        let existingEventContainer = dayElement.querySelector(".event-container");
-                        if (!existingEventContainer) {
-                            existingEventContainer = document.createElement("div");
-                            existingEventContainer.classList.add("event-container");
-                            dayElement.appendChild(existingEventContainer);
+                        let container = dayElement.querySelector(".event-container");
+                        if (!container) {
+                            container = document.createElement("div");
+                            container.classList.add("event-container");
+                            dayElement.appendChild(container);
                         }
 
-                        const eventType = event.color || "None";
-                        const eventData = eventTypeMap[eventType] || eventTypeMap["None"];
-
+                        const eventData = eventTypeMap[event.color] || eventTypeMap["None"];
                         const eventDiv = document.createElement("div");
                         eventDiv.classList.add("event-block");
                         eventDiv.style.backgroundColor = eventData.color;
@@ -84,10 +83,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
                         eventDiv.addEventListener("click", (e) => {
                             e.stopPropagation();
-                            openEventModal(eventDateStr, doc.id, event);  // ✅ set selectedEventId correctly
+                            openEventModal(eventDateStr, event.id, event);
                         });
 
-                        existingEventContainer.appendChild(eventDiv);
+                        container.appendChild(eventDiv);
                     });
 
                     current.setDate(current.getDate() + 1);
@@ -100,7 +99,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function openEventModal(date, eventId = null, eventData = {}) {
         selectedEventId = eventId;
-
         document.getElementById("eventStart").value = date;
         document.getElementById("eventTitle").value = eventData.title || "";
         document.getElementById("eventEnd").value = eventData.end || "";
@@ -113,6 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function closeEventModal() {
         document.getElementById("eventModal").style.display = "none";
+        selectedEventId = null; // ✅ Clear on cancel
     }
 
     function saveEvent() {
@@ -166,7 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Navigation + Modal buttons
+    // Navigation + Modal button listeners
     document.getElementById("prevBtn").addEventListener("click", () => {
         currentDate.setMonth(currentDate.getMonth() - 1);
         renderCalendar();
