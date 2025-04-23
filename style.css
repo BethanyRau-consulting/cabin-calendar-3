@@ -409,3 +409,73 @@ form button {
   background-color: #dc3545;
   color: white;
 }
+
+#inventory-table {
+  width: 90%;
+  max-width: 1000px;
+  margin: 30px auto;
+  border-collapse: collapse;
+  background: white;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+#inventory-table th, #inventory-table td {
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+  font-size: 16px;
+}
+
+#inventory-table th {
+  background-color: #dff5e1;
+  color: #333;
+}
+
+.styled-form {
+  width: 90%;
+  max-width: 600px;
+  margin: 20px auto;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.15);
+}
+
+.styled-form label {
+  font-weight: bold;
+  margin-top: 10px;
+  display: block;
+  text-align: left;
+}
+
+.styled-form input[type="text"],
+.styled-form input[type="number"] {
+  width: 100%;
+  margin: 5px 0 10px;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.styled-form input[type="checkbox"] {
+  margin-top: 10px;
+}
+
+.styled-form button {
+  display: block;
+  margin-top: 15px;
+  background-color: #0073e6;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.styled-form button:hover {
+  background-color: #005bb5;
+}
