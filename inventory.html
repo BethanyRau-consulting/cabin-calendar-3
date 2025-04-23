@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Cabin Inventory</title>
-  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <h1>Cabin Inventory</h1>
@@ -16,35 +16,33 @@
     <a href="inventory.html">Inventory</a>
   </nav>
 
-<form class="styled-form" id="inventory-form">
-  <label for="item-name">Item Name:</label>
-  <input type="text" id="item-name" required>
+  <form id="inventory-form" class="styled-form">
+    <label for="item-name">Item Name:</label>
+    <input type="text" id="item-name" required />
 
-  <label for="item-quantity">Quantity:</label>
-  <input type="number" id="item-quantity" required>
+    <label for="item-quantity">Quantity:</label>
+    <input type="number" id="item-quantity" required min="1" />
 
-  <label for="item-needed">Needed?</label>
-  <input type="checkbox" id="item-needed">
+    <label for="item-needed">
+      <input type="checkbox" id="item-needed" />
+      Needed?
+    </label>
 
-  <button type="submit" id="add-button">Add Item</button>
-</form>
-
+    <button type="submit" id="submit-item">Add Item</button>
+  </form>
 
   <table id="inventory-table">
     <thead>
       <tr>
         <th>Item</th>
         <th>Quantity</th>
-        <th>Needed</th>
+        <th>Needed?</th>
         <th>Actions</th>
       </tr>
     </thead>
-    <tbody id="inventory-list">
-      <!-- Items will populate here -->
-    </tbody>
+    <tbody id="inventory-body"></tbody>
   </table>
 
-  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
@@ -57,9 +55,9 @@
       messagingSenderId: "373184478865",
       appId: "1:373184478865:web:cf1e0e816be89107538930"
     };
-
     firebase.initializeApp(firebaseConfig);
   </script>
+
   <script src="inventory.js" defer></script>
 </body>
 </html>
