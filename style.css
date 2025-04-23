@@ -466,11 +466,12 @@ form button {
 
 .styled-form button {
   display: block;
-  margin-top: 15px;
+  width: 100%;
+  margin-top: 20px;
   background-color: #0073e6;
   color: white;
   border: none;
-  padding: 10px 20px;
+  padding: 12px;
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
@@ -479,7 +480,7 @@ form button {
 .styled-form button:hover {
   background-color: #005bb5;
 }
-/* Align checkbox next to its label in the form only */
+
 .styled-form label[for="item-needed"] {
   display: flex;
   align-items: center;
