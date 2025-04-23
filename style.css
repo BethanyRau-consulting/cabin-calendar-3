@@ -1,3 +1,4 @@
+/* === Base Styles === */
 body {
     font-family: 'Poppins', sans-serif;
     margin: 0;
@@ -10,8 +11,7 @@ body {
 nav {
     background-color: #6a8d73;
     padding: 15px;
-    text-align: center;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 nav a {
@@ -20,40 +20,60 @@ nav a {
     margin: 0 15px;
     font-size: 18px;
     font-weight: bold;
-    transition: color 0.3s ease-in-out;
+    transition: color 0.3s;
 }
 
 nav a:hover {
     color: #f1f1f1;
 }
 
-form, .filter-container {
+/* === Forms & Filters === */
+form, .filter-container, .styled-form, .journal-form {
     width: 90%;
     max-width: 700px;
     margin: 20px auto;
-    padding: 20px;
     background: white;
+    padding: 20px;
     border-radius: 10px;
-    box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
+    text-align: left;
 }
 
-form label, .filter-container label {
+form label,
+.styled-form label,
+.filter-container label {
     font-weight: bold;
     display: block;
-    margin-top: 10px;
-    text-align: left;
+    margin: 10px 0 5px;
     color: #4a4a4a;
 }
 
-form input, form textarea, form select, .filter-container select {
-    width: calc(100% - 20px);
+form input,
+form select,
+form textarea,
+.styled-form input,
+.styled-form select,
+.styled-form textarea,
+.filter-container select {
+    width: 100%;
     padding: 12px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    margin-bottom: 10px;
     font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
     box-sizing: border-box;
     background-color: #f8f8f8;
+}
+
+.styled-form label[for="item-needed"] {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.styled-form input[type="checkbox"] {
+    margin-top: 0;
+    transform: scale(1.2);
 }
 
 button {
@@ -64,7 +84,7 @@ button {
     border-radius: 6px;
     cursor: pointer;
     font-size: 16px;
-    transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+    transition: background 0.3s, transform 0.2s;
 }
 
 button:hover {
@@ -72,6 +92,7 @@ button:hover {
     transform: scale(1.05);
 }
 
+/* === Calendar === */
 .calendar {
     width: 90%;
     max-width: 1000px;
@@ -79,7 +100,7 @@ button:hover {
     background: white;
     padding: 25px;
     border-radius: 12px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .header {
@@ -87,16 +108,15 @@ button:hover {
     justify-content: space-between;
     align-items: center;
     font-size: 1.5em;
-    padding: 10px 0;
-    color: #4a4a4a;
+    margin-bottom: 15px;
 }
 
 .days {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
+    background: #d9e2d4;
     font-weight: bold;
     font-size: 1.2em;
-    background: #d9e2d4;
     padding: 12px 0;
     border-radius: 8px;
 }
@@ -108,157 +128,24 @@ button:hover {
 }
 
 .day {
-    border-radius: 6px;
+    height: 100px;
     background: white;
+    border: 1px solid #ccc;
+    border-radius: 6px;
     box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.08);
     cursor: pointer;
-    position: relative;
-    transition: background 0.3s ease-in-out;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
     padding: 5px;
     position: relative;
-    border: 1px solid #ccc;
     font-size: 1.2em;
-    height: 100px;
 }
 
 .day:hover {
     background: #edf3eb;
 }
-
-.event-title {
-    position: absolute;
-    bottom: 3px;
-    left: 3px;
-    font-size: 0.8em;
-    color: black;
-    font-weight: bold;
-    max-width: 100%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    background: rgba(255, 255, 255, 0.5);
-    padding: 2px 6px;
-    border-radius: 3px;
-}
-
-.modal {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
-    max-width: 600px;
-    width: 90%;
-}
-
-.modal label {
-    font-weight: bold;
-    display: block;
-    margin-top: 10px;
-    color: #4a4a4a;
-}
-
-.modal input, .modal textarea, .modal select {
-    display: block;
-    width: calc(100% - 20px);
-    margin: 5px 0;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    padding: 12px;
-    font-size: 16px;
-}
-
-.event-list, .journal-entries {
-    width: 90%;
-    max-width: 700px;
-    margin: 20px auto;
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.15);
-    text-align: left;
-}
-
-.journal-entry {
-    width: 90%;
-    max-width: 700px; 
-    margin: 15px auto;
-    padding: 15px;
-    background: white;
-    border-radius: 10px;
-    border-left: 5px solid #0073e6;
-    box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.15);
-    text-align: left;
-}
-
-
-.event-item, .journal-entry {
-    background: white;
-    border-left: 6px solid #6a8d73;
-    padding: 18px;
-    margin-bottom: 15px;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease-in-out;
-}
-
-.event-item:hover, .journal-entry:hover {
-    transform: translateY(-3px);
-}
-
-.event-item h3, .journal-entry h3 {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 5px;
-    color: #4a4a4a;
-}
-
-.event-item p, .journal-entry p {
-    font-size: 16px;
-    margin: 5px 0;
-}
-
-.event-item p strong, .journal-entry p strong {
-    font-weight: bold;
-}
-
-.event-item button, .journal-entry button {
-    margin-top: 10px;
-    padding: 8px 12px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-.event-item button:first-of-type, .journal-entry button:first-of-type {
-    background-color: #ffc107;
-    color: black;
-}
-
-.event-item button:last-of-type, .journal-entry button:last-of-type {
-    background-color: #dc3545;
-    color: white;
-}
-
-.journal-form {
-    width: 90%;
-    max-width: 700px;
-    margin: 20px auto;
-    padding: 20px;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.15);
-}
-
 
 .date-number {
     font-size: 1em;
@@ -277,7 +164,7 @@ button:hover {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    margin-top: 15px; 
+    margin-top: 15px;
 }
 
 .event-block {
@@ -291,6 +178,79 @@ button:hover {
     flex-grow: 1;
 }
 
+.modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+    max-width: 600px;
+    width: 90%;
+}
+
+/* === Event List & Journal === */
+.event-list, .journal-entries {
+    width: 90%;
+    max-width: 700px;
+    margin: 20px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
+    text-align: left;
+}
+
+.event-item, .journal-entry {
+    background: white;
+    border-left: 6px solid #6a8d73;
+    padding: 18px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.event-item:hover, .journal-entry:hover {
+    transform: translateY(-3px);
+}
+
+.event-item h3, .journal-entry h3 {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.event-item p, .journal-entry p {
+    font-size: 16px;
+    margin: 5px 0;
+}
+
+.event-item button, .journal-entry button {
+    margin-top: 10px;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.event-item button:first-of-type,
+.journal-entry button:first-of-type {
+    background-color: #ffc107;
+    color: black;
+}
+
+.event-item button:last-of-type,
+.journal-entry button:last-of-type {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* === Calendar Key === */
 .calendar-key {
     width: 90%;
     max-width: 1000px;
@@ -303,15 +263,13 @@ button:hover {
 }
 
 .calendar-key h3 {
-    margin-bottom: 10px;
     font-size: 18px;
-    color: #333;
+    margin-bottom: 10px;
 }
 
 .calendar-key ul {
     list-style: none;
     padding: 0;
-    margin: 0;
 }
 
 .calendar-key li {
@@ -322,7 +280,6 @@ button:hover {
 }
 
 .key-box {
-    display: inline-block;
     width: 20px;
     height: 20px;
     margin-right: 10px;
@@ -330,164 +287,26 @@ button:hover {
     border-radius: 4px;
 }
 
-.container {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-form {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-form input[type="text"],
-form input[type="number"] {
-  flex: 1 1 100%;
-  padding: 8px;
-}
-
-form label {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-form button {
-  padding: 8px 16px;
-}
-
-/* Inventory List */
-#inventory-list {
-  width: 90%;
-  max-width: 1000px;
-  margin: 20px auto;
-  padding: 0;
-  list-style: none;
-  text-align: left;
-}
-
-.inventory-item {
-  background: white;
-  border-left: 5px solid #0073e6;
-  padding: 15px;
-  margin-bottom: 10px;
-  border-radius: 8px;
-  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.inventory-item.needed {
-  border-left-color: #dc3545;
-  background: #fff4f4;
-}
-
-.inventory-item .item-info {
-  flex: 1;
-  font-weight: bold;
-}
-
-.inventory-item .item-actions button {
-  margin-left: 10px;
-  padding: 5px 10px;
-  font-size: 14px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.inventory-item .toggle-needed {
-  background-color: #ffc107;
-  color: black;
-}
-
-.inventory-item .delete-item {
-  background-color: #dc3545;
-  color: white;
-}
-
+/* === Inventory Table === */
 #inventory-table {
-  width: 90%;
-  max-width: 1000px;
-  margin: 30px auto;
-  border-collapse: collapse;
-  background: white;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  border-radius: 8px;
-  overflow: hidden;
+    width: 90%;
+    max-width: 1000px;
+    margin: 30px auto;
+    border-collapse: collapse;
+    background: white;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    overflow: hidden;
 }
 
 #inventory-table th, #inventory-table td {
-  padding: 15px;
-  border-bottom: 1px solid #eee;
-  text-align: left;
-  font-size: 16px;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    text-align: left;
+    font-size: 16px;
 }
 
 #inventory-table th {
-  background-color: #dff5e1;
-  color: #333;
-}
-
-.styled-form {
-  width: 90%;
-  max-width: 600px;
-  margin: 20px auto;
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.15);
-}
-
-.styled-form label {
-  font-weight: bold;
-  margin-top: 10px;
-  display: block;
-  text-align: left;
-}
-
-.styled-form input[type="text"],
-.styled-form input[type="number"] {
-  width: 100%;
-  margin: 5px 0 10px;
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-.styled-form input[type="checkbox"] {
-  margin-top: 10px;
-}
-
-.styled-form button {
-  display: block;
-  width: 100%;
-  margin-top: 20px;
-  background-color: #0073e6;
-  color: white;
-  border: none;
-  padding: 12px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-.styled-form button:hover {
-  background-color: #005bb5;
-}
-
-.styled-form label[for="item-needed"] {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-#item-needed {
-  width: auto;
-  margin: 0;
+    background-color: #d9e2d4;
+    color: #333;
 }
