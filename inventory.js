@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const neededInput = document.getElementById("item-needed");
   const submitButton = document.getElementById("submit-item");
   const cancelButton = document.getElementById("cancel-item");
-  const filterSelect = document.getElementById("filter-needed");
+  const filterSelect = document.getElementById("neededFilter");
 
   let editingItemId = null;
 
@@ -17,12 +17,12 @@ document.addEventListener("DOMContentLoaded", () => {
       snapshot.forEach(doc => {
         const item = doc.data();
 
-        // Apply filter
+        // Apply filtering
         if (
           (filter === "needed" && !item.Needed) ||
           (filter === "not-needed" && item.Needed)
         ) {
-          return; // Skip this item
+          return; // skip this item
         }
 
         const row = document.createElement("tr");
@@ -84,7 +84,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (e.target.classList.contains("delete-btn")) {
-      db.collection("inventory").doc(id).delete().then(() => renderInventory(filterSelect.value));
+      db.collection("inventory").doc(id).delete().then(() => {
+        renderInventory(filterSelect.value);
+      });
     }
 
     if (e.target.classList.contains("toggle-needed")) {
@@ -92,9 +94,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // ✅ Add event listener to filter dropdown
   filterSelect.addEventListener("change", () => {
     renderInventory(filterSelect.value);
   });
 
+  // ✅ Initial load
   renderInventory();
 });
