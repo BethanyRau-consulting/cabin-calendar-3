@@ -87,11 +87,12 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+const cancelButton = document.getElementById("cancel-item");
 cancelButton.addEventListener("click", () => {
-  form.reset();
-  delete form.dataset.editId;
-  document.getElementById("submit-item").textContent = "Add Item";
+  document.getElementById("inventory-form").reset();
+  document.getElementById("add-item").textContent = "Add Item";
 });
+
 
   renderInventory();
 });
