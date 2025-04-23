@@ -310,3 +310,11 @@ button:hover {
     background-color: #d9e2d4;
     color: #333;
 }
+
+.inline-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0;
+  font-weight: bold;
+}
