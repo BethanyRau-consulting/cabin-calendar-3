@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inventory</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
 </head>
 <body>
     <h1>Inventory</h1>
@@ -16,3 +19,19 @@
         <a href="photos.html">Pictures</a> |
         <a href="inventory.html">Inventory</a> 
     </nav>
+    <div class="container">
+    <h1>Cabin Inventory & Shopping List</h1>
+        <form id="add-item-form">
+      <input type="text" id="item-name" placeholder="Item Name" required />
+      <input type="number" id="item-quantity" placeholder="Quantity" min="1" required />
+      <label>
+        <input type="checkbox" id="item-needed" />
+        Needed
+      </label>
+      <button type="submit">Add Item</button>
+    </form>
+    <ul id="inventory-list"></ul>
+  </div>
+  <script src="js/inventory.js" type="module"></script>
+</body>
+</html>
