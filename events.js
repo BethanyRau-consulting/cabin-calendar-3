@@ -1,13 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
     if (typeof firebase === "undefined") {
-        console.error("❌ Firebase SDK not loaded. Ensure scripts are included in `events.html`.");
+        console.error(" irebase SDK not loaded. Ensure scripts are included in `events.html`.");
         return;
     }
 
-    console.log("✅ Firebase SDK detected. Initializing Firestore...");
+    console.log("Firebase SDK detected. Initializing Firestore...");
     const db = firebase.firestore();
     const eventList = document.getElementById("eventList");
-    let selectedEventId = null;
 
     function fetchEvents(filterDate = "") {
         let query = db.collection("events").orderBy("start", "asc");
@@ -28,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             }
         }).catch(error => {
-            console.error("❌ Error fetching events:", error);
+            console.error("Error fetching events:", error);
         });
     }
 
@@ -48,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function formatDate(date) {
-        const d = new Date(date + "T12:00:00Z"); // Fixes date offset issue
+        const d = new Date(date + "T12:00:00Z");
         return d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
     }
 
@@ -75,35 +74,30 @@ document.addEventListener("DOMContentLoaded", () => {
                 document.getElementById("eventEnd").value = data.end || "";
                 document.getElementById("eventStartTime").value = data.startTime || "";
                 document.getElementById("eventEndTime").value = data.endTime || "";
-                document.getElementById("eventType").value = data.color;
+                document.getElementById("eventType").value = data.color || "None";
                 document.getElementById("eventDetails").value = data.details || "";
             }
         }).catch(error => {
-            console.error("❌ Error fetching event:", error);
+            console.error("Error fetching event:", error);
         });
     }
 
     function deleteEvent(eventId) {
-        if (confirm("❌ Are you sure you want to delete this event?")) {
+        if (confirm("Are you sure you want to delete this event?")) {
             db.collection("events").doc(eventId).delete().then(() => {
-                console.log("✅ Event deleted successfully!");
+                console.log("Event deleted!");
                 fetchEvents();
+                document.getElementById("eventForm").reset();
+                document.getElementById("eventId").value = "";
             }).catch(error => {
-                console.error("❌ Error deleting event:", error);
+                console.error("Error deleting event:", error);
             });
         }
     }
-    
+
     function cancelEvent() {
-        document.getElementById("eventTitle").value = "";
-        document.getElementById("eventStart").value = "";
-        document.getElementById("eventEnd").value = "";
-        document.getElementById("eventStartTime").value = "";
-        document.getElementById("eventEndTime").value = "";
-        document.getElementById("eventDetails").value = "";
-        document.getElementById("eventType").value = "None"; // Reset to default
-        selectedEventId = null; // Exit editing mode
-        document.getElementById("eventModal").style.display = "none"; // Close modal if used
+        document.getElementById("eventForm").reset();
+        document.getElementById("eventId").value = "";
     }
 
     function saveEvent() {
@@ -117,7 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const color = document.getElementById("eventType").value;
 
         if (!title || !start) {
-            alert("⚠️ Title and start date are required!");
+            alert("Title and start date are required!");
             return;
         }
 
@@ -125,19 +119,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (eventId) {
             db.collection("events").doc(eventId).update(eventData).then(() => {
-                console.log("✅ Event updated successfully!");
+                console.log("Event updated!");
                 fetchEvents();
                 document.getElementById("eventForm").reset();
+                document.getElementById("eventId").value = "";
             }).catch(error => {
-                console.error("❌ Error updating event:", error);
+                console.error("Error updating event:", error);
             });
         } else {
             db.collection("events").add(eventData).then(() => {
-                console.log("✅ Event saved successfully!");
+                console.log("Event added!");
                 fetchEvents();
                 document.getElementById("eventForm").reset();
             }).catch(error => {
-                console.error("❌ Error adding event:", error);
+                console.error("Error adding event:", error);
             });
         }
     }
@@ -151,7 +146,7 @@ document.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
         saveEvent();
     });
-    
+
     document.getElementById("cancelEvent").addEventListener("click", cancelEvent);
 
     eventList.addEventListener("click", (event) => {
