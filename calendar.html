@@ -32,40 +32,44 @@
 
     <!-- 🔹 Event Modal -->
     <div id="eventModal" class="modal">
-        <h3>Add/Edit Event</h3>
-        <label for="eventTitle">Event Title:</label>
-        <input type="text" id="eventTitle" required>
+  <form id="eventForm">
+    <h3>Add/Edit Event</h3>
 
-        <label for="eventStart">Start Date:</label>
-        <input type="date" id="eventStart" required>
+    <label for="eventTitle">Event Title:</label>
+    <input type="text" id="eventTitle" required>
 
-        <label for="eventEnd">End Date:</label>
-        <input type="date" id="eventEnd">
+    <label for="eventStart">Start Date:</label>
+    <input type="date" id="eventStart" required>
 
-        <label for="eventStartTime">Start Time:</label>
-        <input type="time" id="eventStartTime">
+    <label for="eventEnd">End Date:</label>
+    <input type="date" id="eventEnd">
 
-        <label for="eventEndTime">End Time:</label>
-        <input type="time" id="eventEndTime">
+    <label for="eventStartTime">Start Time:</label>
+    <input type="time" id="eventStartTime">
 
-        <label for="eventType">Event Type:</label>
-        <select id="eventType">
-            <option value="None">Open</option>
-            <option value="Green">Family Time</option>
-            <option value="Yellow">Family Time (Visitors Welcome!)</option>
-            <option value="Red">Golf Weekend</option>
-            <option value="Orange">Hunting</option>
-            <option value="Blue">Work Weekend</option>
-            <option value="Purple">Trout Weekend</option>
-        </select>
+    <label for="eventEndTime">End Time:</label>
+    <input type="time" id="eventEndTime">
 
-        <label for="eventDetails">Event Details:</label>
-        <textarea id="eventDetails" required></textarea>
+    <label for="eventType">Event Type:</label>
+    <select id="eventType">
+      <option value="None">Open</option>
+      <option value="Green">Family Time</option>
+      <option value="Yellow">Family Time (Visitors Welcome!)</option>
+      <option value="Red">Golf Weekend</option>
+      <option value="Orange">Hunting</option>
+      <option value="Blue">Work Weekend</option>
+      <option value="Purple">Trout Weekend</option>
+    </select>
 
-        <button id="saveEvent">Save</button>
-        <button id="cancelEvent">Cancel</button>
-        <button id="deleteEvent">Delete</button>
-    </div>
+    <label for="eventDetails">Event Details:</label>
+    <textarea id="eventDetails" required></textarea>
+
+    <button type="submit" id="saveEvent">Save</button>
+    <button type="button" id="cancelEvent">Cancel</button>
+    <button type="button" id="deleteEvent">Delete</button>
+  </form>
+</div>
+
 
     <div class="calendar-key">
         <h3>Event Type Key</h3>
