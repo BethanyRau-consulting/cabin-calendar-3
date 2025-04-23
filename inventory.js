@@ -64,28 +64,34 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   form.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const itemData = {
-      Name: nameInput.value.trim(),
-      Quantity: parseInt(quantityInput.value),
-      Needed: neededInput.checked
-    };
+  e.preventDefault();
+  const itemData = {
+    Name: nameInput.value.trim(),
+    Quantity: parseInt(quantityInput.value),
+    Needed: neededInput.checked
+  };
 
-    const editId = form.dataset.editId;
-    if (editId) {
-      db.collection("inventory").doc(editId).update(itemData).then(() => {
-        form.reset();
-        delete form.dataset.editId;
-        document.getElementById("submit-item").textContent = "Add Item";
-        renderInventory();
-      });
-    } else {
-      db.collection("inventory").add(itemData).then(() => {
-        form.reset();
-        renderInventory();
-      });
-    }
-  });
+  const editId = form.dataset.editId;
+  if (editId) {
+    db.collection("inventory").doc(editId).update(itemData).then(() => {
+      form.reset();
+      delete form.dataset.editId;
+      document.getElementById("submit-item").textContent = "Add Item";
+      renderInventory();
+    });
+  } else {
+    db.collection("inventory").add(itemData).then(() => {
+      form.reset();
+      renderInventory();
+    });
+  }
+});
+
+cancelButton.addEventListener("click", () => {
+  form.reset();
+  delete form.dataset.editId;
+  document.getElementById("submit-item").textContent = "Add Item";
+});
 
   renderInventory();
 });
