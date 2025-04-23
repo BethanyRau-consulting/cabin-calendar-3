@@ -1,38 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventory</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cabin Inventory</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <h1>Inventory</h1>
-    <nav>
-        <a href="index.html">Home</a> |
-        <a href="calendar.html">Calendar</a> |
-        <a href="events.html">Events</a> |
-        <a href="journal.html">Journal</a> |
-        <a href="photos.html">Pictures</a> |
-        <a href="inventory.html">Inventory</a> 
-    </nav>
-    <div class="container">
-    <h1>Cabin Inventory & Shopping List</h1>
-        <form id="add-item-form">
-      <input type="text" id="item-name" placeholder="Item Name" required />
-      <input type="number" id="item-quantity" placeholder="Quantity" min="1" required />
-      <label>
-        <input type="checkbox" id="item-needed" />
-        Needed
-      </label>
-      <button type="submit">Add Item</button>
-    </form>
-    <ul id="inventory-list"></ul>
-  </div>
-  <script src="js/inventory.js" type="module"></script>
+  <h1>Cabin Inventory</h1>
+  <nav>
+    <a href="index.html">Home</a> |
+    <a href="calendar.html">Calendar</a> |
+    <a href="events.html">Events</a> |
+    <a href="journal.html">Journal</a> |
+    <a href="photos.html">Pictures</a> |
+    <a href="inventory.html">Inventory</a>
+  </nav>
+
+  <!-- Add Item Form -->
+  <form id="add-item-form">
+    <label for="item-name">Item Name:</label>
+    <input type="text" id="item-name" required />
+
+    <label for="item-quantity">Quantity:</label>
+    <input type="number" id="item-quantity" required min="1" />
+
+    <label for="item-needed">
+      <input type="checkbox" id="item-needed" />
+      Needed?
+    </label>
+
+    <button type="submit">Add Item</button>
+  </form>
+
+  <!-- Inventory List -->
+  <ul id="inventory-list"></ul>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+  <!-- Firebase Config -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyB9rOOglOPQ0pzOwuFq-P_Puo9lroDPU7A",
+      authDomain: "cabincalendar3.firebaseapp.com",
+      projectId: "cabincalendar3",
+      storageBucket: "cabincalendar3.appspot.com",
+      messagingSenderId: "373184478865",
+      appId: "1:373184478865:web:cf1e0e816be89107538930"
+    };
+
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+  </script>
+
+  <!-- Inventory Logic -->
+  <script src="inventory.js" defer></script>
 </body>
 </html>
