@@ -93,6 +93,18 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         }
     }
+    
+    function cancelEvent() {
+        document.getElementById("eventTitle").value = "";
+        document.getElementById("eventStart").value = "";
+        document.getElementById("eventEnd").value = "";
+        document.getElementById("eventStartTime").value = "";
+        document.getElementById("eventEndTime").value = "";
+        document.getElementById("eventDetails").value = "";
+        document.getElementById("eventType").value = "None"; // Reset to default
+        selectedEventId = null; // Exit editing mode
+        document.getElementById("eventModal").style.display = "none"; // Close modal if used
+    }
 
     function saveEvent() {
         const eventId = document.getElementById("eventId").value;
@@ -139,6 +151,8 @@ document.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
         saveEvent();
     });
+    
+    document.getElementById("cancelEvent").addEventListener("click", cancelEvent);
 
     eventList.addEventListener("click", (event) => {
         if (event.target.classList.contains("edit-btn")) {
