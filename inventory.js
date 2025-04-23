@@ -7,32 +7,39 @@ document.addEventListener("DOMContentLoaded", () => {
   const neededInput = document.getElementById("item-needed");
   const submitButton = document.getElementById("submit-item");
   const cancelButton = document.getElementById("cancel-item");
+  const filterNeeded = document.getElementById("filter-needed");
 
   let editingItemId = null;
 
-  function renderInventory() {
+  function renderInventory(filter = "all") {
     inventoryList.innerHTML = "";
-    db.collection("inventory").orderBy("Name").get().then(snapshot => {
+    let query = db.collection("inventory").orderBy("Name");
+
+    query.get().then(snapshot => {
       snapshot.forEach(doc => {
         const item = doc.data();
-        const row = document.createElement("tr");
+        const shouldShow =
+          filter === "all" ||
+          (filter === "needed" && item.Needed) ||
+          (filter === "not-needed" && !item.Needed);
 
-        row.innerHTML = `
-          <td>${item.Name}</td>
-          <td>${item.Quantity}</td>
-          <td><input type="checkbox" ${item.Needed ? "checked" : ""} data-id="${doc.id}" class="toggle-needed"/></td>
-          <td>
-            <button class="edit-btn" data-id="${doc.id}" data-name="${item.Name}" data-quantity="${item.Quantity}" data-needed="${item.Needed}">Edit</button>
-            <button class="delete-btn" data-id="${doc.id}">Delete</button>
-          </td>
-        `;
-
-        inventoryList.appendChild(row);
+        if (shouldShow) {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${item.Name}</td>
+            <td>${item.Quantity}</td>
+            <td><input type="checkbox" ${item.Needed ? "checked" : ""} data-id="${doc.id}" class="toggle-needed"/></td>
+            <td>
+              <button class="edit-btn" data-id="${doc.id}" data-name="${item.Name}" data-quantity="${item.Quantity}" data-needed="${item.Needed}">Edit</button>
+              <button class="delete-btn" data-id="${doc.id}">Delete</button>
+            </td>
+          `;
+          inventoryList.appendChild(row);
+        }
       });
     });
   }
 
-  // Add or update item
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     const itemData = {
@@ -44,22 +51,20 @@ document.addEventListener("DOMContentLoaded", () => {
     if (editingItemId) {
       db.collection("inventory").doc(editingItemId).update(itemData).then(() => {
         resetForm();
-        renderInventory();
+        renderInventory(filterNeeded.value);
       });
     } else {
       db.collection("inventory").add(itemData).then(() => {
         resetForm();
-        renderInventory();
+        renderInventory(filterNeeded.value);
       });
     }
   });
 
-  // Cancel edit or entry
   cancelButton.addEventListener("click", () => {
     resetForm();
   });
 
-  // Reset form
   function resetForm() {
     editingItemId = null;
     nameInput.value = "";
@@ -68,7 +73,6 @@ document.addEventListener("DOMContentLoaded", () => {
     submitButton.textContent = "Add Item";
   }
 
-  // Delegate edit, delete, toggle
   inventoryList.addEventListener("click", (e) => {
     const id = e.target.dataset.id;
     if (e.target.classList.contains("edit-btn")) {
@@ -80,12 +84,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (e.target.classList.contains("delete-btn")) {
-      db.collection("inventory").doc(id).delete().then(renderInventory);
+      db.collection("inventory").doc(id).delete().then(() => renderInventory(filterNeeded.value));
     }
 
     if (e.target.classList.contains("toggle-needed")) {
       db.collection("inventory").doc(id).update({ Needed: e.target.checked });
     }
+  });
+
+  filterNeeded.addEventListener("change", () => {
+    renderInventory(filterNeeded.value);
   });
 
   renderInventory();
