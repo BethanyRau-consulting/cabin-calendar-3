@@ -16,18 +16,22 @@
     <a href="inventory.html">Inventory</a>
   </nav>
 
-  <form class="styled-form" id="inventory-form">
+<form id="inventory-form" class="styled-form">
   <label for="item-name">Item Name:</label>
-  <input type="text" id="item-name" required>
+  <input type="text" id="item-name" required />
 
   <label for="item-quantity">Quantity:</label>
-  <input type="number" id="item-quantity" required>
+  <input type="number" id="item-quantity" required min="1" />
 
-  <label for="item-needed">Needed?</label>
-  <input type="checkbox" id="item-needed">
+  <label for="item-needed">
+    <input type="checkbox" id="item-needed" />
+    Needed?
+  </label>
 
-  <button type="submit" id="add-button">Add Item</button>
+  <button type="submit" id="submit-item">Add Item</button>
+  <button type="button" id="cancel-edit">Cancel</button> <!-- ✅ New Cancel Button -->
 </form>
+
 
   <table id="inventory-table">
     <thead>
