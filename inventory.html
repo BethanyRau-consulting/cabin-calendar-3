@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Cabin Inventory</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
   <h1>Cabin Inventory</h1>
@@ -13,26 +13,23 @@
     <a href="calendar.html">Calendar</a> |
     <a href="events.html">Events</a> |
     <a href="journal.html">Journal</a> |
-    <a href="photos.html">Pictures</a> |
     <a href="inventory.html">Inventory</a>
   </nav>
 
-  <!-- Add Item Form -->
-  <form id="inventory-form" class="styled-form">
-  <label for="item-name">Item Name:</label>
-  <input type="text" id="item-name" required>
+  <form class="styled-form" id="inventory-form">
+    <label for="item-name">Item Name:</label>
+    <input type="text" id="item-name" required>
 
-  <label for="item-quantity">Quantity:</label>
-  <input type="number" id="item-quantity" required>
+    <label for="item-quantity">Quantity:</label>
+    <input type="number" id="item-quantity" required>
 
-  <label for="item-needed" class="checkbox-label">
-    <input type="checkbox" id="item-needed"> Needed?
-  </label>
+    <label for="item-needed">
+      <input type="checkbox" id="item-needed"> Needed?
+    </label>
 
-  <button type="submit" id="addItem">Add Item</button>
-</form>
+    <button type="submit" id="add-button">Add Item</button>
+  </form>
 
-  <!-- Inventory Table -->
   <table id="inventory-table">
     <thead>
       <tr>
@@ -42,14 +39,15 @@
         <th>Actions</th>
       </tr>
     </thead>
-    <tbody id="inventory-list"></tbody>
+    <tbody id="inventory-list">
+      <!-- Items will populate here -->
+    </tbody>
   </table>
 
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
-  <!-- Firebase Config -->
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyB9rOOglOPQ0pzOwuFq-P_Puo9lroDPU7A",
@@ -60,12 +58,8 @@
       appId: "1:373184478865:web:cf1e0e816be89107538930"
     };
 
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-    }
+    firebase.initializeApp(firebaseConfig);
   </script>
-
-  <!-- Inventory Logic -->
   <script src="inventory.js" defer></script>
 </body>
 </html>
