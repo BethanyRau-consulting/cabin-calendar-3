@@ -1,98 +1,92 @@
 document.addEventListener("DOMContentLoaded", () => {
   const db = firebase.firestore();
+  const inventoryList = document.getElementById("inventory-list");
   const form = document.getElementById("inventory-form");
   const nameInput = document.getElementById("item-name");
   const quantityInput = document.getElementById("item-quantity");
   const neededInput = document.getElementById("item-needed");
-  const inventoryBody = document.getElementById("inventory-body");
+  const submitButton = document.getElementById("submit-item");
+  const cancelButton = document.getElementById("cancel-item");
+
+  let editingItemId = null;
 
   function renderInventory() {
-    inventoryBody.innerHTML = "";
+    inventoryList.innerHTML = "";
     db.collection("inventory").orderBy("Name").get().then(snapshot => {
       snapshot.forEach(doc => {
         const item = doc.data();
         const row = document.createElement("tr");
 
-        const nameCell = document.createElement("td");
-        nameCell.textContent = item.Name;
+        row.innerHTML = `
+          <td>${item.Name}</td>
+          <td>${item.Quantity}</td>
+          <td><input type="checkbox" ${item.Needed ? "checked" : ""} data-id="${doc.id}" class="toggle-needed"/></td>
+          <td>
+            <button class="edit-btn" data-id="${doc.id}" data-name="${item.Name}" data-quantity="${item.Quantity}" data-needed="${item.Needed}">Edit</button>
+            <button class="delete-btn" data-id="${doc.id}">Delete</button>
+          </td>
+        `;
 
-        const quantityCell = document.createElement("td");
-        quantityCell.textContent = item.Quantity;
-
-        const neededCell = document.createElement("td");
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.checked = item.Needed;
-        checkbox.addEventListener("change", () => {
-          db.collection("inventory").doc(doc.id).update({
-            Needed: checkbox.checked
-          });
-        });
-        neededCell.appendChild(checkbox);
-
-        const actionsCell = document.createElement("td");
-
-        const editBtn = document.createElement("button");
-        editBtn.textContent = "Edit";
-        editBtn.addEventListener("click", () => {
-          nameInput.value = item.Name;
-          quantityInput.value = item.Quantity;
-          neededInput.checked = item.Needed;
-          document.getElementById("submit-item").textContent = "Update Item";
-          form.dataset.editId = doc.id;
-        });
-
-        const deleteBtn = document.createElement("button");
-        deleteBtn.textContent = "Delete";
-        deleteBtn.style.backgroundColor = "#dc3545";
-        deleteBtn.style.color = "white";
-        deleteBtn.addEventListener("click", () => {
-          db.collection("inventory").doc(doc.id).delete().then(renderInventory);
-        });
-
-        actionsCell.appendChild(editBtn);
-        actionsCell.appendChild(deleteBtn);
-
-        row.appendChild(nameCell);
-        row.appendChild(quantityCell);
-        row.appendChild(neededCell);
-        row.appendChild(actionsCell);
-
-        inventoryBody.appendChild(row);
+        inventoryList.appendChild(row);
       });
     });
   }
 
+  // Add or update item
   form.addEventListener("submit", (e) => {
-  e.preventDefault();
-  const itemData = {
-    Name: nameInput.value.trim(),
-    Quantity: parseInt(quantityInput.value),
-    Needed: neededInput.checked
-  };
+    e.preventDefault();
+    const itemData = {
+      Name: nameInput.value.trim(),
+      Quantity: parseInt(quantityInput.value),
+      Needed: neededInput.checked
+    };
 
-  const editId = form.dataset.editId;
-  if (editId) {
-    db.collection("inventory").doc(editId).update(itemData).then(() => {
-      form.reset();
-      delete form.dataset.editId;
-      document.getElementById("submit-item").textContent = "Add Item";
-      renderInventory();
-    });
-  } else {
-    db.collection("inventory").add(itemData).then(() => {
-      form.reset();
-      renderInventory();
-    });
+    if (editingItemId) {
+      db.collection("inventory").doc(editingItemId).update(itemData).then(() => {
+        resetForm();
+        renderInventory();
+      });
+    } else {
+      db.collection("inventory").add(itemData).then(() => {
+        resetForm();
+        renderInventory();
+      });
+    }
+  });
+
+  // Cancel edit or entry
+  cancelButton.addEventListener("click", () => {
+    resetForm();
+  });
+
+  // Reset form
+  function resetForm() {
+    editingItemId = null;
+    nameInput.value = "";
+    quantityInput.value = "";
+    neededInput.checked = false;
+    submitButton.textContent = "Add Item";
   }
-});
 
-const cancelButton = document.getElementById("cancel-item");
-cancelButton.addEventListener("click", () => {
-  document.getElementById("inventory-form").reset();
-  document.getElementById("add-item").textContent = "Add Item";
-});
+  // Delegate edit, delete, toggle
+  inventoryList.addEventListener("click", (e) => {
+    const id = e.target.dataset.id;
+    if (e.target.classList.contains("edit-btn")) {
+      nameInput.value = e.target.dataset.name;
+      quantityInput.value = e.target.dataset.quantity;
+      neededInput.checked = e.target.dataset.needed === "true";
+      editingItemId = id;
+      submitButton.textContent = "Save Item";
+    }
 
+    if (e.target.classList.contains("delete-btn")) {
+      db.collection("inventory").doc(id).delete().then(renderInventory);
+    }
+
+    if (e.target.classList.contains("toggle-needed")) {
+      db.collection("inventory").doc(id).update({ Needed: e.target.checked });
+    }
+  });
 
   renderInventory();
 });
