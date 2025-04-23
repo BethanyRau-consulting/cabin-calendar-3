@@ -479,3 +479,14 @@ form button {
 .styled-form button:hover {
   background-color: #005bb5;
 }
+/* Align checkbox next to its label in the form only */
+.styled-form label[for="item-needed"] {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#item-needed {
+  width: auto;
+  margin: 0;
+}
