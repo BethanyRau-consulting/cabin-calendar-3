@@ -1,13 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Set character encoding and responsive layout -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Events List</title> 
+
+    <!-- Link to external CSS file for styling -->
     <link rel="stylesheet" href="style.css"> 
 </head>
 <body>
+    <!-- Main heading for the page -->
     <h1>Events List</h1>
+
+    <!-- Navigation menu for other pages in the site -->
     <nav>
         <a href="index.html">Home</a> |
         <a href="calendar.html">Calendar</a> |
@@ -17,25 +23,31 @@
         <a href="inventory.html">Inventory</a> 
     </nav>
 
+    <!-- Section for adding or editing events -->
     <h2>Add or Edit an Event</h2>
     <form id="eventForm">
-        <input type="hidden" id="eventId">  <!-- Stores ID for editing -->
+        <!-- Hidden field to store event ID for editing -->
+        <input type="hidden" id="eventId">
 
+        <!-- Event title input -->
         <label for="eventTitle">Title:</label>
         <input type="text" id="eventTitle" required>
 
+        <!-- Start and end date inputs -->
         <label for="eventStart">Start Date:</label>
         <input type="date" id="eventStart" required>
 
         <label for="eventEnd">End Date:</label>
         <input type="date" id="eventEnd">
 
+        <!-- Start and end time inputs -->
         <label for="eventStartTime">Start Time:</label>
         <input type="time" id="eventStartTime">
 
         <label for="eventEndTime">End Time:</label>
         <input type="time" id="eventEndTime">
 
+        <!-- Dropdown to select event type/color category -->
         <label for="eventType">Event Type:</label>
         <select id="eventType">
             <option value="None">Open</option>
@@ -47,16 +59,20 @@
             <option value="Purple">Trout Weekend</option>
         </select>
 
+        <!-- Text area for additional event information -->
         <label for="eventDetails">Details:</label>
         <textarea id="eventDetails"></textarea>
 
+        <!-- Buttons to save or cancel the event form -->
         <button type="submit" id="saveEvent">Save Event</button>
         <button type="button" id="cancelEvent">Cancel</button>
     </form>
 
-<img src = "images/Waterville Sawdust Festival.jpg" width = "500" height = "300">
-<p>Waterville Sawdust Festival!</p>
+    <!-- Event image and caption. Use this format for similar event setups.  -->
+    <img src="images/Waterville Sawdust Festival.jpg" width="500" height="300">
+    <p>Waterville Sawdust Festival!</p>
     
+    <!-- Section to filter displayed events by month and year -->
     <h2>Filter Events</h2>
     <div class="filter-container">
         <label for="filterDate">Select Month & Year:</label>
@@ -64,14 +80,15 @@
         <button id="applyFilters">Apply Filters</button>
     </div>
 
+    <!-- Section to display the list of events -->
     <h2>Event List</h2>
     <div class="event-list" id="eventList"></div>
 
-    <!-- ✅ Correct Firebase SDK Imports -->
+    <!-- Firebase SDKs for app and Firestore database functionality -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
-    <!-- ✅ Firebase Initialization -->
+    <!-- Firebase project configuration and initialization -->
     <script>
       const firebaseConfig = {
         apiKey: "AIzaSyB9rOOglOPQ0pzOwuFq-P_Puo9lroDPU7A",
@@ -82,12 +99,13 @@
         appId: "1:373184478865:web:cf1e0e816be89107538930"
       };
 
+      // Initialize Firebase app if it hasn't been already
       if (!firebase.apps.length) {
         firebase.initializeApp(firebaseConfig);
       }
     </script>
 
-    <!-- ✅ Load Events JavaScript -->
+    <!-- Link to external JavaScript file that handles event logic -->
     <script src="events.js" defer></script>
 </body>
 </html>
