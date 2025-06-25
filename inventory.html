@@ -1,13 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Define character encoding and enable responsive design on all devices -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <!-- Title displayed in the browser tab -->
   <title>Inventory</title>
+
+  <!-- Link to external stylesheet for consistent styling -->
   <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
+  <!-- Page heading -->
   <h1>Cabin Inventory</h1>
+
+  <!-- Navigation bar to other sections of the app -->
   <nav>
     <a href="index.html">Home</a> |
     <a href="calendar.html">Calendar</a> |
@@ -16,47 +24,56 @@
     <a href="inventory.html">Inventory</a>
   </nav>
 
+  <!-- Inventory form for adding or editing items -->
   <form id="inventory-form" class="styled-form">
+    <!-- Input for item name -->
     <label for="item-name">Item Name:</label>
     <input type="text" id="item-name" required />
 
+    <!-- Input for quantity of the item -->
     <label for="item-quantity">Quantity:</label>
     <input type="number" id="item-quantity" required />
 
-<label for="item-needed" class="inline-checkbox">
-  Needed? <input type="checkbox" id="item-needed" />
-</label>
+    <!-- Checkbox to indicate whether the item is currently needed -->
+    <label for="item-needed" class="inline-checkbox">
+      Needed? <input type="checkbox" id="item-needed" />
+    </label>
 
+    <!-- Button to add or update the item -->
     <button type="submit" id="submit-item">Add Item</button>
+
+    <!-- Button to cancel form input/reset -->
     <button type="button" id="cancel-item">Cancel</button>
   </form>
 
-<div class="filter-container">
-  <label for="neededFilter">Filter by Needed Status:</label>
-  <select id="neededFilter">
-    <option value="all">All Items</option>
-    <option value="needed">Needed</option>
-    <option value="not-needed">Not Needed</option>
-  </select>
-</div>
-  
+  <!-- Filter dropdown to show all, needed, or not-needed items -->
+  <div class="filter-container">
+    <label for="neededFilter">Filter by Needed Status:</label>
+    <select id="neededFilter">
+      <option value="all">All Items</option>
+      <option value="needed">Needed</option>
+      <option value="not-needed">Not Needed</option>
+    </select>
+  </div>
+
+  <!-- Table displaying the inventory items -->
   <table id="inventory-table">
     <thead>
       <tr>
         <th>Item</th>
         <th>Quantity</th>
         <th>Needed</th>
-        <th>Actions</th>
+        <th>Actions</th> <!-- For edit and delete buttons -->
       </tr>
     </thead>
-    <tbody id="inventory-list"></tbody>
+    <tbody id="inventory-list"></tbody> <!-- Dynamic content inserted here -->
   </table>
 
-  <!-- Firebase Scripts -->
+  <!-- Firebase SDK for app and Firestore database -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
-  <!-- Initialize Firebase -->
+  <!-- Firebase project configuration and initialization -->
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyB9rOOglOPQ0pzOwuFq-P_Puo9lroDPU7A",
@@ -66,9 +83,12 @@
       messagingSenderId: "373184478865",
       appId: "1:373184478865:web:cf1e0e816be89107538930"
     };
+
+    // Initialize Firebase with the provided configuration
     firebase.initializeApp(firebaseConfig);
   </script>
 
+  <!-- Load external JavaScript file for inventory logic -->
   <script src="inventory.js"></script>
 </body>
 </html>
