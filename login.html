@@ -8,7 +8,7 @@
 </head>
 <body>
     <h1>Login</h1>
-    <p>Please enter the password to access the website:</p>
+    <p>Please enter the password:</p>
     
     <input type="password" id="passwordInput" placeholder="Enter password">
     <button id="loginButton">Login</button>
@@ -16,9 +16,12 @@
     <p id="errorMessage" style="color: red; display: none;">Incorrect password. Try again.</p>
 
     <script>
+        // Change this hardcoded password to something secure before deploying!!!!
+        const correctPassword = "password";
+
         document.getElementById("loginButton").addEventListener("click", function() {
             const password = document.getElementById("passwordInput").value;
-            if (password === "password") {
+            if (password === correctPassword) {
                 sessionStorage.setItem("authenticated", "true");
                 window.location.href = "index.html";
             } else {
