@@ -1,16 +1,25 @@
+// Wait until the full HTML document has loaded before executing the script
 document.addEventListener("DOMContentLoaded", () => {
+    // Check if Firebase SDK is available
     if (typeof firebase === "undefined") {
-        console.error(" irebase SDK not loaded. Ensure scripts are included in `events.html`.");
+        console.error("Firebase SDK not loaded. Ensure scripts are included in `events.html`.");
         return;
     }
 
     console.log("Firebase SDK detected. Initializing Firestore...");
+
+    // Initialize Firestore database reference
     const db = firebase.firestore();
     const eventList = document.getElementById("eventList");
 
+    /**
+     * Fetches events from Firestore and displays them
+     * If a filter date is provided, it retrieves only events within that month
+     */
     function fetchEvents(filterDate = "") {
         let query = db.collection("events").orderBy("start", "asc");
 
+        // Apply date filtering if filterDate is provided
         if (filterDate) {
             const [year, month] = filterDate.split("-");
             query = query.where("start", ">=", `${year}-${month}-01`)
@@ -19,6 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         query.get().then(snapshot => {
             eventList.innerHTML = "";
+
             if (snapshot.empty) {
                 eventList.innerHTML = "<p>No events found.</p>";
             } else {
@@ -31,6 +41,9 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    /**
+     * Creates and displays a single event item in the event list
+     */
     function displayEvent(id, data) {
         const eventItem = document.createElement("div");
         eventItem.classList.add("event-item");
@@ -46,11 +59,17 @@ document.addEventListener("DOMContentLoaded", () => {
         eventList.appendChild(eventItem);
     }
 
+    /**
+     * Formats a date string to a more user-friendly format
+     */
     function formatDate(date) {
         const d = new Date(date + "T12:00:00Z");
         return d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
     }
 
+    /**
+     * Converts the stored color code to a readable event type
+     */
     function getEventType(color) {
         const eventTypes = {
             "None": "Open",
@@ -64,6 +83,9 @@ document.addEventListener("DOMContentLoaded", () => {
         return eventTypes[color] || "Unknown Type";
     }
 
+    /**
+     * Loads an event’s data into the form for editing
+     */
     function editEvent(eventId) {
         db.collection("events").doc(eventId).get().then(doc => {
             if (doc.exists) {
@@ -82,6 +104,10 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    /**
+     * Deletes an event from the database
+     * Refreshes the event list after deletion
+     */
     function deleteEvent(eventId) {
         if (confirm("Are you sure you want to delete this event?")) {
             db.collection("events").doc(eventId).delete().then(() => {
@@ -95,11 +121,18 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    /**
+     * Clears the form and resets event ID for creating a new entry
+     */
     function cancelEvent() {
         document.getElementById("eventForm").reset();
         document.getElementById("eventId").value = "";
     }
 
+    /**
+     * Saves a new event or updates an existing one in Firestore
+     * Performs validation and resets the form on success
+     */
     function saveEvent() {
         const eventId = document.getElementById("eventId").value;
         const title = document.getElementById("eventTitle").value;
@@ -110,6 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const details = document.getElementById("eventDetails").value || "";
         const color = document.getElementById("eventType").value;
 
+        // Ensure required fields are filled
         if (!title || !start) {
             alert("Title and start date are required!");
             return;
@@ -117,6 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const eventData = { title, start, end, startTime, endTime, details, color };
 
+        // If eventId exists, update the event; otherwise, create a new one
         if (eventId) {
             db.collection("events").doc(eventId).update(eventData).then(() => {
                 console.log("Event updated!");
@@ -137,18 +172,22 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // Apply filter when user selects a month and clicks "Apply Filters"
     document.getElementById("applyFilters").addEventListener("click", () => {
         const filterDate = document.getElementById("filterDate").value;
         fetchEvents(filterDate);
     });
 
+    // Handle event form submission
     document.getElementById("eventForm").addEventListener("submit", (e) => {
         e.preventDefault();
         saveEvent();
     });
 
+    // Handle cancel button click
     document.getElementById("cancelEvent").addEventListener("click", cancelEvent);
 
+    // Event delegation for edit and delete buttons
     eventList.addEventListener("click", (event) => {
         if (event.target.classList.contains("edit-btn")) {
             editEvent(event.target.dataset.id);
@@ -157,5 +196,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    // Initial fetch to display all events on page load
     fetchEvents();
 });
