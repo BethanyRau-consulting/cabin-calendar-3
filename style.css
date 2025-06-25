@@ -1,53 +1,60 @@
 /* === Base Styles === */
+/* Set global font, remove default margin and padding, and set background and text colors */
 body {
     font-family: 'Poppins', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f5f5f5;
-    color: #333;
-    text-align: center;
+    background-color: #f5f5f5; /* light gray background */
+    color: #333; /* dark gray text */
+    text-align: center; /* center all text by default */
 }
 
+/* Style navigation bar background, padding, and shadow */
 nav {
-    background-color: #6a8d73;
+    background-color: #6a8d73; /* muted green */
     padding: 15px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* subtle shadow for depth */
 }
 
+/* Style links inside navigation */
 nav a {
-    color: white;
-    text-decoration: none;
-    margin: 0 15px;
+    color: white; /* white text */
+    text-decoration: none; /* remove underline */
+    margin: 0 15px; /* spacing between links */
     font-size: 18px;
     font-weight: bold;
-    transition: color 0.3s;
+    transition: color 0.3s; /* smooth color transition on hover */
 }
 
+/* Hover effect for nav links */
 nav a:hover {
-    color: #f1f1f1;
+    color: #f1f1f1; /* slightly lighter white on hover */
 }
 
 /* === Forms & Filters === */
+/* General styling for forms and filter containers */
 form, .filter-container, .styled-form, .journal-form {
     width: 90%;
     max-width: 700px;
     margin: 20px auto;
     background: white;
     padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
-    text-align: left;
+    border-radius: 10px; /* rounded corners */
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.15); /* subtle shadow */
+    text-align: left; /* left align text inside forms */
 }
 
+/* Labels styling inside forms and filters */
 form label,
 .styled-form label,
 .filter-container label {
     font-weight: bold;
     display: block;
     margin: 10px 0 5px;
-    color: #4a4a4a;
+    color: #4a4a4a; /* dark gray for labels */
 }
 
+/* Inputs, selects, and textareas styling */
 form input,
 form select,
 form textarea,
@@ -55,30 +62,33 @@ form textarea,
 .styled-form select,
 .styled-form textarea,
 .filter-container select {
-    width: 100%;
+    width: 100%; /* full width */
     padding: 12px;
     margin-bottom: 10px;
     font-size: 16px;
     border-radius: 5px;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-    background-color: #f8f8f8;
+    border: 1px solid #ccc; /* light gray border */
+    box-sizing: border-box; /* include padding in width */
+    background-color: #f8f8f8; /* light background for inputs */
 }
 
+/* Special styling for checkbox label */
 .styled-form label[for="item-needed"] {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 10px; /* space between checkbox and label text */
 }
 
+/* Make checkbox a bit larger for better usability */
 .styled-form input[type="checkbox"] {
     margin-top: 0;
     transform: scale(1.2);
 }
 
+/* Button styling */
 button {
     padding: 12px 18px;
-    background-color: #6a8d73;
+    background-color: #6a8d73; /* green background */
     color: white;
     border: none;
     border-radius: 6px;
@@ -87,12 +97,14 @@ button {
     transition: background 0.3s, transform 0.2s;
 }
 
+/* Button hover effect */
 button:hover {
-    background-color: #5a7c63;
-    transform: scale(1.05);
+    background-color: #5a7c63; /* darker green on hover */
+    transform: scale(1.05); /* slight grow */
 }
 
 /* === Calendar === */
+/* Container for the calendar */
 .calendar {
     width: 90%;
     max-width: 1000px;
@@ -103,6 +115,7 @@ button:hover {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
+/* Header of the calendar with month/year and navigation */
 .header {
     display: flex;
     justify-content: space-between;
@@ -111,22 +124,25 @@ button:hover {
     margin-bottom: 15px;
 }
 
+/* Days of the week row */
 .days {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    background: #d9e2d4;
+    grid-template-columns: repeat(7, 1fr); /* 7 columns for 7 days */
+    background: #d9e2d4; /* light green background */
     font-weight: bold;
     font-size: 1.2em;
     padding: 12px 0;
     border-radius: 8px;
 }
 
+/* Grid for calendar days */
 .grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 6px;
+    gap: 6px; /* gap between day cells */
 }
 
+/* Individual day boxes */
 .day {
     height: 100px;
     background: white;
@@ -139,34 +155,38 @@ button:hover {
     justify-content: flex-start;
     align-items: center;
     padding: 5px;
-    position: relative;
+    position: relative; /* for positioning date number */
     font-size: 1.2em;
 }
 
+/* Hover effect on days */
 .day:hover {
-    background: #edf3eb;
+    background: #edf3eb; /* very light green */
 }
 
+/* Styling for the date number inside each day */
 .date-number {
     font-size: 1em;
     font-weight: bold;
     position: absolute;
     top: 2px;
     left: 5px;
-    background: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.7); /* semi-transparent white */
     padding: 2px 4px;
     border-radius: 3px;
 }
 
+/* Container inside a day for events */
 .event-container {
     display: flex;
     flex-direction: column;
     width: 100%;
     height: 100%;
-    overflow: hidden;
+    overflow: hidden; /* prevent overflow */
     margin-top: 15px;
 }
 
+/* Individual event block inside a day */
 .event-block {
     font-size: 0.7em;
     text-align: center;
@@ -178,6 +198,7 @@ button:hover {
     flex-grow: 1;
 }
 
+/* Modal popup styling (hidden by default) */
 .modal {
     display: none;
     position: fixed;
@@ -193,6 +214,7 @@ button:hover {
 }
 
 /* === Event List & Journal === */
+/* Container for event lists and journal entries */
 .event-list, .journal-entries {
     width: 90%;
     max-width: 700px;
@@ -204,31 +226,36 @@ button:hover {
     text-align: left;
 }
 
+/* Individual event and journal entry styling */
 .event-item, .journal-entry {
     background: white;
-    border-left: 6px solid #6a8d73;
+    border-left: 6px solid #6a8d73; /* green border for emphasis */
     padding: 18px;
     margin-bottom: 15px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s;
+    transition: transform 0.2s; /* smooth hover transform */
 }
 
+/* Hover effect to lift the item */
 .event-item:hover, .journal-entry:hover {
     transform: translateY(-3px);
 }
 
+/* Titles in events and journal entries */
 .event-item h3, .journal-entry h3 {
     font-size: 20px;
     font-weight: bold;
     margin-bottom: 5px;
 }
 
+/* Paragraph text in event and journal items */
 .event-item p, .journal-entry p {
     font-size: 16px;
     margin: 5px 0;
 }
 
+/* Buttons inside events and journal entries */
 .event-item button, .journal-entry button {
     margin-top: 10px;
     padding: 8px 12px;
@@ -238,19 +265,22 @@ button:hover {
     font-size: 16px;
 }
 
+/* Style for first button (e.g., Edit) */
 .event-item button:first-of-type,
 .journal-entry button:first-of-type {
-    background-color: #ffc107;
+    background-color: #ffc107; /* yellow */
     color: black;
 }
 
+/* Style for second button (e.g., Delete) */
 .event-item button:last-of-type,
 .journal-entry button:last-of-type {
-    background-color: #dc3545;
+    background-color: #dc3545; /* red */
     color: white;
 }
 
 /* === Calendar Key === */
+/* Container for calendar legend/key */
 .calendar-key {
     width: 90%;
     max-width: 1000px;
@@ -262,16 +292,19 @@ button:hover {
     text-align: left;
 }
 
+/* Heading inside calendar key */
 .calendar-key h3 {
     font-size: 18px;
     margin-bottom: 10px;
 }
 
+/* List styling inside key */
 .calendar-key ul {
-    list-style: none;
+    list-style: none; /* remove bullets */
     padding: 0;
 }
 
+/* Each list item inside key */
 .calendar-key li {
     margin: 5px 0;
     font-size: 14px;
@@ -279,6 +312,7 @@ button:hover {
     align-items: center;
 }
 
+/* Small colored boxes for key items */
 .key-box {
     width: 20px;
     height: 20px;
@@ -288,17 +322,19 @@ button:hover {
 }
 
 /* === Inventory Table === */
+/* Style for inventory table container */
 #inventory-table {
     width: 90%;
     max-width: 1000px;
     margin: 30px auto;
-    border-collapse: collapse;
+    border-collapse: collapse; /* collapse cell borders */
     background: white;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     border-radius: 8px;
-    overflow: hidden;
+    overflow: hidden; /* round corners on table */
 }
 
+/* Table header and cell styles */
 #inventory-table th, #inventory-table td {
     padding: 15px;
     border-bottom: 1px solid #eee;
@@ -306,15 +342,4 @@ button:hover {
     font-size: 16px;
 }
 
-#inventory-table th {
-    background-color: #d9e2d4;
-    color: #333;
-}
-
-.inline-checkbox {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 10px 0;
-  font-weight: bold;
-}
+/* Header row
