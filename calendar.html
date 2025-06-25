@@ -1,13 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Metadata and page configuration -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calendar</title>
+
+    <!-- Link to external CSS file -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Page Title -->
     <h1>Calendar</h1>
+
+    <!-- Navigation menu linking to other site sections -->
     <nav>
         <a href="index.html">Home</a> |
         <a href="calendar.html">Calendar</a> |
@@ -17,60 +23,77 @@
         <a href="inventory.html">Inventory</a> 
     </nav>
 
+    <!-- Main calendar container -->
     <div class="calendar">
+        <!-- Calendar header with navigation buttons and current month display -->
         <div class="header">
-            <button id="prevBtn">&#9665;</button>
-            <h2 id="monthName"></h2>
-            <button id="nextBtn">&#9655;</button>
+            <button id="prevBtn">&#9665;</button> <!-- Previous month -->
+            <h2 id="monthName"></h2> <!-- Display current month name -->
+            <button id="nextBtn">&#9655;</button> <!-- Next month -->
         </div>
+
+        <!-- Button to return to the current date -->
         <button id="todayBtn">Today</button>
+
+        <!-- Display names of the days of the week -->
         <div class="days">
-            <div>Sunday</div><div>Monday</div><div>Tuesday</div><div>Wednesday</div><div>Thursday</div><div>Friday</div><div>Saturday</div>
+            <div>Sunday</div><div>Monday</div><div>Tuesday</div>
+            <div>Wednesday</div><div>Thursday</div><div>Friday</div><div>Saturday</div>
         </div>
+
+        <!-- Container for dynamically-generated calendar grid -->
         <div class="grid" id="calendarGrid"></div>
     </div>
 
-    <!-- 🔹 Event Modal -->
+    <!-- Modal for adding or editing calendar events -->
     <div id="eventModal" class="modal">
-  <form id="eventForm">
-    <h3>Add/Edit Event</h3>
+        <form id="eventForm">
+            <h3>Add/Edit Event</h3>
 
-    <label for="eventTitle">Event Title:</label>
-    <input type="text" id="eventTitle" required>
+            <!-- Event title input -->
+            <label for="eventTitle">Event Title:</label>
+            <input type="text" id="eventTitle" required>
 
-    <label for="eventStart">Start Date:</label>
-    <input type="date" id="eventStart" required>
+            <!-- Start date input -->
+            <label for="eventStart">Start Date:</label>
+            <input type="date" id="eventStart" required>
 
-    <label for="eventEnd">End Date:</label>
-    <input type="date" id="eventEnd">
+            <!-- End date input -->
+            <label for="eventEnd">End Date:</label>
+            <input type="date" id="eventEnd">
 
-    <label for="eventStartTime">Start Time:</label>
-    <input type="time" id="eventStartTime">
+            <!-- Start time input -->
+            <label for="eventStartTime">Start Time:</label>
+            <input type="time" id="eventStartTime">
 
-    <label for="eventEndTime">End Time:</label>
-    <input type="time" id="eventEndTime">
+            <!-- End time input -->
+            <label for="eventEndTime">End Time:</label>
+            <input type="time" id="eventEndTime">
 
-    <label for="eventType">Event Type:</label>
-    <select id="eventType">
-      <option value="None">Open</option>
-      <option value="Green">Family Time</option>
-      <option value="Yellow">Family Time (Visitors Welcome!)</option>
-      <option value="Red">Golf Weekend</option>
-      <option value="Orange">Hunting</option>
-      <option value="Blue">Work Weekend</option>
-      <option value="Purple">Trout Weekend</option>
-    </select>
+            <!-- Dropdown to select the event type -->
+            <label for="eventType">Event Type:</label>
+            <select id="eventType">
+                <option value="None">Open</option>
+                <option value="Green">Family Time</option>
+                <option value="Yellow">Family Time (Visitors Welcome!)</option>
+                <option value="Red">Golf Weekend</option>
+                <option value="Orange">Hunting</option>
+                <option value="Blue">Work Weekend</option>
+                <option value="Purple">Trout Weekend</option>
+            </select>
 
-    <label for="eventDetails">Event Details:</label>
-    <textarea id="eventDetails" required></textarea>
+            <!-- Text area for additional event details -->
+            <label for="eventDetails">Event Details:</label>
+            <textarea id="eventDetails" required></textarea>
 
-    <button type="submit" id="saveEvent">Save</button>
-    <button type="button" id="cancelEvent">Cancel</button>
-    <button type="button" id="deleteEvent">Delete</button>
-  </form>
-</div>
+            <!-- Form buttons for saving, canceling, and deleting events -->
+            <button type="submit" id="saveEvent">Save</button>
+            <button type="button" id="cancelEvent">Cancel</button>
+            <button type="button" id="deleteEvent">Delete</button>
+        </form>
+    </div>
 
-
+    <!-- Visual color key explaining the meaning of each event type -->
     <div class="calendar-key">
         <h3>Event Type Key</h3>
         <ul>
@@ -81,31 +104,31 @@
             <li><span class="key-box" style="background-color: #FFD699;"></span> Hunting</li>
             <li><span class="key-box" style="background-color: #A3D9FF;"></span> Work Weekend</li>
             <li><span class="key-box" style="background-color: #D3A3FF;"></span> Trout Weekend</li>
-          </ul>
+        </ul>
     </div>
 
-
-    <!-- 🔥 Firebase SDK -->
+    <!-- Firebase SDK scripts for app and Firestore database -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
-    <!-- 🔥 Firebase Initialization -->
+    <!-- Firebase configuration and initialization -->
     <script>
-      const firebaseConfig = {
-        apiKey: "AIzaSyB9rOOglOPQ0pzOwuFq-P_Puo9lroDPU7A",
-        authDomain: "cabincalendar3.firebaseapp.com",
-        projectId: "cabincalendar3",
-        storageBucket: "cabincalendar3.appspot.com",
-        messagingSenderId: "373184478865",
-        appId: "1:373184478865:web:cf1e0e816be89107538930"
-      };
+        const firebaseConfig = {
+            apiKey: "AIzaSyB9rOOglOPQ0pzOwuFq-P_Puo9lroDPU7A",
+            authDomain: "cabincalendar3.firebaseapp.com",
+            projectId: "cabincalendar3",
+            storageBucket: "cabincalendar3.appspot.com",
+            messagingSenderId: "373184478865",
+            appId: "1:373184478865:web:cf1e0e816be89107538930"
+        };
 
-      if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-      }
+        // Initialize Firebase if not already initialized
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
     </script>
 
-    <!-- 🔥 Load Calendar JavaScript -->
+    <!-- Link to external JavaScript file responsible for calendar functionality -->
     <script src="calendar.js" defer></script>
 </body>
 </html>
