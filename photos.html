@@ -2,18 +2,23 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <!-- Ensure proper rendering and touch zooming on mobile devices -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cabin Calendar</title>
+    <!-- Link to external CSS file for styling -->
     <link rel="stylesheet" href="style.css">
+    
     <script>
-    if (sessionStorage.getItem("authenticated") !== "true") {
-        window.location.href = "login.html";
-    }
-</script>
-
+        // Check if user is authenticated; if not, redirect to login page
+        if (sessionStorage.getItem("authenticated") !== "true") {
+            window.location.href = "login.html";
+        }
+    </script>
 </head>
 <body>
     <h1>Photos</h1>
+    
+    <!-- Navigation bar linking to other pages of the website -->
     <nav>
         <a href="index.html">Home</a> |
         <a href="calendar.html">Calendar</a> |
@@ -23,14 +28,17 @@
         <a href="inventory.html">Inventory</a> 
     </nav>
 
-    <img src="images/7-2-24 - Deer.jpg" width="400" height="500">
+    <!-- Display photos with captions -->
+    <img src="images/7-2-24 - Deer.jpg" width="400" height="500" alt="Deer photo taken on 7/2/2024">
     <p>7/2/2024 - Deer</p>
-    <img src ="images/3-22-24 - Sign 1.jpg" width="400" height="500">
+
+    <img src="images/3-22-24 - Sign 1.jpg" width="400" height="500" alt="Building the sign photo 1">
     <p>March 2024 - Building the sign!</p>
-    <img src ="images/3-22-24 - Sign 2.jpg" width="400" height="500">
+
+    <img src="images/3-22-24 - Sign 2.jpg" width="400" height="500" alt="Building the sign photo 2">
     <p>March 2024 - Building the sign!</p>
-    <img src ="images/3-22-24 - Sign 3.jpg">
-    <p>March 2024 - the new Apple Lodge sign!</p>
-    
+
+    <img src="images/3-22-24 - Sign 3.jpg" alt="The new Apple Lodge sign">
+    <p>March 2024 - The new Apple Lodge sign!</p>
 </body>
 </html>
