@@ -28,6 +28,14 @@
         <a href="inventory.html">Inventory</a> 
     </nav>
 
+    <h2>Upload Photo</h2>
+    <form id="photo-upload-form">
+        <input type="file" id="photo-file" accept="image/*" required />
+        <input type="text" id="photo-description" placeholder="Description (optional)" />
+        <button type="submit">Upload</button>
+    </form>
+    <div id="photo-status"></div>
+    
     <!-- Display photos with captions -->
     <img src="images/7-2-24 - Deer.jpg" width="400" height="500" alt="Deer photo taken on 7/2/2024">
     <p>7/2/2024 - Deer</p>
