@@ -1,3 +1,13 @@
+
+import { getDoc, doc } from 'firebase/firestore';
+import { db } from './firebase-utils.js';
+
+async function checkUploadsAllowed() {
+    const configRef = doc(db, 'config', 'limits');
+    const configSnap = await getDoc(configRef);
+    return configSnap.exists() && configSnap.data().allowUploads === true;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     // Check if Firebase SDK is loaded and initialized
     if (!firebase.apps.length) {
