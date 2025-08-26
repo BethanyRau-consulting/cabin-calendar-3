@@ -226,5 +226,13 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("todayBtn").addEventListener("click", () => {
         currentDate = new Date();
         renderCalendar();
-   
     });
+
+    // Modal buttons (only if these elements exist in your HTML)
+    document.getElementById("saveEventBtn")?.addEventListener("click", saveEvent);
+    document.getElementById("deleteEventBtn")?.addEventListener("click", deleteEvent);
+    document.getElementById("closeModalBtn")?.addEventListener("click", closeEventModal);
+
+    // Render the calendar initially
+    renderCalendar();
+}); // <-- This closes the DOMContentLoaded event listener
