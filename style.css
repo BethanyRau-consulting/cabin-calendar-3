@@ -331,3 +331,20 @@ header h1 {
     max-width: 700px;
     margin: 20px auto;
     background:
+
+/* Modal Form  */
+#addEventBtn {
+    font-size: 18px;
+    padding: 12px 20px;
+    margin-bottom: 20px;
+}
+
+.modal form h2 {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.event-item img {
+    border-radius: 8px;
+    margin-top: 10px;
+}
