@@ -2,81 +2,71 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cabin Events</title>
+    <title>Events</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1>Cabin Events</h1>
-    </header>
 
-    <!-- Event Filters -->
-    <section id="eventFilters">
-        <label for="filterType">Filter by Type:</label>
-        <select id="filterType">
-            <option value="">All</option>
-            <option value="green">Family Time</option>
-            <option value="yellow">Family Time (Visitors Welcome!)</option>
-            <option value="red">Golf Weekend</option>
-            <option value="orange">Hunting</option>
-            <option value="blue">Work Weekend</option>
-            <option value="purple">Trout Weekend</option>
-        </select>
+<!-- === Navigation === -->
+<nav>
+    <a href="index.html">Home</a>
+    <a href="calendar.html">Calendar</a>
+    <a href="events.html">Events</a>
+    <a href="journal.html">Journal</a>
+    <a href="inventory.html">Inventory</a>
+</nav>
 
-        <label for="filterMonth">Month:</label>
-        <select id="filterMonth">
-            <option value="">All</option>
-        </select>
+<header>
+    <h1>Events</h1>
+</header>
 
-        <label for="filterYear">Year:</label>
-        <select id="filterYear">
-            <option value="">All</option>
-        </select>
+<!-- Add Event Button -->
+<div style="text-align:center; margin: 20px;">
+    <button id="addEventBtn">Add Event</button>
+</div>
 
-        <button id="todayBtn">Today</button>
-    </section>
-
-    <!-- Add Event Form -->
-    <section id="addEventSection">
+<!-- === Add Event Modal === -->
+<div id="eventModal" class="modal">
+    <form id="eventForm" class="styled-form">
         <h2>Add Event</h2>
-        <form id="addEventForm">
-            <label>Event Name:</label>
-            <input type="text" id="eventName" required>
+        <label for="event-name">Event Name</label>
+        <input type="text" id="event-name" required>
 
-            <label>Date:</label>
-            <input type="date" id="eventDate" required>
+        <label for="event-date">Date</label>
+        <input type="date" id="event-date" required>
 
-            <label>Time:</label>
-            <input type="text" id="eventTime" placeholder="e.g., 10:00 AM - 2:00 PM">
+        <label for="event-time">Time</label>
+        <input type="text" id="event-time" placeholder="e.g., 3:00 PM">
 
-            <label>Description:</label>
-            <textarea id="eventDescription"></textarea>
+        <label for="event-type">Event Type</label>
+        <select id="event-type">
+            <option value="None">Open</option>
+            <option value="Green">Family Time</option>
+            <option value="Yellow">Family Time (Visitors Welcome!)</option>
+            <option value="Red">Golf Weekend</option>
+            <option value="Orange">Hunting</option>
+            <option value="Blue">Work Weekend</option>
+            <option value="Purple">Trout Weekend</option>
+        </select>
 
-            <label>Event Type:</label>
-            <select id="eventType">
-                <option value="">None - Open</option>
-                <option value="green">Family Time</option>
-                <option value="yellow">Family Time (Visitors Welcome!)</option>
-                <option value="red">Golf Weekend</option>
-                <option value="orange">Hunting</option>
-                <option value="blue">Work Weekend</option>
-                <option value="purple">Trout Weekend</option>
-            </select>
+        <label for="event-desc">Description</label>
+        <textarea id="event-desc"></textarea>
 
+        <div style="text-align:center;">
             <button type="submit">Save Event</button>
-        </form>
-    </section>
+            <button type="button" id="closeModal">Cancel</button>
+        </div>
+    </form>
+</div>
 
-    <!-- Event List -->
-    <section id="eventListSection">
-        <h2>Event List</h2>
-        <ul id="eventList"></ul>
-    </section>
+<!-- === Event List === -->
+<div id="eventList" class="event-list">
+    <h2>Upcoming Events</h2>
+    <!-- Events will populate here -->
+</div>
 
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
-    <script src="firebase-config.js"></script>
-    <script src="events.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js"></script>
+<script src="events.js"></script>
 </body>
 </html>
