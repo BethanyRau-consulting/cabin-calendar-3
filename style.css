@@ -105,15 +105,24 @@ button:hover {
 
 .header {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     font-size: 1.5em;
+    gap: 10px;
     margin-bottom: 15px;
+}
+
+#toayBtn {
+    display: block;
+    margin: 15px auto;
+    padding: 5px 10px;
 }
 
 .days {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    margin-top: 15px;
     background: #d9e2d4;
     font-weight: bold;
     font-size: 1.2em;
