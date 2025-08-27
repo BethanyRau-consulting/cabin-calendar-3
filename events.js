@@ -1,211 +1,124 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
-import { getDoc, doc } from 'firebase/firestore';
-import { db } from './firebase-utils.js';
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-async function checkUploadsAllowed() {
-    const configRef = doc(db, 'config', 'limits');
-    const configSnap = await getDoc(configRef);
-    return configSnap.exists() && configSnap.data().allowUploads === true;
+const addEventForm = document.getElementById('addEventForm');
+const eventList = document.getElementById('eventList');
+const filterType = document.getElementById('filterType');
+const filterMonth = document.getElementById('filterMonth');
+const filterYear = document.getElementById('filterYear');
+const todayBtn = document.getElementById('todayBtn');
+
+let allEvents = [];
+
+// Load events on page load
+async function loadEvents() {
+    const snapshot = await getDocs(collection(db, "events"));
+    allEvents = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    renderEvents(allEvents);
+    populateFilters();
 }
 
-// Wait until the full HTML document has loaded before executing the script
-document.addEventListener("DOMContentLoaded", () => {
-    // Check if Firebase SDK is available
-    if (typeof firebase === "undefined") {
-        console.error("Firebase SDK not loaded. Ensure scripts are included in `events.html`.");
-        return;
-    }
+function populateFilters() {
+    const months = [...new Set(allEvents.map(e => new Date(e.date).getMonth()))];
+    const years = [...new Set(allEvents.map(e => new Date(e.date).getFullYear()))];
 
-    console.log("Firebase SDK detected. Initializing Firestore...");
+    filterMonth.innerHTML = '<option value="">All</option>' + 
+        months.map(m => `<option value="${m}">${new Date(2000, m).toLocaleString('default', { month: 'long' })}</option>`).join('');
+    filterYear.innerHTML = '<option value="">All</option>' + 
+        years.map(y => `<option value="${y}">${y}</option>`).join('');
+}
 
-    // Initialize Firestore database reference
-    const db = firebase.firestore();
-    const eventList = document.getElementById("eventList");
+function renderEvents(events) {
+    eventList.innerHTML = "";
+    events.sort((a, b) => new Date(a.date) - new Date(b.date)).forEach(event => {
+        const li = document.createElement('li');
+        const dateFormatted = new Date(event.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
-    /**
-     * Fetches events from Firestore and displays them
-     * If a filter date is provided, it retrieves only events within that month
-     */
-    function fetchEvents(filterDate = "") {
-        let query = db.collection("events").orderBy("start", "asc");
-
-        // Apply date filtering if filterDate is provided
-        if (filterDate) {
-            const [year, month] = filterDate.split("-");
-            query = query.where("start", ">=", `${year}-${month}-01`)
-                         .where("start", "<=", `${year}-${month}-31`);
-        }
-
-        query.get().then(snapshot => {
-            eventList.innerHTML = "";
-
-            if (snapshot.empty) {
-                eventList.innerHTML = "<p>No events found.</p>";
-            } else {
-                snapshot.forEach(doc => {
-                    displayEvent(doc.id, doc.data());
-                });
-            }
-        }).catch(error => {
-            console.error("Error fetching events:", error);
-        });
-    }
-
-    /**
-     * Creates and displays a single event item in the event list
-     */
-    function displayEvent(id, data) {
-        const eventItem = document.createElement("div");
-        eventItem.classList.add("event-item");
-        eventItem.innerHTML = `
-            <h3>${data.title}</h3>
-            <p><strong>Date:</strong> ${formatDate(data.start)} - ${data.end ? formatDate(data.end) : "N/A"}</p>
-            <p><strong>Time:</strong> ${data.startTime || "N/A"} - ${data.endTime || "N/A"}</p>
-            <p><strong>Type:</strong> ${getEventType(data.color)}</p>
-            <p><strong>Details:</strong> ${data.details || "No details provided."}</p>
-            <button class="edit-btn" data-id="${id}">Edit</button>
-            <button class="delete-btn" data-id="${id}">Delete</button>
+        li.innerHTML = `
+            <span style="color:${event.type || 'black'}; font-weight:bold;">${event.name}</span>
+            <p>${dateFormatted} ${event.time || ''}</p>
+            <p>${event.description || ''}</p>
+            <button class="editBtn" data-id="${event.id}">Edit</button>
+            <button class="deleteBtn" data-id="${event.id}">Delete</button>
         `;
-        eventList.appendChild(eventItem);
-    }
+        eventList.appendChild(li);
+    });
 
-    /**
-     * Formats a date string to a more user-friendly format
-     */
-    function formatDate(date) {
-        const d = new Date(date + "T12:00:00Z");
-        return d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
-    }
-
-    /**
-     * Converts the stored color code to a readable event type
-     */
-    function getEventType(color) {
-        const eventTypes = {
-            "None": "Open",
-            "Green": "Family Time",
-            "Yellow": "Family Time (Visitors Welcome!)",
-            "Red": "Golf Weekend",
-            "Orange": "Hunting",
-            "Blue": "Work Weekend",
-            "Purple": "Trout Weekend"
-        };
-        return eventTypes[color] || "Unknown Type";
-    }
-
-    /**
-     * Loads an event’s data into the form for editing
-     */
-    function editEvent(eventId) {
-        db.collection("events").doc(eventId).get().then(doc => {
-            if (doc.exists) {
-                const data = doc.data();
-                document.getElementById("eventId").value = eventId;
-                document.getElementById("eventTitle").value = data.title;
-                document.getElementById("eventStart").value = data.start;
-                document.getElementById("eventEnd").value = data.end || "";
-                document.getElementById("eventStartTime").value = data.startTime || "";
-                document.getElementById("eventEndTime").value = data.endTime || "";
-                document.getElementById("eventType").value = data.color || "None";
-                document.getElementById("eventDetails").value = data.details || "";
-            }
-        }).catch(error => {
-            console.error("Error fetching event:", error);
+    document.querySelectorAll('.deleteBtn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            await deleteDoc(doc(db, "events", e.target.dataset.id));
+            loadEvents();
         });
-    }
-
-    /**
-     * Deletes an event from the database
-     * Refreshes the event list after deletion
-     */
-    function deleteEvent(eventId) {
-        if (confirm("Are you sure you want to delete this event?")) {
-            db.collection("events").doc(eventId).delete().then(() => {
-                console.log("Event deleted!");
-                fetchEvents();
-                document.getElementById("eventForm").reset();
-                document.getElementById("eventId").value = "";
-            }).catch(error => {
-                console.error("Error deleting event:", error);
-            });
-        }
-    }
-
-    /**
-     * Clears the form and resets event ID for creating a new entry
-     */
-    function cancelEvent() {
-        document.getElementById("eventForm").reset();
-        document.getElementById("eventId").value = "";
-    }
-
-    /**
-     * Saves a new event or updates an existing one in Firestore
-     * Performs validation and resets the form on success
-     */
-    function saveEvent() {
-        const eventId = document.getElementById("eventId").value;
-        const title = document.getElementById("eventTitle").value;
-        const start = document.getElementById("eventStart").value;
-        const end = document.getElementById("eventEnd").value || null;
-        const startTime = document.getElementById("eventStartTime").value || null;
-        const endTime = document.getElementById("eventEndTime").value || null;
-        const details = document.getElementById("eventDetails").value || "";
-        const color = document.getElementById("eventType").value;
-
-        // Ensure required fields are filled
-        if (!title || !start) {
-            alert("Title and start date are required!");
-            return;
-        }
-
-        const eventData = { title, start, end, startTime, endTime, details, color };
-
-        // If eventId exists, update the event; otherwise, create a new one
-        if (eventId) {
-            db.collection("events").doc(eventId).update(eventData).then(() => {
-                console.log("Event updated!");
-                fetchEvents();
-                document.getElementById("eventForm").reset();
-                document.getElementById("eventId").value = "";
-            }).catch(error => {
-                console.error("Error updating event:", error);
-            });
-        } else {
-            db.collection("events").add(eventData).then(() => {
-                console.log("Event added!");
-                fetchEvents();
-                document.getElementById("eventForm").reset();
-            }).catch(error => {
-                console.error("Error adding event:", error);
-            });
-        }
-    }
-
-    // Apply filter when user selects a month and clicks "Apply Filters"
-    document.getElementById("applyFilters").addEventListener("click", () => {
-        const filterDate = document.getElementById("filterDate").value;
-        fetchEvents(filterDate);
     });
 
-    // Handle event form submission
-    document.getElementById("eventForm").addEventListener("submit", (e) => {
-        e.preventDefault();
-        saveEvent();
+    document.querySelectorAll('.editBtn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const event = allEvents.find(ev => ev.id === e.target.dataset.id);
+            if (event) {
+                document.getElementById('eventName').value = event.name;
+                document.getElementById('eventDate').value = event.date;
+                document.getElementById('eventTime').value = event.time;
+                document.getElementById('eventDescription').value = event.description;
+                document.getElementById('eventType').value = event.type;
+
+                addEventForm.onsubmit = async (ev) => {
+                    ev.preventDefault();
+                    await updateDoc(doc(db, "events", event.id), {
+                        name: eventName.value,
+                        date: eventDate.value,
+                        time: eventTime.value,
+                        description: eventDescription.value,
+                        type: eventType.value
+                    });
+                    addEventForm.reset();
+                    addEventForm.onsubmit = saveEvent;
+                    loadEvents();
+                };
+            }
+        });
     });
+}
 
-    // Handle cancel button click
-    document.getElementById("cancelEvent").addEventListener("click", cancelEvent);
-
-    // Event delegation for edit and delete buttons
-    eventList.addEventListener("click", (event) => {
-        if (event.target.classList.contains("edit-btn")) {
-            editEvent(event.target.dataset.id);
-        } else if (event.target.classList.contains("delete-btn")) {
-            deleteEvent(event.target.dataset.id);
-        }
+async function saveEvent(e) {
+    e.preventDefault();
+    await addDoc(collection(db, "events"), {
+        name: eventName.value,
+        date: eventDate.value,
+        time: eventTime.value,
+        description: eventDescription.value,
+        type: eventType.value
     });
+    addEventForm.reset();
+    loadEvents();
+}
 
-    // Initial fetch to display all events on page load
-    fetchEvents();
+addEventForm.addEventListener('submit', saveEvent);
+
+[filterType, filterMonth, filterYear].forEach(filter => {
+    filter.addEventListener('change', () => {
+        const type = filterType.value;
+        const month = filterMonth.value;
+        const year = filterYear.value;
+        const filtered = allEvents.filter(e => {
+            const d = new Date(e.date);
+            return (!type || e.type === type) &&
+                   (!month || d.getMonth() == month) &&
+                   (!year || d.getFullYear() == year);
+        });
+        renderEvents(filtered);
+    });
 });
+
+todayBtn.addEventListener('click', () => {
+    const today = new Date();
+    const filtered = allEvents.filter(e => {
+        const d = new Date(e.date);
+        return d.getMonth() === today.getMonth() && d.getFullYear() === today.getFullYear();
+    });
+    renderEvents(filtered);
+});
+
+loadEvents();
