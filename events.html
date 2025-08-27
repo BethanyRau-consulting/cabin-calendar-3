@@ -25,10 +25,13 @@
     <button id="addEventBtn">Add Event</button>
 </div>
 
-<!-- === Add Event Modal === -->
+<!-- === Add/Edit Event Modal === -->
 <div id="eventModal" class="modal">
     <form id="eventForm" class="styled-form">
-        <h2>Add Event</h2>
+        <h2>Add/Edit Event</h2>
+
+        <input type="hidden" id="event-id">
+
         <label for="event-name">Event Name</label>
         <input type="text" id="event-name" required>
 
@@ -52,21 +55,26 @@
         <label for="event-desc">Description</label>
         <textarea id="event-desc"></textarea>
 
-        <div style="text-align:center;">
+        <label for="event-image">Upload Image</label>
+        <input type="file" id="event-image" accept="image/*">
+
+        <div style="text-align:center; margin-top:15px;">
             <button type="submit">Save Event</button>
             <button type="button" id="closeModal">Cancel</button>
         </div>
     </form>
 </div>
 
-<!-- === Event List === -->
+<!-- Event List -->
 <div id="eventList" class="event-list">
     <h2>Upcoming Events</h2>
-    <!-- Events will populate here -->
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js"></script>
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+
 <script src="events.js"></script>
 </body>
 </html>
