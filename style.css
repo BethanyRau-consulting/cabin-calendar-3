@@ -116,7 +116,7 @@ button:hover {
 /* Today button: same look as other buttons; only spacing */
 #todayBtn {
     display: block;
-    margin: 10px auto 20px; /* space above/below; inherits global button styles */
+    margin: 10px auto 20px; 
 }
 
 /* Weekday header row  */
@@ -147,15 +147,12 @@ button:hover {
     border-radius: 6px;
     overflow: hidden;
     box-shadow: 2px 2px 6px rgba(0,0,0,0.08);
-
-    /* Give room for the date number so events start below it */
-    padding: 26px 6px 6px; /* top padding increased for the number */
+    padding: 26px 6px 6px; 
     display: flex;
     flex-direction: column;
     align-items: stretch;
 }
 
-/* Hover effect */
 .day:hover {
     background: #edf3eb;
 }
@@ -172,27 +169,24 @@ button:hover {
     border-radius: 3px;
 }
 
-/* Container for events (starts below the number due to .day top padding) */
+/* Container for events in calendar */
 .event-container {
     display: flex;
     flex-direction: column;
     gap: 2px;
     width: 100%;
-    overflow: hidden; /* prevent stretching cell */
+    overflow: hidden;
 }
 
-/* Event pill */
 .event-block {
     font-size: 0.7em;
     text-align: center;
     padding: 2px 4px;
     font-weight: bold;
     color: black;
-
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-
     border-bottom: 1px solid white;
 }
 
@@ -324,3 +318,16 @@ button:hover {
     text-align: left;
     font-size: 16px;
 }
+
+/* === Events Page  === */
+header h1 {
+    font-size: 2em;
+    color: #4a4a4a;
+    margin-top: 20px;
+}
+
+#addEventSection, #eventListSection, #eventFilters {
+    width: 90%;
+    max-width: 700px;
+    margin: 20px auto;
+    background:
