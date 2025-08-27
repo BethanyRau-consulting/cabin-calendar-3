@@ -76,6 +76,7 @@ form textarea,
     transform: scale(1.2);
 }
 
+/* Global button look */
 button {
     padding: 12px 18px;
     background-color: #6a8d73;
@@ -103,63 +104,58 @@ button:hover {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
+/* Header with month + arrows  */
 .header {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 20px; 
 }
 
+/* Today button: same look as other buttons; only spacing */
 #todayBtn {
     display: block;
-    margin: 10px auto 20px auto; 
-    padding: 5px 10px; 
-    background: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    margin: 10px auto 20px; /* space above/below; inherits global button styles */
 }
 
-#todayBtn:hover {
-    background: #45a049
-}
-
+/* Weekday header row  */
 .days {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    text-align: center;
-    margin-top: 10px;
+    background: #d9e2d4; 
+    font-weight: bold;
+    font-size: 1.2em;
+    padding: 12px 0;
+    border-radius: 8px;
     margin-bottom: 10px;
 }
 
-.days div {
-    background-color: #f0f0f0;
-    padding: 10px 0;
-    font-weight: bold;
-    border-radius: 6px;
-}
-    
-/* Grid for calendar days */
+/* Calendar grid */
 .grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    grid-auto-rows: minmax(120px, 1fr);
+    grid-auto-rows: 120px;
     gap: 6px;
 }
 
-/* Individual day boxes */
+/* Individual day cells */
 .day {
     position: relative;
-    padding: 5px;
-    background: #fafafa;
+    background: #ffffff;
     border: 1px solid #e0e0e0;
     border-radius: 6px;
     overflow: hidden;
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.08);
+
+    /* Give room for the date number so events start below it */
+    padding: 26px 6px 6px; /* top padding increased for the number */
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
 }
 
-/* Hover effect on days */
+/* Hover effect */
 .day:hover {
     background: #edf3eb;
 }
@@ -167,37 +163,40 @@ button:hover {
 /* Date number */
 .date-number {
     position: absolute;
-    top: 5px;
-    left: 5px;
+    top: 6px;
+    left: 6px;
     font-size: 14px;
     font-weight: bold;
+    background: rgba(255,255,255,0.75);
+    padding: 2px 4px;
+    border-radius: 3px;
 }
 
-/* Container for events in a day */
+/* Container for events (starts below the number due to .day top padding) */
 .event-container {
     display: flex;
     flex-direction: column;
-    width: 100%;
-    overflow: hidden;
     gap: 2px;
-    flex-shrink: 0; /* prevents stretching */
+    width: 100%;
+    overflow: hidden; /* prevent stretching cell */
 }
 
-/* Individual event block */
+/* Event pill */
 .event-block {
     font-size: 0.7em;
     text-align: center;
-    padding: 2px;
+    padding: 2px 4px;
     font-weight: bold;
     color: black;
+
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+
     border-bottom: 1px solid white;
-    flex-shrink: 0; /* prevents stretching */
 }
 
-/* Modal popup styling */
+/* Modal */
 .modal {
     display: none;
     position: fixed;
