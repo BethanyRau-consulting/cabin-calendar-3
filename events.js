@@ -1,124 +1,104 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+// Firebase config
+const firebaseConfig = {
+    // Your Firebase config here
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const storage = firebase.storage();
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+// DOM Elements
+const addEventBtn = document.getElementById("addEventBtn");
+const eventModal = document.getElementById("eventModal");
+const closeModal = document.getElementById("closeModal");
+const eventForm = document.getElementById("eventForm");
+const eventList = document.getElementById("eventList");
 
-const addEventForm = document.getElementById('addEventForm');
-const eventList = document.getElementById('eventList');
-const filterType = document.getElementById('filterType');
-const filterMonth = document.getElementById('filterMonth');
-const filterYear = document.getElementById('filterYear');
-const todayBtn = document.getElementById('todayBtn');
+// Open/Close Modal
+addEventBtn.addEventListener("click", () => {
+    document.getElementById("event-id").value = "";
+    eventForm.reset();
+    eventModal.style.display = "block";
+});
+closeModal.addEventListener("click", () => eventModal.style.display = "none");
+window.addEventListener("click", e => { if(e.target==eventModal) eventModal.style.display="none"; });
 
-let allEvents = [];
-
-// Load events on page load
+// Load Events
 async function loadEvents() {
-    const snapshot = await getDocs(collection(db, "events"));
-    allEvents = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    renderEvents(allEvents);
-    populateFilters();
-}
-
-function populateFilters() {
-    const months = [...new Set(allEvents.map(e => new Date(e.date).getMonth()))];
-    const years = [...new Set(allEvents.map(e => new Date(e.date).getFullYear()))];
-
-    filterMonth.innerHTML = '<option value="">All</option>' + 
-        months.map(m => `<option value="${m}">${new Date(2000, m).toLocaleString('default', { month: 'long' })}</option>`).join('');
-    filterYear.innerHTML = '<option value="">All</option>' + 
-        years.map(y => `<option value="${y}">${y}</option>`).join('');
-}
-
-function renderEvents(events) {
-    eventList.innerHTML = "";
-    events.sort((a, b) => new Date(a.date) - new Date(b.date)).forEach(event => {
-        const li = document.createElement('li');
-        const dateFormatted = new Date(event.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-
-        li.innerHTML = `
-            <span style="color:${event.type || 'black'}; font-weight:bold;">${event.name}</span>
-            <p>${dateFormatted} ${event.time || ''}</p>
-            <p>${event.description || ''}</p>
-            <button class="editBtn" data-id="${event.id}">Edit</button>
-            <button class="deleteBtn" data-id="${event.id}">Delete</button>
+    eventList.innerHTML = "<h2>Upcoming Events</h2>";
+    const snapshot = await db.collection("events").orderBy("date").get();
+    snapshot.forEach(doc => {
+        const e = doc.data();
+        const div = document.createElement("div");
+        div.className = "event-item";
+        div.innerHTML = `
+            <h3>${e.name}</h3>
+            <p><strong>Date:</strong> ${new Date(e.date).toLocaleDateString()}</p>
+            <p><strong>Time:</strong> ${e.time || "N/A"}</p>
+            <p><strong>Type:</strong> ${e.type}</p>
+            <p>${e.description}</p>
+            ${e.imageURL ? `<img src="${e.imageURL}" style="max-width:100%; margin-top:10px;">` : ""}
+            <button class="edit-btn" data-id="${doc.id}">Edit</button>
+            <button class="delete-btn" data-id="${doc.id}">Delete</button>
         `;
-        eventList.appendChild(li);
-    });
-
-    document.querySelectorAll('.deleteBtn').forEach(btn => {
-        btn.addEventListener('click', async (e) => {
-            await deleteDoc(doc(db, "events", e.target.dataset.id));
-            loadEvents();
-        });
-    });
-
-    document.querySelectorAll('.editBtn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const event = allEvents.find(ev => ev.id === e.target.dataset.id);
-            if (event) {
-                document.getElementById('eventName').value = event.name;
-                document.getElementById('eventDate').value = event.date;
-                document.getElementById('eventTime').value = event.time;
-                document.getElementById('eventDescription').value = event.description;
-                document.getElementById('eventType').value = event.type;
-
-                addEventForm.onsubmit = async (ev) => {
-                    ev.preventDefault();
-                    await updateDoc(doc(db, "events", event.id), {
-                        name: eventName.value,
-                        date: eventDate.value,
-                        time: eventTime.value,
-                        description: eventDescription.value,
-                        type: eventType.value
-                    });
-                    addEventForm.reset();
-                    addEventForm.onsubmit = saveEvent;
-                    loadEvents();
-                };
-            }
-        });
+        eventList.appendChild(div);
     });
 }
 
-async function saveEvent(e) {
+// Save Event
+eventForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    await addDoc(collection(db, "events"), {
-        name: eventName.value,
-        date: eventDate.value,
-        time: eventTime.value,
-        description: eventDescription.value,
-        type: eventType.value
-    });
-    addEventForm.reset();
+    const id = document.getElementById("event-id").value;
+    const name = document.getElementById("event-name").value;
+    const date = document.getElementById("event-date").value;
+    const time = document.getElementById("event-time").value;
+    const type = document.getElementById("event-type").value;
+    const description = document.getElementById("event-desc").value;
+    const file = document.getElementById("event-image").files[0];
+
+    let imageURL = null;
+    if(file){
+        const ref = storage.ref(`events/${Date.now()}_${file.name}`);
+        await ref.put(file);
+        imageURL = await ref.getDownloadURL();
+    }
+
+    const data = {name, date, time, type, description, imageURL};
+
+    if(id){
+        await db.collection("events").doc(id).update(data);
+    } else {
+        await db.collection("events").add(data);
+    }
+
+    eventForm.reset();
+    eventModal.style.display = "none";
     loadEvents();
-}
-
-addEventForm.addEventListener('submit', saveEvent);
-
-[filterType, filterMonth, filterYear].forEach(filter => {
-    filter.addEventListener('change', () => {
-        const type = filterType.value;
-        const month = filterMonth.value;
-        const year = filterYear.value;
-        const filtered = allEvents.filter(e => {
-            const d = new Date(e.date);
-            return (!type || e.type === type) &&
-                   (!month || d.getMonth() == month) &&
-                   (!year || d.getFullYear() == year);
-        });
-        renderEvents(filtered);
-    });
 });
 
-todayBtn.addEventListener('click', () => {
-    const today = new Date();
-    const filtered = allEvents.filter(e => {
-        const d = new Date(e.date);
-        return d.getMonth() === today.getMonth() && d.getFullYear() === today.getFullYear();
-    });
-    renderEvents(filtered);
+// Edit & Delete Buttons
+eventList.addEventListener("click", async e => {
+    if(e.target.classList.contains("edit-btn")){
+        const docId = e.target.dataset.id;
+        const docSnap = await db.collection("events").doc(docId).get();
+        if(docSnap.exists){
+            const data = docSnap.data();
+            document.getElementById("event-id").value = docId;
+            document.getElementById("event-name").value = data.name;
+            document.getElementById("event-date").value = data.date;
+            document.getElementById("event-time").value = data.time || "";
+            document.getElementById("event-type").value = data.type;
+            document.getElementById("event-desc").value = data.description || "";
+            eventModal.style.display = "block";
+        }
+    }
+    if(e.target.classList.contains("delete-btn")){
+        const docId = e.target.dataset.id;
+        if(confirm("Delete this event?")){
+            await db.collection("events").doc(docId).delete();
+            loadEvents();
+        }
+    }
 });
 
-loadEvents();
+// Initial load
+window.onload = loadEvents;
