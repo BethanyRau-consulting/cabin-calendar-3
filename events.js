@@ -1,7 +1,13 @@
 // Firebase config
 const firebaseConfig = {
-    // Your Firebase config here
+  apiKey: "AIzaSyB9rOOglOPQ0pzOwuFq-P_Puo9lroDPU7A",
+  authDomain: "cabincalendar3.firebaseapp.com",
+  projectId: "cabincalendar3",
+  storageBucket: "cabincalendar3.firebasestorage.app",
+  messagingSenderId: "373184478865",
+  appId: "1:373184478865:web:cf1e0e816be89107538930"
 };
+
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const storage = firebase.storage();
@@ -22,9 +28,9 @@ addEventBtn.addEventListener("click", () => {
 closeModal.addEventListener("click", () => eventModal.style.display = "none");
 window.addEventListener("click", e => { if(e.target==eventModal) eventModal.style.display="none"; });
 
-// Load Events
+// Load Events from Firestore (sorted by date)
 async function loadEvents() {
-    eventList.innerHTML = "<h2>Upcoming Events</h2>";
+    eventList.innerHTML = ""; 
     const snapshot = await db.collection("events").orderBy("date").get();
     snapshot.forEach(doc => {
         const e = doc.data();
@@ -35,8 +41,8 @@ async function loadEvents() {
             <p><strong>Date:</strong> ${new Date(e.date).toLocaleDateString()}</p>
             <p><strong>Time:</strong> ${e.time || "N/A"}</p>
             <p><strong>Type:</strong> ${e.type}</p>
-            <p>${e.description}</p>
-            ${e.imageURL ? `<img src="${e.imageURL}" style="max-width:100%; margin-top:10px;">` : ""}
+            <p>${e.description || ""}</p>
+            ${e.imageURL ? `<img src="${e.imageURL}" class="event-img">` : ""}
             <button class="edit-btn" data-id="${doc.id}">Edit</button>
             <button class="delete-btn" data-id="${doc.id}">Delete</button>
         `;
@@ -75,7 +81,7 @@ eventForm.addEventListener("submit", async (e) => {
     loadEvents();
 });
 
-// Edit & Delete Buttons
+// Edit & Delete
 eventList.addEventListener("click", async e => {
     if(e.target.classList.contains("edit-btn")){
         const docId = e.target.dataset.id;
