@@ -78,21 +78,20 @@
       const payload = { title, start, end, startTime, endTime, color, details };
       if (imageURL) payload.imageURL = imageURL;
 
-      if (id) {
-        await db.collection("events").doc(id).update(payload);
-      } else {
-        await db.collection("events").add(payload);
-      }
-
-      eventForm.reset();
-      eventModal.style.display = "none";
-      loadEvents();
-      window.dispatchEvent(new Event('eventsUpdated'));
-    } catch (err) {
-      console.error("Error saving event:", err);
-      alert("Error saving event. See console.");
+try {
+    if (id) {
+        await db.collection("events").doc(id).update(data);
+    } else {
+        await db.collection("events").add(data);
     }
-  });
+
+    eventForm.reset();
+    eventModal.style.display = "none";
+    loadEvents(); // refresh the list immediately
+} catch (error) {
+    console.error("Error saving event:", error);
+}
+
 
   // edit/delete
   eventList.addEventListener("click", async (e) => {
