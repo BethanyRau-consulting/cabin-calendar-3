@@ -73,6 +73,28 @@
     <h2>Events</h2>
 </div>
     
-<script src="events.js"></script>
+    <!-- Firebase SDK scripts for app and Firestore database -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <!-- Firebase configuration and initialization -->
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyB9rOOglOPQ0pzOwuFq-P_Puo9lroDPU7A",
+            authDomain: "cabincalendar3.firebaseapp.com",
+            projectId: "cabincalendar3",
+            storageBucket: "cabincalendar3.appspot.com",
+            messagingSenderId: "373184478865",
+            appId: "1:373184478865:web:cf1e0e816be89107538930"
+        };
+
+        // Initialize Firebase if not already initialized
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+    </script>
+
+    <!-- Link to external JavaScript file responsible for calendar functionality -->
+    <script src="events.js" defer></script>
 </body>
 </html>
