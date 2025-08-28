@@ -161,28 +161,13 @@ import { db } from "./firebase-config.js";
   }
 
   // Buttons
-  const prevBtn = document.getElementById("prevBtn");
-  if (prevBtn) prevBtn.addEventListener("click", () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
+document.getElementById("prevBtn")?.addEventListener("click", () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
+document.getElementById("nextBtn")?.addEventListener("click", () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); });
+document.getElementById("todayBtn")?.addEventListener("click", () => { currentDate = new Date(); renderCalendar(); });
+document.getElementById("saveEventBtn")?.addEventListener("click", saveEventFromCalendar);
+document.getElementById("deleteEventBtn")?.addEventListener("click", deleteEventFromCalendar);
+document.getElementById("cancelEventBtn")?.addEventListener("click", closeEventModal);
 
-  const nextBtn = document.getElementById("nextBtn");
-  if (nextBtn) nextBtn.addEventListener("click", () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); });
-
-  const todayBtn = document.getElementById("todayBtn");
-  if (todayBtn) todayBtn.addEventListener("click", () => { currentDate = new Date(); renderCalendar(); });
-
-  const saveBtn = document.getElementById("saveEventBtn");
-  if (saveBtn) saveBtn.addEventListener("click", saveEventFromCalendar);
-
-  const deleteBtn = document.getElementById("deleteEventBtn");
-  if (deleteBtn) deleteBtn.addEventListener("click", deleteEventFromCalendar);
-
-  const cancelBtn = document.getElementById("cancelEventBtn");
-  if (cancelBtn) cancelBtn.addEventListener("click", closeEventModal);
-
+// Initial render
 window.addEventListener("DOMContentLoaded", () => renderCalendar());
-
-  // initial render
-renderCalendar();
 window.renderCalendar = renderCalendar;
-
-})();
