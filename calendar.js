@@ -1,4 +1,7 @@
-import { db } from "./firebase-config.js";
+import { db, storage } from "./firebase-config.js";
+import { collection, getDocs, addDoc, doc, setDoc, deleteDoc, updateDoc, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+
 
   let currentDate = new Date();
   let selectedEventId = null;
