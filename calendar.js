@@ -182,6 +182,7 @@ import { db } from "./firebase-config.js";
 window.addEventListener("DOMContentLoaded", () => renderCalendar());
 
   // initial render
-  renderCalendar();
+renderCalendar();
+window.renderCalendar = renderCalendar;
 
-  window.renderCalendar = renderCalendar;
+})();
