@@ -25,9 +25,17 @@ window.addEventListener("click", (e) => {
     if (e.target === eventModal) eventModal.style.display = "none";
 });
 
-// Load Events from Firestore (with optional filters)
+// Get current filters
+function getCurrentFilters() {
+    return {
+        type: filterType.value || "",
+        month: filterMonth.value || ""
+    };
+}
+
+// Load Events from Firestore 
 async function loadEvents(filters = {}) {
-    eventList.innerHTML = "";
+    eventList.innerHTML = "<h2>Events</h2>";
     let query = db.collection("events").orderBy("date");
 
     if (filters.type) {
@@ -99,29 +107,30 @@ eventForm.addEventListener("submit", async (e) => {
     }
 });
 
-// Edit & Delete
+// Edit/Delete
 eventList.addEventListener("click", async (e) => {
+    const docId = e.target.dataset.id;
+    if (!docId) return;
+
     if (e.target.classList.contains("edit-btn")) {
-        const docId = e.target.dataset.id;
         const docSnap = await db.collection("events").doc(docId).get();
-        if (docSnap.exists) {
-            const data = docSnap.data();
-            selectedEventId = docId;
-            document.getElementById("event-id").value = docId;
-            document.getElementById("event-name").value = data.name;
-            document.getElementById("event-date").value = data.date;
-            document.getElementById("event-time").value = data.time || "";
-            document.getElementById("event-type").value = data.type;
-            document.getElementById("event-desc").value = data.description || "";
-            eventModal.style.display = "block";
-        }
+        if (!docSnap.exists) return;
+        const data = docSnap.data();
+        selectedEventId = docId;
+        document.getElementById("event-id").value = docId;
+        document.getElementById("event-name").value = data.name;
+        document.getElementById("event-date").value = data.date;
+        document.getElementById("event-time").value = data.time || "";
+        document.getElementById("event-type").value = data.type;
+        document.getElementById("event-desc").value = data.description || "";
+        eventModal.style.display = "block";
     }
+
     if (e.target.classList.contains("delete-btn")) {
-        const docId = e.target.dataset.id;
         if (confirm("Delete this event?")) {
             try {
                 await db.collection("events").doc(docId).delete();
-                loadEvents(getCurrentFilters()); // refresh list after deletion
+                loadEvents(getCurrentFilters());
             } catch (error) {
                 console.error("Error deleting event:", error);
             }
@@ -129,17 +138,10 @@ eventList.addEventListener("click", async (e) => {
     }
 });
 
-// Filters
-function getCurrentFilters() {
-    return {
-        type: filterType?.value || "",
-        month: filterMonth?.value || ""
-    };
-}
-
-applyFiltersBtn?.addEventListener("click", () => {
+// Apply filters
+applyFiltersBtn.addEventListener("click", () => {
     loadEvents(getCurrentFilters());
 });
 
 // Initial load
-window.onload = () => loadEvents();
+window.addEventListener("DOMContentLoaded", () => loadEvents());
