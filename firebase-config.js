@@ -13,6 +13,4 @@ if (!firebase.apps.length) {
 }
 
 const db = firebase.firestore();
-
-// Export for other scripts
-window.db = db;
+export { db };
