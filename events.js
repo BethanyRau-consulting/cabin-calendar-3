@@ -1,6 +1,8 @@
-import { db } from "./firebase-config.js";
+import { db, storage } from "./firebase-config.js";
 import { collection, query, where, getDocs, addDoc, updateDoc, deleteDoc, doc, orderBy } 
     from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+import { ref, uploadBytes, getDownloadURL } 
+    from "https://www.gstatic.com/firebasejs/10.13.0/firebase-storage.js";
 
 const addEventBtn = document.getElementById("addEventBtn");
 const eventModal = document.getElementById("eventModal");
