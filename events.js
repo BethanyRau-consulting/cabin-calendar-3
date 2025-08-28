@@ -8,9 +8,9 @@ const eventForm = document.getElementById("eventForm");
 const eventList = document.getElementById("eventList");
 
 // Filter Elements
-const filterType = document.getElementById("filter-type");
-const filterMonth = document.getElementById("filter-month");
-const applyFiltersBtn = document.getElementById("applyFilters");
+const filterType = document.getElementById("filter-type") || null;
+const filterMonth = document.getElementById("filter-month") || null;
+const applyFiltersBtn = document.getElementById("applyFilters") || null;
 
 let selectedEventId = null;
 
