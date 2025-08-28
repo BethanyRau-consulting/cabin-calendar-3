@@ -1,5 +1,5 @@
 import { db } from "./firebase-config.js";
-import { collection, getDocs, addDoc, setDoc, deleteDoc, doc } from "firebase/firestore";
+import { collection, getDocs, doc, setDoc, addDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 let currentDate = new Date();
 let selectedEventId = null;
@@ -14,6 +14,7 @@ const eventTypeMap = {
   "Purple": { label: "Trout Weekend", color: "#D3A3FF" }
 };
 
+// RENDER CALENDAR
 function renderCalendar() {
   const monthName = document.getElementById("monthName");
   const calendarGrid = document.getElementById("calendarGrid");
@@ -25,20 +26,17 @@ function renderCalendar() {
   monthName.textContent = currentDate.toLocaleDateString("en-US", { month: "long", year: "numeric" });
   calendarGrid.innerHTML = "";
 
-  // Empty days before first of month
   for (let i = 0; i < firstDayIndex; i++) {
     const blank = document.createElement("div");
     blank.classList.add("day", "empty");
     calendarGrid.appendChild(blank);
   }
 
-  // Days
   for (let i = 1; i <= lastDay; i++) {
     const day = document.createElement("div");
     day.classList.add("day");
 
-    const dateStr = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1)
-      .toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
+    const dateStr = `${currentDate.getFullYear()}-${(currentDate.getMonth()+1).toString().padStart(2,'0')}-${i.toString().padStart(2,'0')}`;
     day.dataset.date = dateStr;
 
     const dateNumber = document.createElement("div");
@@ -47,45 +45,46 @@ function renderCalendar() {
     day.appendChild(dateNumber);
 
     day.addEventListener("click", () => openEventModal(dateStr));
+
     calendarGrid.appendChild(day);
   }
 
   fetchEventsAndRender();
 }
 
+// FETCH EVENTS
 async function fetchEventsAndRender() {
   try {
-    const eventsCol = collection(db, "events");
-    const snapshot = await getDocs(eventsCol);
-
+    const snapshot = await getDocs(collection(db, "events")); // MODULAR SYNTAX
     snapshot.forEach(docSnap => {
       const event = docSnap.data();
-      const eventId = docSnap.id;
-
       if (!event.start) return;
+
       const startDate = new Date(event.start + "T00:00:00");
       const endDate = event.end ? new Date(event.end + "T00:00:00") : startDate;
 
       let current = new Date(startDate);
       while (current <= endDate) {
-        const eventDateStr = `${current.getFullYear()}-${(current.getMonth() + 1)
-          .toString().padStart(2, '0')}-${current.getDate().toString().padStart(2, '0')}`;
-        document.querySelectorAll(`.day[data-date="${eventDateStr}"]`).forEach(dayElement => {
-          let container = dayElement.querySelector(".event-container");
+        const eventDateStr = `${current.getFullYear()}-${(current.getMonth()+1).toString().padStart(2,'0')}-${current.getDate().toString().padStart(2,'0')}`;
+        document.querySelectorAll(`.day[data-date="${eventDateStr}"]`).forEach(dayEl => {
+          let container = dayEl.querySelector(".event-container");
           if (!container) {
             container = document.createElement("div");
             container.classList.add("event-container");
-            dayElement.appendChild(container);
+            dayEl.appendChild(container);
           }
+
           const eventData = eventTypeMap[event.color] || eventTypeMap["None"];
           const eventDiv = document.createElement("div");
           eventDiv.classList.add("event-block");
           eventDiv.style.backgroundColor = eventData.color;
           eventDiv.textContent = event.title;
-          eventDiv.addEventListener("click", (e) => {
+
+          eventDiv.addEventListener("click", e => {
             e.stopPropagation();
-            openEventModal(eventDateStr, eventId, event);
+            openEventModal(eventDateStr, docSnap.id, event);
           });
+
           container.appendChild(eventDiv);
         });
         current.setDate(current.getDate() + 1);
@@ -96,27 +95,7 @@ async function fetchEventsAndRender() {
   }
 }
 
-function openEventModal(date, eventId = null, eventData = {}) {
-  selectedEventId = eventId;
-
-  document.getElementById("eventStart").value = date;
-  document.getElementById("eventTitle").value = eventData.title || "";
-  document.getElementById("eventEnd").value = eventData.end || "";
-  document.getElementById("eventStartTime").value = eventData.startTime || "";
-  document.getElementById("eventEndTime").value = eventData.endTime || "";
-  document.getElementById("eventType").value = eventData.color || "None";
-  document.getElementById("eventDetails").value = eventData.details || "";
-
-  document.getElementById("eventModal").style.display = "block";
-}
-
-function closeEventModal() {
-  selectedEventId = null;
-  const form = document.getElementById("eventForm");
-  if (form) form.reset();
-  document.getElementById("eventModal").style.display = "none";
-}
-
+// ADD/EDIT/DELETE FUNCTIONS
 async function saveEventFromCalendar() {
   const title = document.getElementById("eventTitle").value;
   const start = document.getElementById("eventStart").value;
@@ -126,10 +105,7 @@ async function saveEventFromCalendar() {
   const type = document.getElementById("eventType").value;
   const details = document.getElementById("eventDetails").value;
 
-  if (!title || !start) {
-    alert("Event title and start date are required!");
-    return;
-  }
+  if (!title || !start) return alert("Event title and start date are required!");
 
   const payload = { title, start, end, startTime, endTime, color: type, details };
 
@@ -147,25 +123,43 @@ async function saveEventFromCalendar() {
 }
 
 async function deleteEventFromCalendar() {
-  if (!selectedEventId) {
-    alert("No event selected to delete.");
-    return;
-  }
+  if (!selectedEventId) return alert("No event selected to delete.");
   try {
     await deleteDoc(doc(db, "events", selectedEventId));
-    renderCalendar();
     closeEventModal();
+    renderCalendar();
   } catch (err) {
     console.error("Error deleting event:", err);
   }
 }
 
-// Buttons
-document.getElementById("prevBtn").addEventListener("click", () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
-document.getElementById("nextBtn").addEventListener("click", () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); });
+// MODAL HANDLERS
+function openEventModal(date, eventId=null, eventData={}) {
+  selectedEventId = eventId;
+  document.getElementById("eventStart").value = date;
+  document.getElementById("eventTitle").value = eventData.title || "";
+  document.getElementById("eventEnd").value = eventData.end || "";
+  document.getElementById("eventStartTime").value = eventData.startTime || "";
+  document.getElementById("eventEndTime").value = eventData.endTime || "";
+  document.getElementById("eventType").value = eventData.color || "None";
+  document.getElementById("eventDetails").value = eventData.details || "";
+  document.getElementById("eventModal").style.display = "block";
+}
+
+function closeEventModal() {
+  document.getElementById("eventModal").style.display = "none";
+  selectedEventId = null;
+  document.getElementById("eventForm").reset();
+}
+
+// BUTTONS
+document.getElementById("prevBtn").addEventListener("click", () => { currentDate.setMonth(currentDate.getMonth()-1); renderCalendar(); });
+document.getElementById("nextBtn").addEventListener("click", () => { currentDate.setMonth(currentDate.getMonth()+1); renderCalendar(); });
 document.getElementById("todayBtn").addEventListener("click", () => { currentDate = new Date(); renderCalendar(); });
 document.getElementById("saveEventBtn").addEventListener("click", saveEventFromCalendar);
 document.getElementById("deleteEventBtn").addEventListener("click", deleteEventFromCalendar);
 document.getElementById("cancelEventBtn").addEventListener("click", closeEventModal);
 
-window.addEventListener("DOMContentLoaded", renderCalendar);
+// INITIAL RENDER
+window.addEventListener("DOMContentLoaded", () => renderCalendar());
+window.renderCalendar = renderCalendar;
