@@ -1,16 +1,8 @@
+// calendar.js
+import { db } from "./firebase-config.js";
+
 // Run script only after the full HTML document is loaded
 document.addEventListener("DOMContentLoaded", () => {
-
-    // Check that Firebase SDK is loaded
-    if (!firebase.apps.length) {
-        console.error("Firebase SDK not loaded. Ensure scripts are included in `calendar.html`.");
-        return;
-    }
-
-    console.log("Firebase SDK detected. Initializing Firestore...");
-
-    // Initialize Firestore database
-    const db = firebase.firestore();
 
     let currentDate = new Date();
     let selectedEventId = null;
@@ -34,7 +26,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
 
         monthName.textContent = currentDate.toLocaleDateString("en-US", { month: "long", year: "numeric" });
-
         calendarGrid.innerHTML = "";
 
         for (let i = 0; i < firstDayIndex; i++) {
@@ -62,8 +53,9 @@ document.addEventListener("DOMContentLoaded", () => {
         fetchEvents();
     }
 
-    function fetchEvents() {
-        db.collection("events").get().then(snapshot => {
+    async function fetchEvents() {
+        try {
+            const snapshot = await db.collection("events").get();
             snapshot.forEach(doc => {
                 const event = doc.data();
                 if (!event.start) return;
@@ -102,7 +94,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     current.setDate(current.getDate() + 1);
                 }
             });
-        }).catch(error => console.error("Error loading events:", error));
+        } catch (error) {
+            console.error("Error loading events:", error);
+        }
     }
 
     function openEventModal(date, eventId = null, eventData = {}) {
@@ -125,7 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("eventForm").reset();
     }
 
-    function saveEvent() {
+    async function saveEvent() {
         const title = document.getElementById("eventTitle").value;
         const start = document.getElementById("eventStart").value;
         const end = document.getElementById("eventEnd").value || start;
@@ -141,29 +135,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const eventData = { title, start, end, startTime, endTime, type, details, color: type };
 
-        if (selectedEventId) {
-            db.collection("events").doc(selectedEventId).set(eventData).then(() => {
-                renderCalendar();
-                closeEventModal();
-            }).catch(error => console.error("Error updating event:", error));
-        } else {
-            db.collection("events").add(eventData).then(() => {
-                renderCalendar();
-                closeEventModal();
-            }).catch(error => console.error("Error adding event:", error));
+        try {
+            if (selectedEventId) {
+                await db.collection("events").doc(selectedEventId).set(eventData);
+            } else {
+                await db.collection("events").add(eventData);
+            }
+            renderCalendar();
+            closeEventModal();
+        } catch (error) {
+            console.error("Error saving event:", error);
         }
     }
 
-    function deleteEvent() {
+    async function deleteEvent() {
         if (!selectedEventId) {
             alert("No event selected to delete.");
             return;
         }
 
-        db.collection("events").doc(selectedEventId).delete().then(() => {
+        try {
+            await db.collection("events").doc(selectedEventId).delete();
             closeEventModal();
             renderCalendar();
-        }).catch(error => console.error("Error deleting event:", error));
+        } catch (error) {
+            console.error("Error deleting event:", error);
+        }
     }
 
     // Button listeners
@@ -182,7 +179,6 @@ document.addEventListener("DOMContentLoaded", () => {
         renderCalendar();
     });
 
-    // **New: Modal action buttons**
     document.getElementById("saveEventBtn").addEventListener("click", saveEvent);
     document.getElementById("deleteEventBtn").addEventListener("click", deleteEvent);
     document.getElementById("cancelEventBtn").addEventListener("click", closeEventModal);
