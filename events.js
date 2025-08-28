@@ -26,32 +26,41 @@
   });
 
   // load events
-  async function loadEvents() {
-    eventList.innerHTML = "<h2>Events</h2>";
-    try {
-      const snapshot = await db.collection("events").orderBy("start").get();
-      snapshot.forEach(doc => {
-        const ev = doc.data();
+async function loadEvents(filters = {}) {
+    eventList.innerHTML = "";
+
+    let query = db.collection("events").orderBy("date");
+
+    if (filters.type) {
+        query = query.where("type", "==", filters.type);
+    }
+
+    const snapshot = await query.get();
+
+    snapshot.forEach(doc => {
+        const e = doc.data();
+
+        // If filtering by month
+        if (filters.month) {
+            const eventMonth = e.date.substring(0, 7); // "YYYY-MM"
+            if (eventMonth !== filters.month) return;
+        }
+
         const div = document.createElement("div");
         div.className = "event-item";
         div.innerHTML = `
-          <h3>${ev.title || "Untitled"}</h3>
-          <p><strong>Date:</strong> ${ev.start ? new Date(ev.start + "T00:00:00").toLocaleDateString() : "N/A"}</p>
-          <p><strong>Time:</strong> ${ev.startTime || "N/A"} ${ev.endTime ? " - " + ev.endTime : ""}</p>
-          <p><strong>Type:</strong> ${ev.color || "None"}</p>
-          <p>${ev.details || ""}</p>
-          ${ev.imageURL ? `<img src="${ev.imageURL}" class="event-img" alt="event image">` : ""}
-          <div style="margin-top:10px;">
+            <h3>${e.name}</h3>
+            <p><strong>Date:</strong> ${new Date(e.date).toLocaleDateString()}</p>
+            <p><strong>Time:</strong> ${e.time || "N/A"}</p>
+            <p><strong>Type:</strong> ${e.type}</p>
+            <p>${e.description || ""}</p>
+            ${e.imageURL ? `<img src="${e.imageURL}" class="event-img">` : ""}
             <button class="edit-btn" data-id="${doc.id}">Edit</button>
             <button class="delete-btn" data-id="${doc.id}">Delete</button>
-          </div>
         `;
         eventList.appendChild(div);
-      });
-    } catch (err) {
-      console.error("Error loading events:", err);
-    }
-  }
+    });
+}
 
   // handle add / update
   eventForm.addEventListener("submit", async (e) => {
