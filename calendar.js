@@ -1,6 +1,13 @@
 import { 
-  db, collection, addDoc, getDocs, getDoc, doc, updateDoc, deleteDoc, query, where 
-} from "./firebase-config.js";
+  collection, 
+  getDocs, 
+  addDoc, 
+  doc, 
+  updateDoc, 
+  deleteDoc, 
+  query, 
+  orderBy 
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 let currentDate = new Date();
 let selectedEventId = null;
