@@ -1,15 +1,5 @@
-// calendar.js
-import {
-  db,
-  collection,
-  query,
-  where,
-  getDocs,
-  addDoc,
-  updateDoc,
-  deleteDoc,
-  doc,
-  orderBy
+import { 
+  db, collection, addDoc, getDocs, getDoc, doc, updateDoc, deleteDoc, query, where 
 } from "./firebase-config.js";
 
 let currentDate = new Date();
