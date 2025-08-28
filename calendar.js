@@ -1,8 +1,4 @@
-(function() {
-  if (!window.db) {
-    console.error("Firestore (db) not available. Make sure firebase-config.js loaded before calendar.js");
-    return;
-  }
+import { db } from "./firebase-config.js";
 
   let currentDate = new Date();
   let selectedEventId = null;
@@ -183,10 +179,7 @@
   const cancelBtn = document.getElementById("cancelEventBtn");
   if (cancelBtn) cancelBtn.addEventListener("click", closeEventModal);
 
-  // listen for updates from events page
-  window.addEventListener('eventsUpdated', () => {
-    renderCalendar();
-  });
+window.addEventListener("DOMContentLoaded", () => renderCalendar());
 
   // initial render
   renderCalendar();
