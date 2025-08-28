@@ -28,6 +28,25 @@
     <button id="addEventBtn">Add Event</button>
 </div>
 
+<div id="filters">
+    <label for="filter-type">Type:</label>
+    <select id="filter-type">
+        <option value="">All</option>
+        <option value="None">Open</option>
+        <option value="Green">Family Time</option>
+        <option value="Yellow">Visitors Welcome</option>
+        <option value="Red">Golf Weekend</option>
+        <option value="Orange">Hunting</option>
+        <option value="Blue">Work Weekend</option>
+        <option value="Purple">Trout Weekend</option>
+    </select>
+
+    <label for="filter-month">Month:</label>
+    <input type="month" id="filter-month">
+
+    <button id="applyFilters">Apply Filters</button>
+</div>
+
 <!-- === Add/Edit Event Modal === -->
 <div id="eventModal" class="modal">
     <form id="eventForm" class="styled-form">
