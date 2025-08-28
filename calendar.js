@@ -185,4 +185,3 @@ window.addEventListener("DOMContentLoaded", () => renderCalendar());
   renderCalendar();
 
   window.renderCalendar = renderCalendar;
-})();
