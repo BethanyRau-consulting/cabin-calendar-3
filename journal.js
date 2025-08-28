@@ -1,5 +1,8 @@
-import { db, storage, collection, doc, getDocs, addDoc, updateDoc, deleteDoc, query, where, orderBy, serverTimestamp, ref, uploadBytes, getDownloadURL } 
-    from './firebase-config.js';
+// Journal.js
+import { 
+  db, storage, collection, doc, getDocs, addDoc, updateDoc, deleteDoc, query, orderBy, where, serverTimestamp, ref, uploadBytes, getDownloadURL
+} from './firebase-config.js';
+
 
 document.addEventListener("DOMContentLoaded", () => {
     const journalEntriesDiv = document.getElementById("journalEntries");
