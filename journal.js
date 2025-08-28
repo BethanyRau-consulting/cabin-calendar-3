@@ -1,15 +1,15 @@
-// Journal.js
+// journal.js
 import { 
   db, collection, doc, getDocs, addDoc, updateDoc, deleteDoc, query, orderBy, where, serverTimestamp
 } from './firebase-config.js';
 
-// Convert a file to Base64
-async function getBase64(file) {
+// Helper to convert file to Base64
+function getBase64(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
+        reader.readAsDataURL(file);
         reader.onload = () => resolve(reader.result);
         reader.onerror = error => reject(error);
-        reader.readAsDataURL(file);
     });
 }
 
@@ -102,16 +102,9 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // Convert file to Base64 if present
         let imageBase64 = null;
         if (file) {
-            try {
-                imageBase64 = await getBase64(file);
-            } catch (err) {
-                console.error("Error converting image:", err);
-                alert("Failed to process image.");
-                return;
-            }
+            imageBase64 = await getBase64(file);
         }
 
         const data = { name, date, details };
