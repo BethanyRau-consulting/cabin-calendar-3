@@ -1,8 +1,17 @@
 // Journal.js
 import { 
-  db, storage, collection, doc, getDocs, addDoc, updateDoc, deleteDoc, query, orderBy, where, serverTimestamp, ref, uploadBytes, getDownloadURL
+  db, collection, doc, getDocs, addDoc, updateDoc, deleteDoc, query, orderBy, where, serverTimestamp
 } from './firebase-config.js';
 
+// Convert a file to Base64
+async function getBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+        reader.readAsDataURL(file);
+    });
+}
 
 document.addEventListener("DOMContentLoaded", () => {
     const journalEntriesDiv = document.getElementById("journalEntries");
@@ -48,7 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
         entryDiv.innerHTML = `
             <h3>${data.name} - ${formatDate(data.date)}</h3>
             <p>${data.details || ""}</p>
-            ${data.imageURL ? `<img src="${data.imageURL}" class="journal-img">` : ""}
+            ${data.imageBase64 ? `<img src="${data.imageBase64}" class="journal-img">` : ""}
             <button onclick="editEntry('${id}', '${data.name}', '${data.date}', '${safeDetails}')">Edit</button>
             <button onclick="deleteEntry('${id}')">Delete</button>
         `;
@@ -93,15 +102,20 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        let imageURL = null;
+        // Convert file to Base64 if present
+        let imageBase64 = null;
         if (file) {
-            const sRef = ref(storage, `journal/${Date.now()}_${file.name}`);
-            await uploadBytes(sRef, file);
-            imageURL = await getDownloadURL(sRef);
+            try {
+                imageBase64 = await getBase64(file);
+            } catch (err) {
+                console.error("Error converting image:", err);
+                alert("Failed to process image.");
+                return;
+            }
         }
 
         const data = { name, date, details };
-        if (imageURL) data.imageURL = imageURL;
+        if (imageBase64) data.imageBase64 = imageBase64;
 
         try {
             if (selectedEntryId) {
