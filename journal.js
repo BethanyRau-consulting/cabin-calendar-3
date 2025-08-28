@@ -1,6 +1,4 @@
-import { 
-    db, collection, doc, getDocs, addDoc, updateDoc, deleteDoc, orderBy, query, where, serverTimestamp 
-} from './firebase-utils.js';
+import { db, collection, doc, getDocs, addDoc, updateDoc, deleteDoc } from './firebase-utils.js';
 
 document.addEventListener("DOMContentLoaded", () => {
     const journalEntriesDiv = document.getElementById("journalEntries");
