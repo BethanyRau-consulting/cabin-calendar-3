@@ -1,98 +1,135 @@
-// DOM Elements
-const addEventBtn = document.getElementById("addEventBtn");
-const eventModal = document.getElementById("eventModal");
-const closeModal = document.getElementById("closeModal");
-const eventForm = document.getElementById("eventForm");
-const eventList = document.getElementById("eventList");
+(function() {
+  if (!window.db) {
+    console.error("Firestore (db) not available. Make sure firebase-config.js loaded before events.js");
+    return;
+  }
 
-// Open/Close Modal
-addEventBtn.addEventListener("click", () => {
-  document.getElementById("event-id").value = "";
-  eventForm.reset();
-  eventModal.style.display = "block";
-});
-closeModal.addEventListener("click", () => (eventModal.style.display = "none"));
-window.addEventListener("click", (e) => {
-  if (e.target == eventModal) eventModal.style.display = "none";
-});
+  const addEventBtn = document.getElementById("addEventBtn");
+  const eventModal = document.getElementById("eventModal");
+  const closeModalBtn = document.getElementById("closeModal");
+  const eventForm = document.getElementById("eventForm");
+  const eventList = document.getElementById("eventList");
 
-// Load Events from Firestore (sorted by date)
-async function loadEvents() {
-  eventList.innerHTML = "";
-  const snapshot = await db.collection("events").orderBy("date").get();
-  snapshot.forEach((doc) => {
-    const e = doc.data();
-    const div = document.createElement("div");
-    div.className = "event-item";
-    div.innerHTML = `
-      <h3>${e.name}</h3>
-      <p><strong>Date:</strong> ${new Date(e.date).toLocaleDateString()}</p>
-      <p><strong>Time:</strong> ${e.time || "N/A"}</p>
-      <p><strong>Type:</strong> ${e.type}</p>
-      <p>${e.description || ""}</p>
-      ${e.imageURL ? `<img src="${e.imageURL}" class="event-img">` : ""}
-      <button class="edit-btn" data-id="${doc.id}">Edit</button>
-      <button class="delete-btn" data-id="${doc.id}">Delete</button>
-    `;
-    eventList.appendChild(div);
+  // open modal
+  addEventBtn.addEventListener("click", () => {
+    document.getElementById("event-id").value = "";
+    eventForm.reset();
+    eventModal.style.display = "block";
   });
-}
 
-// Save Event
-eventForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const id = document.getElementById("event-id").value;
-  const name = document.getElementById("event-name").value;
-  const date = document.getElementById("event-date").value;
-  const time = document.getElementById("event-time").value;
-  const type = document.getElementById("event-type").value;
-  const description = document.getElementById("event-desc").value;
-  const file = document.getElementById("event-image").files[0];
+  closeModalBtn.addEventListener("click", () => {
+    eventModal.style.display = "none";
+  });
 
-  let imageURL = null;
-  if (file) {
-    const ref = storage.ref(`events/${Date.now()}_${file.name}`);
-    await ref.put(file);
-    imageURL = await ref.getDownloadURL();
-  }
+  window.addEventListener("click", (e) => {
+    if (e.target === eventModal) eventModal.style.display = "none";
+  });
 
-  const data = { name, date, time, type, description, imageURL };
-
-  if (id) {
-    await db.collection("events").doc(id).update(data);
-  } else {
-    await db.collection("events").add(data);
-  }
-
-  eventForm.reset();
-  eventModal.style.display = "none";
-  loadEvents();
-});
-
-// Edit & Delete
-eventList.addEventListener("click", async (e) => {
-  if (e.target.classList.contains("edit-btn")) {
-    const docId = e.target.dataset.id;
-    const docSnap = await db.collection("events").doc(docId).get();
-    if (docSnap.exists) {
-      const data = docSnap.data();
-      document.getElementById("event-id").value = docId;
-      document.getElementById("event-name").value = data.name;
-      document.getElementById("event-date").value = data.date;
-      document.getElementById("event-time").value = data.time || "";
-      document.getElementById("event-type").value = data.type;
-      document.getElementById("event-desc").value = data.description || "";
-      eventModal.style.display = "block";
+  // load events
+  async function loadEvents() {
+    eventList.innerHTML = "<h2>Events</h2>";
+    try {
+      const snapshot = await db.collection("events").orderBy("start").get();
+      snapshot.forEach(doc => {
+        const ev = doc.data();
+        const div = document.createElement("div");
+        div.className = "event-item";
+        div.innerHTML = `
+          <h3>${ev.title || "Untitled"}</h3>
+          <p><strong>Date:</strong> ${ev.start ? new Date(ev.start + "T00:00:00").toLocaleDateString() : "N/A"}</p>
+          <p><strong>Time:</strong> ${ev.startTime || "N/A"} ${ev.endTime ? " - " + ev.endTime : ""}</p>
+          <p><strong>Type:</strong> ${ev.color || "None"}</p>
+          <p>${ev.details || ""}</p>
+          ${ev.imageURL ? `<img src="${ev.imageURL}" class="event-img" alt="event image">` : ""}
+          <div style="margin-top:10px;">
+            <button class="edit-btn" data-id="${doc.id}">Edit</button>
+            <button class="delete-btn" data-id="${doc.id}">Delete</button>
+          </div>
+        `;
+        eventList.appendChild(div);
+      });
+    } catch (err) {
+      console.error("Error loading events:", err);
     }
   }
-  if (e.target.classList.contains("delete-btn")) {
-    const docId = e.target.dataset.id;
-    if (confirm("Delete this event?")) {
-      await db.collection("events").doc(docId).delete();
+
+  // handle add / update
+  eventForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const id = document.getElementById("event-id").value || null;
+    const title = document.getElementById("event-name").value.trim();
+    const start = document.getElementById("event-date").value; // YYYY-MM-DD
+    const end = start; // form has no end field in events page — keep same day
+    const startTime = document.getElementById("event-time").value || "";
+    const endTime = "";
+    const color = document.getElementById("event-type").value || "None";
+    const details = document.getElementById("event-desc").value || "";
+    const file = document.getElementById("event-image").files[0];
+
+    let imageURL = null;
+    try {
+      if (file) {
+        const ref = storage.ref(`events/${Date.now()}_${file.name}`);
+        await ref.put(file);
+        imageURL = await ref.getDownloadURL();
+      }
+
+      const payload = { title, start, end, startTime, endTime, color, details };
+      if (imageURL) payload.imageURL = imageURL;
+
+      if (id) {
+        await db.collection("events").doc(id).update(payload);
+      } else {
+        await db.collection("events").add(payload);
+      }
+
+      eventForm.reset();
+      eventModal.style.display = "none";
       loadEvents();
+      window.dispatchEvent(new Event('eventsUpdated'));
+    } catch (err) {
+      console.error("Error saving event:", err);
+      alert("Error saving event. See console.");
     }
-  }
-});
+  });
 
-// Initial load
-window.onload = loadEvents;
+  // edit/delete
+  eventList.addEventListener("click", async (e) => {
+    if (e.target.classList.contains("edit-btn")) {
+      const id = e.target.dataset.id;
+      try {
+        const docSnap = await db.collection("events").doc(id).get();
+        if (!docSnap.exists) return alert("Event not found");
+        const data = docSnap.data();
+        document.getElementById("event-id").value = id;
+        document.getElementById("event-name").value = data.title || "";
+        document.getElementById("event-date").value = data.start || "";
+        document.getElementById("event-time").value = data.startTime || "";
+        document.getElementById("event-type").value = data.color || "None";
+        document.getElementById("event-desc").value = data.details || "";
+        // image input cannot be pre-filled
+        eventModal.style.display = "block";
+      } catch (err) {
+        console.error("Error loading event for edit:", err);
+      }
+    }
+
+    if (e.target.classList.contains("delete-btn")) {
+      const id = e.target.dataset.id;
+      if (!confirm("Delete this event?")) return;
+      try {
+        await db.collection("events").doc(id).delete();
+        loadEvents();
+        window.dispatchEvent(new Event('eventsUpdated'));
+      } catch (err) {
+        console.error("Error deleting event:", err);
+      }
+    }
+  });
+
+  // load on start
+  loadEvents();
+
+  window.loadEvents = loadEvents;
+})();
