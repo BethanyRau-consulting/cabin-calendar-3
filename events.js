@@ -1,5 +1,5 @@
 import { db, storage } from "./firebase-config.js";
-import { collection, query, where, getDocs, addDoc, updateDoc, deleteDoc, doc, orderBy } 
+import { collection, query, where, getDocs, getDoc, addDoc, updateDoc, deleteDoc, doc, orderBy } 
     from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 import { ref, uploadBytes, getDownloadURL } 
     from "https://www.gstatic.com/firebasejs/10.13.0/firebase-storage.js";
@@ -37,7 +37,7 @@ async function loadEvents(filters={}) {
             div.className="event-item";
             div.innerHTML = `
                 <h3>${e.title}</h3>
-                <p><strong>Date:</strong> ${new Date(e.start).toLocaleDateString()}</p>
+                <p><strong>Date:</strong> ${new Date(e.start + "T00:00:00").toLocaleDateString()}</p>
                 <p><strong>Time:</strong> ${e.startTime || "N/A"}</p>
                 <p><strong>Type:</strong> ${e.color}</p>
                 <p>${e.details || ""}</p>
@@ -80,7 +80,8 @@ eventForm.addEventListener("submit", async e => {
 eventList.addEventListener("click", async e => {
     const id = e.target.dataset.id; if(!id) return;
     if(e.target.classList.contains("edit-btn")){
-        const dSnap = await getDocs(doc(db,"events",id));
+        const dSnap = await getDoc(doc(db,"events",id));
+        if (!dSnap.exists()) return;
         const data = dSnap.data();
         selectedEventId = id;
         document.getElementById("event-id").value=id;
