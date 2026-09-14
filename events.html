@@ -1,70 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Metadata and page configuration -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Events</title>
-
-    <!-- Link to external CSS file -->
     <link rel="stylesheet" href="style.css">
+
+    <!-- Redirect to login if not authenticated -->
+    <script>
+        if (sessionStorage.getItem("authenticated") !== "true") {
+            window.location.href = "login.html";
+        }
+    </script>
 </head>
 <body>
-    <!-- Page Title -->
     <h1>Events</h1>
 
-    <!-- Navigation menu linking to other site sections -->
     <nav>
         <a href="index.html">Home</a> |
         <a href="calendar.html">Calendar</a> |
         <a href="events.html">Events</a> |
         <a href="journal.html">Journal</a> |
         <a href="photos.html">Pictures</a> |
-        <a href="inventory.html">Inventory</a> 
+        <a href="inventory.html">Inventory</a>
     </nav>
 
-<!-- Add Event Button -->
-<div style="text-align:center; margin: 20px;">
-    <button id="addEventBtn">Add Event</button>
-</div>
+    <!-- Add Event Button -->
+    <div style="text-align:center; margin: 20px;">
+        <button id="addEventBtn">+ Add Event</button>
+    </div>
 
-<div id="filters">
-    <label for="filter-type">Type:</label>
-    <select id="filter-type">
-        <option value="">All</option>
-        <option value="None">Open</option>
-        <option value="Green">Family Time</option>
-        <option value="Yellow">Family Time (Visitors Welcome!)</option>
-        <option value="Red">Golf Weekend</option>
-        <option value="Orange">Hunting</option>
-        <option value="Blue">Work Weekend</option>
-        <option value="Purple">Trout Weekend</option>
-    </select>
-
-    <label for="filter-month">Month/Year:</label>
-    <input type="month" id="filter-month">
-
-    <button id="applyFilters">Apply Filters</button>
-</div>
-
-<!-- === Add/Edit Event Modal === -->
-<div id="eventModal" class="modal">
-    <form id="eventForm" class="styled-form">
-        <h2>Add/Edit Event</h2>
-
-        <input type="hidden" id="event-id">
-
-        <label for="event-name">Event Name</label>
-        <input type="text" id="event-name" required>
-
-        <label for="event-date">Date</label>
-        <input type="date" id="event-date" required>
-
-        <label for="event-time">Time</label>
-        <input type="text" id="event-time" placeholder="e.g., 3:00 PM">
-
-        <label for="event-type">Event Type</label>
-        <select id="event-type">
+    <!-- Filters bar -->
+    <div id="filters">
+        <label for="filter-type">Type:</label>
+        <select id="filter-type">
+            <option value="">All Types</option>
             <option value="None">Open</option>
             <option value="Green">Family Time</option>
             <option value="Yellow">Family Time (Visitors Welcome!)</option>
@@ -74,25 +44,64 @@
             <option value="Purple">Trout Weekend</option>
         </select>
 
-        <label for="event-desc">Description</label>
-        <textarea id="event-desc"></textarea>
+        <label for="filter-month">Month/Year:</label>
+        <input type="month" id="filter-month">
 
-        <label for="event-image">Upload Image</label>
-        <input type="file" id="event-image" accept="image/*">
+        <button id="applyFilters">Apply Filters</button>
+        <button id="clearFilters" style="background-color:#888;">Clear</button>
+    </div>
 
-        <div style="text-align:center; margin-top:15px;">
-            <button type="submit">Save Event</button>
-            <button type="button" id="closeModal">Cancel</button>
+    <!-- Add/Edit Event Modal -->
+    <div id="eventModal" class="modal">
+        <div class="modal-content">
+            <span id="closeModal" class="close">&times;</span>
+            <h2 id="modalTitle">Add Event</h2>
+
+            <form id="eventForm">
+                <input type="hidden" id="event-id">
+
+                <label for="event-name">Event Name</label>
+                <input type="text" id="event-name" required>
+
+                <label for="event-start">Start Date</label>
+                <input type="date" id="event-start" required>
+
+                <label for="event-end">End Date</label>
+                <input type="date" id="event-end">
+
+                <label for="event-time">Time</label>
+                <input type="text" id="event-time" placeholder="e.g., 3:00 PM">
+
+                <label for="event-type">Event Type</label>
+                <select id="event-type">
+                    <option value="None">Open</option>
+                    <option value="Green">Family Time</option>
+                    <option value="Yellow">Family Time (Visitors Welcome!)</option>
+                    <option value="Red">Golf Weekend</option>
+                    <option value="Orange">Hunting</option>
+                    <option value="Blue">Work Weekend</option>
+                    <option value="Purple">Trout Weekend</option>
+                </select>
+
+                <label for="event-desc">Description</label>
+                <textarea id="event-desc" rows="4"></textarea>
+
+                <label for="event-image">Upload Image (optional)</label>
+                <input type="file" id="event-image" accept="image/*">
+
+                <div class="button-group">
+                    <button type="submit">Save Event</button>
+                    <button type="button" id="cancelModal">Cancel</button>
+                </div>
+            </form>
         </div>
-    </form>
-</div>
+    </div>
 
-<!-- Event List -->
-<div id="eventList" class="event-list">
-    <h2>Events</h2>
-</div>
-    
+    <!-- Event List -->
+    <div id="eventList" class="event-list">
+        <h2>Events</h2>
+    </div>
+
     <script type="module" src="events.js"></script>
-
 </body>
 </html>

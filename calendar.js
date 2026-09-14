@@ -74,6 +74,11 @@ async function fetchEventsAndRender() {
     snapshot.forEach(docSnap => {
       const event = docSnap.data();
       if (!event.start) return;
+
+      // Skip events that ended before this month started
+      const eventEnd = event.end || event.start;
+      if (eventEnd < firstStr) return;
+
       const startDate = new Date(event.start + "T00:00:00");
       const endDate = event.end ? new Date(event.end + "T00:00:00") : startDate;
 
@@ -185,7 +190,11 @@ document.getElementById("todayBtn").addEventListener("click", () => {
 
 document.getElementById("saveEventBtn").addEventListener("click", saveEventFromCalendar);
 document.getElementById("deleteEventBtn").addEventListener("click", deleteEventFromCalendar);
+// Close modal via × button or clicking the overlay backdrop
 document.getElementById("cancelEventBtn").addEventListener("click", closeEventModal);
+document.getElementById("eventModal").addEventListener("click", (e) => {
+  if (e.target === document.getElementById("eventModal")) closeEventModal();
+});
 
 // Initial render
 window.addEventListener("DOMContentLoaded", renderCalendar);
