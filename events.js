@@ -14,9 +14,7 @@ const filterType = document.getElementById("filter-type");
 const filterMonth = document.getElementById("filter-month");
 const applyFiltersBtn = document.getElementById("applyFilters");
 
-let selectedEventId = null;
-
-addEventBtn.addEventListener("click", () => { eventForm.reset(); selectedEventId=null; eventModal.style.display="block"; });
+addEventBtn.addEventListener("click", () => { eventForm.reset(); eventModal.style.display="block"; });
 closeModal.addEventListener("click", () => eventModal.style.display="none");
 window.addEventListener("click", e => { if (e.target===eventModal) eventModal.style.display="none"; });
 
@@ -61,14 +59,13 @@ eventForm.addEventListener("submit", async e => {
     const details = document.getElementById("event-desc").value;
     const file = document.getElementById("event-image").files[0];
 
-    let imageURL = null;
-    if(file) {
+    const data = { title, start, startTime, color, details };
+    if (file) {
         const sRef = ref(storage, `events/${Date.now()}_${file.name}`);
         await uploadBytes(sRef, file);
-        imageURL = await getDownloadURL(sRef);
+        data.imageURL = await getDownloadURL(sRef);
     }
 
-    const data = { title, start, startTime, color, details, imageURL };
     try {
         if(id) await updateDoc(doc(db,"events",id), data);
         else await addDoc(collection(db,"events"), data);
@@ -83,7 +80,6 @@ eventList.addEventListener("click", async e => {
         const dSnap = await getDoc(doc(db,"events",id));
         if (!dSnap.exists()) return;
         const data = dSnap.data();
-        selectedEventId = id;
         document.getElementById("event-id").value=id;
         document.getElementById("event-name").value=data.title;
         document.getElementById("event-date").value=data.start;
