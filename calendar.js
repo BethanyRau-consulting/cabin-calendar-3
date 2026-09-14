@@ -53,12 +53,20 @@ function renderCalendar() {
 
 async function fetchEventsAndRender() {
   try {
-    const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-    const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
 
+    const firstStr = firstDay.toISOString().slice(0, 10);
+    const lastStr = lastDay.toISOString().slice(0, 10);
+
+    // Fetch events whose start date falls within the current month.
+    // Also fetch multi-day events that START before this month but END within it
+    // by using a separate query for end >= firstDay.
     const q = query(
       collection(db, "events"),
-      where("start", "<=", lastDay.toISOString().slice(0,10)),
+      where("start", "<=", lastStr),
       orderBy("start")
     );
 
