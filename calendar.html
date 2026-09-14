@@ -8,6 +8,13 @@
 
     <!-- Link to external CSS file -->
     <link rel="stylesheet" href="style.css">
+
+    <!-- Redirect to login page if the user is not authenticated -->
+    <script>
+        if (sessionStorage.getItem("authenticated") !== "true") {
+            window.location.href = "login.html";
+        }
+    </script>
 </head>
 <body>
     <!-- Page Title -->
@@ -47,50 +54,54 @@
 
     <!-- Modal for adding or editing calendar events -->
     <div id="eventModal" class="modal">
-        <form id="eventForm">
-            <h3>Add/Edit Event</h3>
+        <div class="modal-content">
+            <span id="cancelEventBtn" class="close">&times;</span>
+            <form id="eventForm">
+                <h3>Add / Edit Event</h3>
 
-            <!-- Event title input -->
-            <label for="eventTitle">Event Title:</label>
-            <input type="text" id="eventTitle" required>
+                <!-- Event title input -->
+                <label for="eventTitle">Event Title:</label>
+                <input type="text" id="eventTitle" required>
 
-            <!-- Start date input -->
-            <label for="eventStart">Start Date:</label>
-            <input type="date" id="eventStart" required>
+                <!-- Start date input -->
+                <label for="eventStart">Start Date:</label>
+                <input type="date" id="eventStart" required>
 
-            <!-- End date input -->
-            <label for="eventEnd">End Date:</label>
-            <input type="date" id="eventEnd">
+                <!-- End date input -->
+                <label for="eventEnd">End Date:</label>
+                <input type="date" id="eventEnd">
 
-            <!-- Start time input -->
-            <label for="eventStartTime">Start Time:</label>
-            <input type="time" id="eventStartTime">
+                <!-- Start time input -->
+                <label for="eventStartTime">Start Time:</label>
+                <input type="time" id="eventStartTime">
 
-            <!-- End time input -->
-            <label for="eventEndTime">End Time:</label>
-            <input type="time" id="eventEndTime">
+                <!-- End time input -->
+                <label for="eventEndTime">End Time:</label>
+                <input type="time" id="eventEndTime">
 
-            <!-- Dropdown to select the event type -->
-            <label for="eventType">Event Type:</label>
-            <select id="eventType">
-                <option value="None">Open</option>
-                <option value="Green">Family Time</option>
-                <option value="Yellow">Family Time (Visitors Welcome!)</option>
-                <option value="Red">Golf Weekend</option>
-                <option value="Orange">Hunting</option>
-                <option value="Blue">Work Weekend</option>
-                <option value="Purple">Trout Weekend</option>
-            </select>
+                <!-- Dropdown to select the event type -->
+                <label for="eventType">Event Type:</label>
+                <select id="eventType">
+                    <option value="None">Open</option>
+                    <option value="Green">Family Time</option>
+                    <option value="Yellow">Family Time (Visitors Welcome!)</option>
+                    <option value="Red">Golf Weekend</option>
+                    <option value="Orange">Hunting</option>
+                    <option value="Blue">Work Weekend</option>
+                    <option value="Purple">Trout Weekend</option>
+                </select>
 
-            <!-- Text area for additional event details -->
-            <label for="eventDetails">Event Details:</label>
-            <textarea id="eventDetails" required></textarea>
+                <!-- Text area for additional event details -->
+                <label for="eventDetails">Event Details:</label>
+                <textarea id="eventDetails"></textarea>
 
-            <!-- Form buttons for saving, canceling, and deleting events -->
-            <button type="button" id="saveEventBtn">Save</button>
-            <button type="button" id="cancelEventBtn">Cancel</button>
-            <button type="button" id="deleteEventBtn">Delete</button>
-        </form>
+                <!-- Form buttons -->
+                <div class="button-group">
+                    <button type="button" id="saveEventBtn">Save</button>
+                    <button type="button" id="deleteEventBtn">Delete</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <!-- Visual color key explaining the meaning of each event type -->
